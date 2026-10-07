@@ -39,9 +39,9 @@ cp .env.example .env     # set JWT_SECRET, adjust ports if they are taken
 docker compose up --build
 ```
 
-- Frontend: http://localhost:5173
-- API: http://localhost:3001 (`GET /health`)
-- Postgres: `localhost:5432`
+- Frontend: http://localhost:4517
+- API: http://localhost:4518 (`GET /health`)
+- Postgres: `localhost:54329`
 
 On first start the backend runs the migrations and seeds an empty database. Source code is bind-mounted, so edits hot-reload.
 
@@ -73,7 +73,7 @@ Requires Node 22+ and a PostgreSQL 14+ server.
 cp .env.example .env     # point DATABASE_URL at your Postgres, set JWT_SECRET
 npm ci
 npm run db:seed -w @pizzaria/backend   # migrate + seed (skips if data exists)
-npm run dev                            # API on :3001 and Vite on :5173
+npm run dev                            # API on :4518 and Vite on :4517
 ```
 
 Generate a `JWT_SECRET` with:
@@ -107,7 +107,7 @@ npm run e2e:open                     # interactive runner
 ```
 
 - **They wipe the database.** Each spec starts with `db:reset` (re-seed), which needs `DATABASE_URL` (root `.env`) to reach the same Postgres as the API from the host. Never point it at data you care about.
-- If your ports differ from the defaults: `CYPRESS_BASE_URL=http://localhost:5174 CYPRESS_apiUrl=http://localhost:3001 npm run e2e`.
+- If your ports differ from the defaults: `CYPRESS_BASE_URL=http://localhost:4527 CYPRESS_apiUrl=http://localhost:4518 npm run e2e`.
 - On a machine without a display use `xvfb-run -a npm run e2e`.
 - Specs log in through the API (`cy.visitAs(role, path)`) except the auth spec, which uses the form.
 

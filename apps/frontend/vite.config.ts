@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [react()],
     server: {
         host: true, // reachable from outside the docker container
-        port: 5173,
+        port: 4517,
         strictPort: true,
         watch: { usePolling: !!process.env.CHOKIDAR_USEPOLLING },
     },
