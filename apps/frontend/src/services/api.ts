@@ -1,0 +1,232 @@
+import {
+    createApi,
+    fetchBaseQuery,
+    type BaseQueryFn,
+    type FetchArgs,
+    type FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+import type {
+    Ingredient,
+    LoginInput,
+    LoginResponse,
+    Order,
+    OrderStatus,
+    PlaceOrderInput,
+    Pizza,
+    Product,
+    RegisterInput,
+    Report,
+    Role,
+    User,
+} from "@pizzaria/dtos";
+import { API_URL } from "../lib/config";
+import { signedOut } from "../features/session/sessionSlice";
+
+interface TokenState {
+    session: { token: string | null };
+}
+
+const rawBaseQuery = fetchBaseQuery({
+    baseUrl: API_URL,
+    prepareHeaders: (headers, { getState }) => {
+        const token = (getState() as TokenState).session.token;
+        if (token) headers.set("authorization", `Bearer ${token}`);
+        return headers;
+    },
+});
+
+/** Signs the user out when the API says the token is no longer valid. */
+const baseQuery: BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+    const result = await rawBaseQuery(args, api, extraOptions);
+    const isAuthEndpoint =
+        typeof args === "object" && args.url.startsWith("/auth/");
+    if (result.error?.status === 401 && !isAuthEndpoint) {
+        api.dispatch(signedOut());
+    }
+    return result;
+};
+
+/** Message returned by the API (`{ error }`) or a generic fallback. */
+export const errorMessage = (error: unknown): string => {
+    const data =
+        (error as FetchBaseQueryError | undefined) &&
+        (error as { data?: unknown }).data;
+    if (data && typeof data === "object" && "error" in data) {
+        return String((data as { error: unknown }).error);
+    }
+    return "Erro desconhecido";
+};
+
+export type UserWithOrders = User & { orders: Order[] };
+
+type SaveArgs = { id?: string; form: FormData };
+
+export const api = createApi({
+    reducerPath: "api",
+    baseQuery,
+    tagTypes: ["Ingredient", "Pizza", "Product", "Order", "User"],
+    endpoints: (build) => ({
+        /* ---------- auth ---------- */
+        login: build.mutation<LoginResponse, LoginInput>({
+            query: (body) => ({ url: "/auth/login", method: "POST", body }),
+        }),
+        register: build.mutation<User, RegisterInput>({
+            query: (body) => ({ url: "/auth/register", method: "POST", body }),
+        }),
+
+        /* ---------- catalog (any logged user) ---------- */
+        getIngredients: build.query<Ingredient[], void>({
+            query: () => "/catalog/ingredients",
+            providesTags: ["Ingredient"],
+        }),
+        getPizzas: build.query<Pizza[], void>({
+            query: () => "/catalog/pizzas",
+            providesTags: ["Pizza"],
+        }),
+        getProducts: build.query<Product[], void>({
+            query: () => "/catalog/products",
+            providesTags: ["Product"],
+        }),
+
+        /* ---------- customer ---------- */
+        getMyOrders: build.query<Order[], void>({
+            query: () => "/customer/orders",
+            providesTags: ["Order"],
+        }),
+        placeOrder: build.mutation<Order, PlaceOrderInput>({
+            query: (body) => ({
+                url: "/customer/orders",
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["Order"],
+        }),
+
+        /* ---------- employee ---------- */
+        getEmployeeOrders: build.query<Order[], OrderStatus | void>({
+            query: (status) =>
+                status
+                    ? `/employee/orders?status=${status}`
+                    : "/employee/orders",
+            providesTags: ["Order"],
+        }),
+        startOrder: build.mutation<Order, string>({
+            query: (id) => ({
+                url: `/employee/orders/${id}/start`,
+                method: "POST",
+            }),
+            invalidatesTags: ["Order"],
+        }),
+        completeOrder: build.mutation<Order, string>({
+            query: (id) => ({
+                url: `/employee/orders/${id}/complete`,
+                method: "POST",
+            }),
+            invalidatesTags: ["Order"],
+        }),
+
+        /* ---------- admin: users ---------- */
+        getUsers: build.query<User[], void>({
+            query: () => "/admin/users",
+            providesTags: ["User"],
+        }),
+        getUser: build.query<UserWithOrders, string>({
+            query: (id) => `/admin/users/${id}`,
+            providesTags: ["User", "Order"],
+        }),
+        setUserRole: build.mutation<User, { id: string; role: Role }>({
+            query: ({ id, role }) => ({
+                url: `/admin/users/${id}/role`,
+                method: "PATCH",
+                body: { role },
+            }),
+            invalidatesTags: ["User"],
+        }),
+        deleteUser: build.mutation<User, string>({
+            query: (id) => ({ url: `/admin/users/${id}`, method: "DELETE" }),
+            invalidatesTags: ["User"],
+        }),
+
+        /* ---------- admin: catalog (multipart forms, fields: see dtos *Input) ---------- */
+        saveIngredient: build.mutation<Ingredient, SaveArgs>({
+            query: ({ id, form }) => ({
+                url: id ? `/admin/ingredients/${id}` : "/admin/ingredients",
+                method: id ? "PUT" : "POST",
+                body: form,
+            }),
+            // pizza prices depend on ingredient prices
+            invalidatesTags: ["Ingredient", "Pizza"],
+        }),
+        deleteIngredient: build.mutation<Ingredient, string>({
+            query: (id) => ({
+                url: `/admin/ingredients/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Ingredient", "Pizza"],
+        }),
+        savePizza: build.mutation<Pizza, SaveArgs>({
+            query: ({ id, form }) => ({
+                url: id ? `/admin/pizzas/${id}` : "/admin/pizzas",
+                method: id ? "PUT" : "POST",
+                body: form,
+            }),
+            invalidatesTags: ["Pizza"],
+        }),
+        deletePizza: build.mutation<Pizza, string>({
+            query: (id) => ({ url: `/admin/pizzas/${id}`, method: "DELETE" }),
+            invalidatesTags: ["Pizza"],
+        }),
+        saveProduct: build.mutation<Product, SaveArgs>({
+            query: ({ id, form }) => ({
+                url: id ? `/admin/products/${id}` : "/admin/products",
+                method: id ? "PUT" : "POST",
+                body: form,
+            }),
+            invalidatesTags: ["Product"],
+        }),
+        deleteProduct: build.mutation<Product, string>({
+            query: (id) => ({ url: `/admin/products/${id}`, method: "DELETE" }),
+            invalidatesTags: ["Product"],
+        }),
+
+        /* ---------- admin: reports ---------- */
+        getReport: build.query<Report, { from?: string; to?: string } | void>({
+            query: (range) => {
+                const params = new URLSearchParams();
+                if (range?.from) params.set("from", range.from);
+                if (range?.to) params.set("to", range.to);
+                const qs = params.toString();
+                return `/admin/reports${qs ? `?${qs}` : ""}`;
+            },
+            providesTags: ["Order"],
+        }),
+    }),
+});
+
+export const {
+    useLoginMutation,
+    useRegisterMutation,
+    useGetIngredientsQuery,
+    useGetPizzasQuery,
+    useGetProductsQuery,
+    useGetMyOrdersQuery,
+    usePlaceOrderMutation,
+    useGetEmployeeOrdersQuery,
+    useStartOrderMutation,
+    useCompleteOrderMutation,
+    useGetUsersQuery,
+    useGetUserQuery,
+    useSetUserRoleMutation,
+    useDeleteUserMutation,
+    useSaveIngredientMutation,
+    useDeleteIngredientMutation,
+    useSavePizzaMutation,
+    useDeletePizzaMutation,
+    useSaveProductMutation,
+    useDeleteProductMutation,
+    useGetReportQuery,
+} = api;

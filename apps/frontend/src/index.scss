@@ -36,7 +36,7 @@ h1 {
     }
 }
 
-.titulo {
+.title {
     text-align: center;
     font-size: 30px;
     border-bottom: 2px solid black;
@@ -124,7 +124,7 @@ div.scrollmenu {
     flex-wrap: nowrap;
 }
 
-.ingrediente {
+.ingredient {
     width: 50%;
     height: fit-content;
     margin: 10px;
@@ -139,9 +139,9 @@ div.scrollmenu {
     }
 }
 
-/******** Carrinho ********/
+/******** Cart ********/
 
-.qtd-selection {
+.quantity-selector {
     font-weight: bold;
     font-size: 1.25rem;
 
@@ -154,7 +154,7 @@ div.scrollmenu {
     }
 }
 
-.total-carrinho {
+.cart-total {
     font-size: 3rem;
 }
 
@@ -170,11 +170,11 @@ div.scrollmenu {
         height: 100%;
     }
 
-    .ingrediente {
+    .ingredient {
         width: 100%;
     }
 
-    .qtd-selection {
+    .quantity-selector {
         font-size: 1rem;
 
         button {
