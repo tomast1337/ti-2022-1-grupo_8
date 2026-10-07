@@ -1,0 +1,16 @@
+{
+    "name": "@pizzaria/e2e",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "e2e": "cypress run",
+        "e2e:open": "cypress open",
+        "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@pizzaria/dtos": "*",
+        "cypress": "^16.1.0",
+        "typescript": "^5.9.0"
+    }
+}

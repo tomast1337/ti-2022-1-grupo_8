@@ -23,9 +23,11 @@ store.subscribe(() => {
     const { session, cart } = store.getState();
     saveSession(session);
     saveCart(cart);
-    if (previousToken && !session.token)
-        store.dispatch(api.util.resetApiState());
+
+    const signedOut = previousToken !== null && session.token === null;
+    // update before dispatching: resetApiState re-enters this subscriber
     previousToken = session.token;
+    if (signedOut) store.dispatch(api.util.resetApiState());
 });
 
 export type AppStore = ReturnType<typeof makeStore>;

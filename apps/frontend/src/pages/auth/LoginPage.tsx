@@ -48,7 +48,7 @@ export const LoginPage = () => {
 
             <div className="container mt-1 mb-5 p-5 section">
                 <div className="row">
-                    <h1 className="titulo">Login</h1>
+                    <h1 className="title">Login</h1>
                 </div>
                 <form onSubmit={handleSubmit}>
                     {error && <div className="alert alert-danger">{error}</div>}

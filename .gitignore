@@ -33,3 +33,8 @@ dist
 apps/backend/uploads
 .env
 !.env.example
+
+# cypress artifacts
+apps/e2e/cypress/screenshots
+apps/e2e/cypress/videos
+apps/e2e/cypress/downloads
