@@ -24,7 +24,7 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pizzaria}
             POSTGRES_DB: ${POSTGRES_DB:-pizzaria}
         ports:
-            - "${POSTGRES_PORT:-5432}:5432"
+            - "${POSTGRES_PORT:-54329}:5432"
         volumes:
             - pgdata:/var/lib/postgresql/data
         healthcheck:
@@ -42,11 +42,11 @@ services:
         environment:
             DATABASE_URL: postgres://${POSTGRES_USER:-pizzaria}:${POSTGRES_PASSWORD:-pizzaria}@db:5432/${POSTGRES_DB:-pizzaria}
             JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-please}
-            BACKEND_PORT: 3001
-            CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-5173}
+            BACKEND_PORT: 4518
+            CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-4517}
             UPLOADS_DIR: /uploads
         ports:
-            - "${BACKEND_PORT:-3001}:3001"
+            - "${BACKEND_PORT:-4518}:4518"
         volumes:
             - .:/app
             - root_node_modules:/app/node_modules
@@ -63,10 +63,10 @@ services:
         command: npm run dev -w @pizzaria/frontend
         environment:
             # the browser (not the container) calls the API
-            VITE_API_URL: http://localhost:${BACKEND_PORT:-3001}
+            VITE_API_URL: http://localhost:${BACKEND_PORT:-4518}
             CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-}
         ports:
-            - "${FRONTEND_PORT:-5173}:5173"
+            - "${FRONTEND_PORT:-4517}:4517"
         depends_on:
             - backend
 

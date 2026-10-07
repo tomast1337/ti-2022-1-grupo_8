@@ -11,9 +11,9 @@ const repoRoot = path.resolve(
 export default defineConfig({
     e2e: {
         // Override with CYPRESS_BASE_URL / CYPRESS_apiUrl when ports differ (see README)
-        baseUrl: process.env.CYPRESS_BASE_URL ?? "http://localhost:5173",
+        baseUrl: process.env.CYPRESS_BASE_URL ?? "http://localhost:4517",
         expose: {
-            apiUrl: process.env.CYPRESS_apiUrl ?? "http://localhost:3001",
+            apiUrl: process.env.CYPRESS_apiUrl ?? "http://localhost:4518",
             seedPassword: process.env.SEED_PASSWORD ?? "pizzaria123",
         },
         specPattern: "cypress/e2e/**/*.cy.ts",
