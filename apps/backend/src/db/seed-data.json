@@ -1,0 +1,273 @@
+{
+    "ingredients": [
+        {
+            "name": "Presunto",
+            "description": "Presunto - 8.5",
+            "price": 0.78,
+            "portionWeight": 90,
+            "image": "/imgs/ingredients/Presunto.png"
+        },
+        {
+            "name": "Alho",
+            "description": "Alho - 4.75",
+            "price": 0.92,
+            "portionWeight": 22,
+            "image": "/imgs/ingredients/Alho.png"
+        },
+        {
+            "name": "Ovo",
+            "description": "Ovo - 5.32",
+            "price": 0.82,
+            "portionWeight": 95,
+            "image": "/imgs/ingredients/Ovo.png"
+        },
+        {
+            "name": "Azeitona preta",
+            "description": "Azeitona preta - 4",
+            "price": 0.55,
+            "portionWeight": 80,
+            "image": "/imgs/ingredients/Azeitona preta.png"
+        },
+        {
+            "name": "Requeijão",
+            "description": "Requeijão - 5",
+            "price": 0.92,
+            "portionWeight": 81,
+            "image": "/imgs/ingredients/Requeijão.png"
+        },
+        {
+            "name": "Cebola",
+            "description": "Cebola - 2",
+            "price": 0.69,
+            "portionWeight": 98,
+            "image": "/imgs/ingredients/Cebola.png"
+        },
+        {
+            "name": "Pimentão verde",
+            "description": "Pimentão verde - 5.66",
+            "price": 0.51,
+            "portionWeight": 66,
+            "image": "/imgs/ingredients/Pimentão verde.png"
+        },
+        {
+            "name": "Frango desfiado",
+            "description": "Frango desfiado - 7.99",
+            "price": 0.62,
+            "portionWeight": 82,
+            "image": "/imgs/ingredients/Frango desfiado.png"
+        },
+        {
+            "name": "Bacon",
+            "description": "Bacon - 5",
+            "price": 0.86,
+            "portionWeight": 21,
+            "image": "/imgs/ingredients/Bacon.png"
+        },
+        {
+            "name": "Brócolis",
+            "description": "Brócolis - 6",
+            "price": 0.6,
+            "portionWeight": 78,
+            "image": "/imgs/ingredients/Brócolis.png"
+        },
+        {
+            "name": "Pepperoni",
+            "description": "Pepperoni - 8.55",
+            "price": 0.64,
+            "portionWeight": 46,
+            "image": "/imgs/ingredients/Pepperoni.png"
+        },
+        {
+            "name": "Molho",
+            "description": "Molho - 0.75",
+            "price": 0.6,
+            "portionWeight": 53,
+            "image": "/imgs/ingredients/molho_de_tomate.png"
+        },
+        {
+            "name": "Calabresa",
+            "description": "Calabresa - 6.45",
+            "price": 0.99,
+            "portionWeight": 86,
+            "image": "/imgs/ingredients/Calabresa.png"
+        },
+        {
+            "name": "Camarão",
+            "description": "Camarão - 4.86",
+            "price": 0.81,
+            "portionWeight": 18,
+            "image": "/imgs/ingredients/Camarao.png"
+        },
+        {
+            "name": "Tomate",
+            "description": "Tomate - 4.5",
+            "price": 0.95,
+            "portionWeight": 67,
+            "image": "/imgs/ingredients/Tomate.png"
+        },
+        {
+            "name": "Queijo",
+            "description": "Queijo - 0.75",
+            "price": 0.52,
+            "portionWeight": 29,
+            "image": "/imgs/ingredients/queijo-musssarela.png"
+        },
+        {
+            "name": "Azeitona verde",
+            "description": "Azeitona verde - 5.86",
+            "price": 0.85,
+            "portionWeight": 9,
+            "image": "/imgs/ingredients/Azeitona verde.png"
+        },
+        {
+            "name": "Manjericão",
+            "description": "Manjericão - 6.6",
+            "price": 0.72,
+            "portionWeight": 88,
+            "image": "/imgs/ingredients/Manjericão.png"
+        },
+        {
+            "name": "Abacaxi",
+            "description": "Abacaxi",
+            "price": 8,
+            "portionWeight": 12,
+            "image": "/imgs/ingredients/f7a97c04-d0a2-4c57-9f70-7236f5d10881.jpg"
+        }
+    ],
+    "pizzas": [
+        {
+            "name": "Pizza de Mussarela",
+            "description": "Básica mas ainda gostosa, pizza com molho de tomate, mussarela e orégano.",
+            "image": "/imgs/pizzas/pizza-mussarela.png",
+            "ingredients": []
+        },
+        {
+            "name": "Calabresa",
+            "description": "Deliciosa pizza com molho de tomate, mussarela, calabresa, azeitona e orégano.",
+            "image": "/imgs/pizzas/pizza-calabresa.png",
+            "ingredients": []
+        },
+        {
+            "name": "Bacon",
+            "description": "Deliciosa pizza com molho de tomate, mussarela, bacon e orégano.",
+            "image": "/imgs/pizzas/bacon.png",
+            "ingredients": []
+        },
+        {
+            "name": "Da Casa",
+            "description": "Sabor original da pizzaria, contendo molho de tomate, mussarela, peperoni, cebola e pimentão verde.",
+            "image": "/imgs/pizzas/pizza-da-casa.png",
+            "ingredients": []
+        },
+        {
+            "name": "4 Queijos",
+            "description": "Deliciosa pizza com molho de tomate, mussarela, gorgonzola, requeijão e parmesão.",
+            "image": "/imgs/pizzas/4 Queijos.png",
+            "ingredients": []
+        },
+        {
+            "name": "Brócolis com Alho",
+            "description": "Deliciosa pizza com molho de tomate, mussarela, brócolis, alho e orégano.",
+            "image": "/imgs/pizzas/brocolis e alho.png",
+            "ingredients": []
+        },
+        {
+            "name": "Tropical",
+            "description": "Deliciosa pizza com mussarela, camarão, bacon e abacaxi.",
+            "image": "/imgs/pizzas/Tropical.png",
+            "ingredients": []
+        },
+        {
+            "name": "Portuguesa",
+            "description": "Uma pizza com calabresa, tomates, mussarela, cebolas e azeitonas pretas.",
+            "image": "/imgs/pizzas/Portuguesa.png",
+            "ingredients": []
+        },
+        {
+            "name": "Napolitana",
+            "description": "Deliciosa pizza com molho de tomate, mussarela e manjericão.",
+            "image": "/imgs/pizzas/pizza-napolitana.png",
+            "ingredients": []
+        },
+        {
+            "name": "Brócolis",
+            "description": "Deliciosa pizza com molho de tomate, mussarela, brócolis e orégano.",
+            "image": "/imgs/pizzas/brocolis.png",
+            "ingredients": []
+        },
+        {
+            "name": "Margherita",
+            "description": "Deliciosa pizza com molho de tomate, mussarela de búfala, manjericão, queijo parmesão ralado, tomates e azeite.",
+            "image": "/imgs/pizzas/Margherita.png",
+            "ingredients": []
+        },
+        {
+            "name": "Frango com Requeijão",
+            "description": "A mais querida! Pizza com molho de tomate, frango desfiado, queijo, requeijão e orégano",
+            "image": "/imgs/pizzas/Frango com Requeijão.png",
+            "ingredients": []
+        }
+    ],
+    "products": [
+        {
+            "name": "Suco de Pêssego 1L",
+            "description": "Suco de Laranja Del Valle sabor pêssego 1L",
+            "price": 4,
+            "image": "/imgs/products/suco-pessego-del-valle-frut-1l.png"
+        },
+        {
+            "name": "Coca Cola 2L",
+            "description": "Refrigerante sabor cola de 2L.",
+            "price": 8,
+            "image": "/imgs/products/coca-cola.png"
+        },
+        {
+            "name": "Fanta Laranja 2L",
+            "description": "Refrigerante sabor laranja de 2L.",
+            "price": 8,
+            "image": "/imgs/products/fanta.png"
+        },
+        {
+            "name": "Guaraná 2L",
+            "description": "Refrigerante sabor guaraná de 2L.",
+            "price": 8,
+            "image": "/imgs/products/guarana.png"
+        },
+        {
+            "name": "Heineken 600ml",
+            "description": "Cerveja HEINEKEN Garrafa 600ml",
+            "price": 8,
+            "image": "/imgs/products/heineken-original-bottle.png"
+        },
+        {
+            "name": "Mousse de Chocolate 50g",
+            "description": "Sobremesa leve com base de chocolate em barra meio amargo e creme de leite. Aerada, com leve toque de chocolate branco para dar crocância.",
+            "price": 5,
+            "image": "/imgs/products/mousse-de-chocolate.png"
+        },
+        {
+            "name": "Mousse de Limão 50g",
+            "description": "Mousse de Limão",
+            "price": 5,
+            "image": "/imgs/products/mousse-de-limao.png"
+        },
+        {
+            "name": "Mousse de Maracujá 50g",
+            "description": "Sobremesa aerada que leva suco de maracujá fresco, creme de leite e leite condensado. Leve, com um sabor cítrico e doce a cada colherada, finaliza qualquer almoço ou jantar.",
+            "price": 5,
+            "image": "/imgs/products/mousse-de-maracuja.png"
+        },
+        {
+            "name": "Suco de Laranja 1L",
+            "description": "Suco de Laranja Del Valle sabor Laranja 1L",
+            "price": 4,
+            "image": "/imgs/products/suco-de-lagranja-com-gominhos-del-valle-1L.png"
+        },
+        {
+            "name": "Suco de Uva 1L",
+            "description": "Suco de Laranja Del Valle sabor uva 1L",
+            "price": 4,
+            "image": "/imgs/products/suco-de-uva-del-valle-frut-1l.png"
+        }
+    ]
+}
