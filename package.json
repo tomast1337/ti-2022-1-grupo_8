@@ -17,7 +17,11 @@
         "build": "npm run build --workspaces --if-present",
         "typecheck": "npm run typecheck --workspaces --if-present",
         "test": "npm run test --workspaces --if-present",
-        "format": "prettier --write \"apps/**/*.{ts,tsx,scss,json}\" \"packages/**/*.{ts,json}\""
+        "format": "prettier --write \"apps/**/*.{ts,tsx,scss,json}\" \"packages/**/*.{ts,json}\"",
+        "docker:up": "docker compose up --build",
+        "docker:down": "docker compose down",
+        "docker:reset": "docker compose down -v && docker compose up --build",
+        "docker:seed": "docker compose exec backend npm run db:reset -w @pizzaria/backend"
     },
     "devDependencies": {
         "prettier": "^3.6.0",
