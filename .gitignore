@@ -25,3 +25,11 @@ yarn-error.log*
 
 #vscode
 .vscode
+
+# modernized layout
+node_modules
+dist
+*.tsbuildinfo
+apps/backend/uploads
+.env
+!.env.example
