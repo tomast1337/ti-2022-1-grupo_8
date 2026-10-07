@@ -1,0 +1,38 @@
+{
+    "name": "@pizzaria/backend",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch --env-file-if-exists=../../.env src/server.ts",
+        "start": "tsx --env-file-if-exists=../../.env src/server.ts",
+        "build": "tsc --noEmit",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "db:migrate": "tsx --env-file-if-exists=../../.env src/db/migrate.ts",
+        "db:seed": "tsx --env-file-if-exists=../../.env src/db/seed.ts",
+        "db:reset": "tsx --env-file-if-exists=../../.env src/db/seed.ts --force"
+    },
+    "dependencies": {
+        "@pizzaria/dtos": "*",
+        "bcrypt": "^6.0.0",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "kysely": "^0.28.0",
+        "multer": "^2.0.0",
+        "pg": "^8.16.0",
+        "zod": "^4.1.0"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "^6.0.0",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/multer": "^2.0.0",
+        "@types/node": "^22.0.0",
+        "@types/pg": "^8.15.0",
+        "tsx": "^4.20.0",
+        "vitest": "^3.2.0"
+    }
+}

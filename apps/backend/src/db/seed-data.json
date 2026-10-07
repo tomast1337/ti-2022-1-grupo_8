@@ -139,73 +139,85 @@
             "name": "Pizza de Mussarela",
             "description": "Básica mas ainda gostosa, pizza com molho de tomate, mussarela e orégano.",
             "image": "/imgs/pizzas/pizza-mussarela.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo"]
         },
         {
             "name": "Calabresa",
             "description": "Deliciosa pizza com molho de tomate, mussarela, calabresa, azeitona e orégano.",
             "image": "/imgs/pizzas/pizza-calabresa.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Calabresa", "Azeitona preta"]
         },
         {
             "name": "Bacon",
             "description": "Deliciosa pizza com molho de tomate, mussarela, bacon e orégano.",
             "image": "/imgs/pizzas/bacon.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Bacon"]
         },
         {
             "name": "Da Casa",
             "description": "Sabor original da pizzaria, contendo molho de tomate, mussarela, peperoni, cebola e pimentão verde.",
             "image": "/imgs/pizzas/pizza-da-casa.png",
-            "ingredients": []
+            "ingredients": [
+                "Molho",
+                "Queijo",
+                "Pepperoni",
+                "Cebola",
+                "Pimentão verde"
+            ]
         },
         {
             "name": "4 Queijos",
             "description": "Deliciosa pizza com molho de tomate, mussarela, gorgonzola, requeijão e parmesão.",
             "image": "/imgs/pizzas/4 Queijos.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Requeijão"]
         },
         {
             "name": "Brócolis com Alho",
             "description": "Deliciosa pizza com molho de tomate, mussarela, brócolis, alho e orégano.",
             "image": "/imgs/pizzas/brocolis e alho.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Brócolis", "Alho"]
         },
         {
             "name": "Tropical",
             "description": "Deliciosa pizza com mussarela, camarão, bacon e abacaxi.",
             "image": "/imgs/pizzas/Tropical.png",
-            "ingredients": []
+            "ingredients": ["Queijo", "Camarão", "Bacon", "Abacaxi"]
         },
         {
             "name": "Portuguesa",
             "description": "Uma pizza com calabresa, tomates, mussarela, cebolas e azeitonas pretas.",
             "image": "/imgs/pizzas/Portuguesa.png",
-            "ingredients": []
+            "ingredients": [
+                "Calabresa",
+                "Tomate",
+                "Queijo",
+                "Cebola",
+                "Azeitona preta"
+            ]
         },
         {
             "name": "Napolitana",
             "description": "Deliciosa pizza com molho de tomate, mussarela e manjericão.",
             "image": "/imgs/pizzas/pizza-napolitana.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Manjericão"]
         },
         {
             "name": "Brócolis",
             "description": "Deliciosa pizza com molho de tomate, mussarela, brócolis e orégano.",
             "image": "/imgs/pizzas/brocolis.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Brócolis"]
         },
         {
             "name": "Margherita",
             "description": "Deliciosa pizza com molho de tomate, mussarela de búfala, manjericão, queijo parmesão ralado, tomates e azeite.",
             "image": "/imgs/pizzas/Margherita.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Queijo", "Manjericão", "Tomate"]
         },
         {
             "name": "Frango com Requeijão",
             "description": "A mais querida! Pizza com molho de tomate, frango desfiado, queijo, requeijão e orégano",
             "image": "/imgs/pizzas/Frango com Requeijão.png",
-            "ingredients": []
+            "ingredients": ["Molho", "Frango desfiado", "Queijo", "Requeijão"]
         }
     ],
     "products": [
@@ -237,7 +249,7 @@
             "name": "Heineken 600ml",
             "description": "Cerveja HEINEKEN Garrafa 600ml",
             "price": 8,
-            "image": "/imgs/products/heineken-original-bottle.png"
+            "image": ""
         },
         {
             "name": "Mousse de Chocolate 50g",
