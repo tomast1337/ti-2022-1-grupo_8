@@ -89,11 +89,27 @@ node -e 'console.log(require("crypto").randomBytes(64).toString("hex"))'
 | `npm run dev`                             | API and frontend in watch mode          |
 | `npm run typecheck`                       | `tsc --noEmit` in every workspace       |
 | `npm test`                                | Vitest in every workspace               |
+| `npm run e2e`                             | Cypress end-to-end suite                |
 | `npm run build`                           | Typecheck + production build of the app |
 | `npm run format`                          | Prettier                                |
 | `npm run db:migrate -w @pizzaria/backend` | Apply pending migrations                |
 | `npm run db:seed -w @pizzaria/backend`    | Migrate and seed an empty database      |
 | `npm run db:reset -w @pizzaria/backend`   | Wipe data and seed again                |
+
+## End-to-end tests (Cypress)
+
+Specs live in `apps/e2e/cypress/e2e` and drive the real UI against a running stack: auth and role guards, the pizza builder, the full order lifecycle (customer → employee → report) and admin catalog/user management.
+
+```bash
+docker compose up -d                 # or `npm run dev` with a local Postgres
+npm run e2e                          # headless
+npm run e2e:open                     # interactive runner
+```
+
+- **They wipe the database.** Each spec starts with `db:reset` (re-seed), which needs `DATABASE_URL` (root `.env`) to reach the same Postgres as the API from the host. Never point it at data you care about.
+- If your ports differ from the defaults: `CYPRESS_BASE_URL=http://localhost:5174 CYPRESS_apiUrl=http://localhost:3001 npm run e2e`.
+- On a machine without a display use `xvfb-run -a npm run e2e`.
+- Specs log in through the API (`cy.visitAs(role, path)`) except the auth spec, which uses the form.
 
 ## API overview
 

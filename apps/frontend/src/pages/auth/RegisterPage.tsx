@@ -62,7 +62,7 @@ export const RegisterPage = () => {
             </div>
             <div className="container mt-2 mb-5 p-5 bg-transparent">
                 <div className="row mb-2">
-                    <h1 className="titulo">Cadastro ✍</h1>
+                    <h1 className="title">Cadastro ✍</h1>
                 </div>
                 <div className="row">
                     <h5 className="text-center" style={{ color: "red" }}>
