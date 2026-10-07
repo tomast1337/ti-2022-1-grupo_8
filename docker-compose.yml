@@ -1,3 +1,21 @@
+# Development stack: Postgres + API (tsx watch) + Vite dev server.
+#   cp .env.example .env && docker compose up --build
+# Source is bind-mounted, so edits hot-reload. Dependencies live in the image;
+# after changing a package.json run: docker compose up --build -V
+
+x-dev-image: &dev-image
+    build:
+        context: .
+        dockerfile: Dockerfile.dev
+    image: pizzaria-dev
+    volumes:
+        - .:/app
+        # keep the image's node_modules instead of the host's
+        - root_node_modules:/app/node_modules
+        - backend_node_modules:/app/apps/backend/node_modules
+        - frontend_node_modules:/app/apps/frontend/node_modules
+        - dtos_node_modules:/app/packages/dtos/node_modules
+
 services:
     db:
         image: postgres:17-alpine
@@ -15,5 +33,47 @@ services:
             timeout: 3s
             retries: 10
 
+    backend:
+        <<: *dev-image
+        # migrates + seeds an empty database, then watches for changes
+        command: >
+            sh -c "npm run db:seed -w @pizzaria/backend &&
+                   npm run dev -w @pizzaria/backend"
+        environment:
+            DATABASE_URL: postgres://${POSTGRES_USER:-pizzaria}:${POSTGRES_PASSWORD:-pizzaria}@db:5432/${POSTGRES_DB:-pizzaria}
+            JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-please}
+            BACKEND_PORT: 3001
+            CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-5173}
+            UPLOADS_DIR: /uploads
+        ports:
+            - "${BACKEND_PORT:-3001}:3001"
+        volumes:
+            - .:/app
+            - root_node_modules:/app/node_modules
+            - backend_node_modules:/app/apps/backend/node_modules
+            - frontend_node_modules:/app/apps/frontend/node_modules
+            - dtos_node_modules:/app/packages/dtos/node_modules
+            - uploads:/uploads
+        depends_on:
+            db:
+                condition: service_healthy
+
+    frontend:
+        <<: *dev-image
+        command: npm run dev -w @pizzaria/frontend
+        environment:
+            # the browser (not the container) calls the API
+            VITE_API_URL: http://localhost:${BACKEND_PORT:-3001}
+            CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-}
+        ports:
+            - "${FRONTEND_PORT:-5173}:5173"
+        depends_on:
+            - backend
+
 volumes:
     pgdata:
+    uploads:
+    root_node_modules:
+    backend_node_modules:
+    frontend_node_modules:
+    dtos_node_modules:
