@@ -15,7 +15,7 @@ describe("order lifecycle", () => {
             cy.contains("button", "Adicionar ao carrinho").click();
             cy.contains("Produto no carrinho!");
         });
-        cy.contains("[data-slot=card]", "Coca Cola 2L").within(() => {
+        cy.contains("[data-slot=card]", "Refrigerante Cola 2L").within(() => {
             cy.contains("button", "Adicionar ao carrinho").click();
         });
 
@@ -25,7 +25,7 @@ describe("order lifecycle", () => {
 
         cy.visit("/customer/cart");
         cy.contains("td", "Pizza de Mussarela");
-        cy.contains("td", "Coca Cola 2L");
+        cy.contains("td", "Refrigerante Cola 2L");
         // pizza 21.12 + drink 8.00 (seed prices)
         cy.contains("29,12");
 
@@ -49,7 +49,7 @@ describe("order lifecycle", () => {
         cy.contains(".col-md-4", "Pendentes").within(() => {
             cy.contains("customer@pizzaria.local");
             cy.contains("Rua das Pizzas, 42");
-            cy.contains("Coca Cola 2L");
+            cy.contains("Refrigerante Cola 2L");
             cy.contains("2x").should("not.exist");
         });
     });
@@ -78,6 +78,6 @@ describe("order lifecycle", () => {
     it("admin report counts the sold items", () => {
         cy.visitAs("admin", "/admin");
         cy.contains("tr", "Pizza de Mussarela").should("contain", "1");
-        cy.contains("tr", "Coca Cola 2L").should("contain", "1");
+        cy.contains("tr", "Refrigerante Cola 2L").should("contain", "1");
     });
 });
