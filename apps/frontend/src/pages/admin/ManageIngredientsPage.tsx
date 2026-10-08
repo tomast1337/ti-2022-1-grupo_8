@@ -1,16 +1,22 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import type { Ingredient } from "@pizzaria/dtos";
+import { Carrot } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
+import { AdminPage } from "../../components/admin/AdminPage";
+import { CatalogCard, CatalogRow } from "../../components/admin/CatalogCard";
+import { FormActions } from "../../components/admin/FormActions";
+import { Alert } from "../../components/ui/Alert";
+import { Field, FILE_INPUT_CLASS } from "../../components/ui/Field";
+import { Input } from "../../components/ui/Input";
+import { PageTitle } from "../../components/ui/PageTitle";
+import { Panel } from "../../components/ui/Panel";
 import {
     errorMessage,
     useDeleteIngredientMutation,
     useGetIngredientsQuery,
     useSaveIngredientMutation,
 } from "../../services/api";
-import { formatMoney } from "../../lib/format";
-import { imageUrl } from "../../lib/images";
-import styles from "./ManageIngredientsPage.module.scss";
 
 interface FormState {
     name: string;
@@ -112,172 +118,131 @@ export const ManageIngredientsPage = () => {
     };
 
     return (
-        <div className={styles.body}>
+        <AdminPage>
             <AdminNav current="ingredients" />
-            <h1 style={{ textAlign: "center", margin: "30px" }}>
-                Gerenciar Ingredientes 🧀
-            </h1>
-            <div className="container mb-2 p-1 bg-transparent">
-                <div className="row section">
-                    <div className="col">
-                        <p>
-                            <b>Ingredientes Cadastrados</b>
-                        </p>
-                        {isLoading && <p>Carregando...</p>}
-                        {error && (
-                            <div className="alert alert-danger" role="alert">
-                                {errorMessage(error)}
-                            </div>
-                        )}
-                        <div className="row section">
-                            <div className="col">
-                                <div className="scrollmenu">
-                                    {ingredients.map((ingredient) => (
-                                        <div
-                                            className="ingredient"
-                                            key={ingredient.id}
-                                        >
-                                            <img
-                                                src={imageUrl(ingredient.image)}
-                                                alt={ingredient.name}
-                                                style={{ width: "100px" }}
-                                            />
-                                            <br />
-                                            <p>{ingredient.name}</p>
-                                            <p>
-                                                {formatMoney(ingredient.price)}
-                                            </p>
-                                            <button
-                                                type="button"
-                                                className="btn btn-primary"
-                                                onClick={() =>
-                                                    toggleSelected(ingredient)
-                                                }
-                                            >
-                                                {selectedId === ingredient.id
-                                                    ? "Desselecionar"
-                                                    : "Selecionar"}
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row m-5 section">
-                    <div className="card-header mb-3">
-                        <h4>
+            <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
+                <PageTitle>
+                    <Carrot className="size-9" aria-hidden />
+                    Gerenciar Ingredientes
+                </PageTitle>
+                <Panel className="space-y-3">
+                    <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
+                        Ingredientes Cadastrados
+                    </h2>
+                    {isLoading && <p>Carregando...</p>}
+                    {error && <Alert>{errorMessage(error)}</Alert>}
+                    <CatalogRow>
+                        {ingredients.map((ingredient) => (
+                            <CatalogCard
+                                key={ingredient.id}
+                                name={ingredient.name}
+                                image={ingredient.image}
+                                price={ingredient.price}
+                                selected={selectedId === ingredient.id}
+                                onToggle={() => toggleSelected(ingredient)}
+                            />
+                        ))}
+                    </CatalogRow>
+                </Panel>
+                <Panel>
+                    <form
+                        id="form-ingredient"
+                        onSubmit={handleSave}
+                        className="space-y-4"
+                    >
+                        <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
                             {selectedId
                                 ? "Editar Ingrediente"
                                 : "Adicionar Ingrediente"}
-                        </h4>
-                    </div>
-                    <form id="form-ingredient" onSubmit={handleSave}>
-                        {formError && (
-                            <div className="alert alert-danger" role="alert">
-                                {formError}
-                            </div>
-                        )}
-                        <div className="form-group mb-2">
-                            <label htmlFor="name">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="name"
-                                placeholder="Nome"
-                                autoComplete="off"
-                                required
-                                value={form.name}
-                                onChange={(e) =>
-                                    setField("name", e.target.value)
-                                }
-                            />
+                        </h2>
+                        {formError && <Alert>{formError}</Alert>}
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <Field label="Nome" htmlFor="name">
+                                <Input
+                                    type="text"
+                                    id="name"
+                                    placeholder="Nome"
+                                    autoComplete="off"
+                                    required
+                                    value={form.name}
+                                    onChange={(e) =>
+                                        setField("name", e.target.value)
+                                    }
+                                />
+                            </Field>
+                            <Field label="Preço" htmlFor="price">
+                                <Input
+                                    type="number"
+                                    id="price"
+                                    placeholder="Preço"
+                                    step={0.01}
+                                    min={0}
+                                    autoComplete="off"
+                                    required
+                                    value={form.price}
+                                    onChange={(e) =>
+                                        setField("price", e.target.value)
+                                    }
+                                />
+                            </Field>
+                            <Field label="Descrição" htmlFor="description">
+                                <Input
+                                    type="text"
+                                    id="description"
+                                    placeholder="Descrição"
+                                    autoComplete="off"
+                                    required
+                                    value={form.description}
+                                    onChange={(e) =>
+                                        setField("description", e.target.value)
+                                    }
+                                />
+                            </Field>
+                            <Field
+                                label="Peso Porção em gramas"
+                                htmlFor="portionWeight"
+                            >
+                                <Input
+                                    type="number"
+                                    step={0.01}
+                                    id="portionWeight"
+                                    placeholder="Peso Porção"
+                                    min="1"
+                                    max="100"
+                                    autoComplete="off"
+                                    required
+                                    value={form.portionWeight}
+                                    onChange={(e) =>
+                                        setField(
+                                            "portionWeight",
+                                            e.target.value,
+                                        )
+                                    }
+                                />
+                            </Field>
                         </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="price">Preço</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="price"
-                                placeholder="Preço"
-                                step={0.01}
-                                min={0}
-                                autoComplete="off"
-                                required
-                                value={form.price}
-                                onChange={(e) =>
-                                    setField("price", e.target.value)
-                                }
-                            />
-                        </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="description">Descrição</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="description"
-                                placeholder="Descrição"
-                                autoComplete="off"
-                                required
-                                value={form.description}
-                                onChange={(e) =>
-                                    setField("description", e.target.value)
-                                }
-                            />
-                        </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="portionWeight">
-                                Peso Porção em gramas
-                            </label>
-                            <input
-                                type="number"
-                                step={0.01}
-                                className="form-control"
-                                id="portionWeight"
-                                placeholder="Peso Porção"
-                                min="1"
-                                max="100"
-                                autoComplete="off"
-                                required
-                                value={form.portionWeight}
-                                onChange={(e) =>
-                                    setField("portionWeight", e.target.value)
-                                }
-                            />
-                        </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="image">Imagem</label>
-                            <input
+                        <Field label="Imagem" htmlFor="image">
+                            <Input
                                 key={fileKey}
                                 type="file"
                                 accept="image/*"
-                                className="form-control"
                                 id="image"
+                                className={FILE_INPUT_CLASS}
                                 required={!selectedId}
                                 onChange={(e) =>
                                     setImage(e.target.files?.[0] ?? null)
                                 }
                             />
-                        </div>
-                        <button
-                            type="submit"
-                            className="btn btn-outline-success mb-3 mt-3"
-                            disabled={saving}
-                        >
-                            {selectedId ? "Salvar 💿" : "Adicionar ✅"}
-                        </button>
+                        </Field>
+                        <FormActions
+                            editing={Boolean(selectedId)}
+                            saving={saving}
+                            deleting={deleting}
+                            onDeleteOrCancel={() => void handleDeleteOrCancel()}
+                        />
                     </form>
-                    <button
-                        type="button"
-                        className="btn btn-outline-danger"
-                        onClick={handleDeleteOrCancel}
-                        disabled={deleting}
-                    >
-                        {selectedId ? "Deletar 🗑️" : "Cancelar ❌"}
-                    </button>
-                </div>
-            </div>
-        </div>
+                </Panel>
+            </main>
+        </AdminPage>
     );
 };

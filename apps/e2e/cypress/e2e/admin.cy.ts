@@ -1,5 +1,43 @@
 describe("admin: catalog and users", () => {
     before(() => cy.resetDb());
+    // cy.viewport persists across tests, so every test starts desktop-sized
+    beforeEach(() => cy.viewport(1280, 720));
+
+    describe("navigation", () => {
+        it("links every section and marks the current one", () => {
+            cy.visitAs("admin", "/admin");
+            for (const label of [
+                "Relatórios",
+                "Ingredientes",
+                "Pizzas",
+                "Produtos",
+                "Usuários",
+            ]) {
+                cy.contains("nav a", label);
+            }
+            cy.contains("nav a", "Relatórios").should(
+                "have.attr",
+                "aria-current",
+                "page",
+            );
+            cy.contains("nav a", "Produtos").click();
+            cy.location("pathname").should("eq", "/admin/products");
+            cy.contains("nav a", "Produtos").should(
+                "have.attr",
+                "aria-current",
+                "page",
+            );
+        });
+
+        it("collapses into a burger menu on a phone", () => {
+            cy.viewport(390, 844);
+            cy.visitAs("admin", "/admin");
+            cy.contains("nav a", "Pizzas").should("not.be.visible");
+            cy.get('button[aria-label="Abrir menu"]').click();
+            cy.contains("nav a", "Pizzas").click();
+            cy.location("pathname").should("eq", "/admin/pizzas");
+        });
+    });
 
     describe("products", () => {
         it("creates a product with an image", () => {
@@ -10,13 +48,15 @@ describe("admin: catalog and users", () => {
             cy.get("#image").selectFile("cypress/fixtures/test-image.png");
             cy.contains("button", "Adicionar").click();
 
-            cy.contains(".card-title", "Suco de Teste 1L");
+            cy.contains("[data-slot=card]", "Suco de Teste 1L");
         });
 
         it("shows the new product to customers", () => {
             cy.visitAs("customer", "/customer/menu");
             cy.contains("[data-slot=card]", "Suco de Teste 1L").within(() => {
                 cy.contains("R$").should("contain", "6,50");
+                // lazy images load once scrolled into view
+                cy.get("img").scrollIntoView();
                 cy.get("img").should(($img) => {
                     expect(
                         ($img[0] as HTMLImageElement).naturalWidth,
@@ -27,7 +67,7 @@ describe("admin: catalog and users", () => {
 
         it("edits the product", () => {
             cy.visitAs("admin", "/admin/products");
-            cy.contains(".card-body", "Suco de Teste 1L")
+            cy.contains("[data-slot=card]", "Suco de Teste 1L")
                 .contains("button", "Selecionar")
                 .click();
             cy.get("#price").clear().type("7.9");
@@ -42,11 +82,13 @@ describe("admin: catalog and users", () => {
 
         it("deletes the product", () => {
             cy.visitAs("admin", "/admin/products");
-            cy.contains(".card-body", "Suco de Teste 1L")
+            cy.contains("[data-slot=card]", "Suco de Teste 1L")
                 .contains("button", "Selecionar")
                 .click();
             cy.contains("button", "Deletar").click(); // window.confirm is auto-accepted
-            cy.contains(".card-title", "Suco de Teste 1L").should("not.exist");
+            cy.contains("[data-slot=card]", "Suco de Teste 1L").should(
+                "not.exist",
+            );
         });
     });
 
@@ -60,6 +102,15 @@ describe("admin: catalog and users", () => {
             cy.get("#image").selectFile("cypress/fixtures/test-image.png");
             cy.contains("button", "Adicionar").click();
             cy.contains("Rúcula");
+        });
+
+        it("updates the pizza price as ingredients are picked", () => {
+            cy.visitAs("admin", "/admin/pizzas");
+            cy.get("[data-slot=price]").should("contain", "20,00");
+            cy.contains("[data-slot=ingredient]", "Rúcula").click();
+            cy.get("[data-slot=price]").should("contain", "21,20");
+            cy.contains("[data-slot=ingredient]", "Rúcula").click();
+            cy.get("[data-slot=price]").should("contain", "20,00");
         });
 
         it("refuses a pizza without ingredients", () => {

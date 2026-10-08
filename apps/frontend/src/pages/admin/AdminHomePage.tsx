@@ -1,9 +1,15 @@
-import { useState } from "react";
 import type { ReportRow } from "@pizzaria/dtos";
+import { BarChart3, TrendingUp } from "lucide-react";
+import { useState } from "react";
 import { AdminNav } from "../../components/admin/AdminNav";
-import { errorMessage, useGetReportQuery } from "../../services/api";
+import { AdminPage } from "../../components/admin/AdminPage";
+import { Alert } from "../../components/ui/Alert";
+import { Field } from "../../components/ui/Field";
+import { Input } from "../../components/ui/Input";
+import { PageTitle } from "../../components/ui/PageTitle";
+import { Panel } from "../../components/ui/Panel";
 import { formatMoney } from "../../lib/format";
-import styles from "./AdminHomePage.module.scss";
+import { errorMessage, useGetReportQuery } from "../../services/api";
 
 interface ReportTableProps {
     title: string;
@@ -18,39 +24,53 @@ const ReportTable = ({
     revenueLabel,
     rows,
 }: ReportTableProps) => (
-    <>
-        <div className="row">
-            <h2 className="text-center">{title}</h2>
-        </div>
-        <div className="row" style={{ width: "90%", margin: "auto" }}>
-            <table className="table table-striped table-dark">
+    <Panel data-slot="report" className="space-y-4">
+        <h2 className="m-0 flex items-center gap-2 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
+            <TrendingUp className="size-6 text-tomato-600" aria-hidden />
+            {title}
+        </h2>
+        <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-base text-ink">
                 <thead>
-                    <tr>
-                        <th scope="col">Nome</th>
-                        <th scope="col">{quantityLabel}</th>
-                        <th scope="col">{revenueLabel}</th>
+                    <tr className="border-b-2 border-ink/15">
+                        <th scope="col" className="py-2 pr-4">
+                            Nome
+                        </th>
+                        <th scope="col" className="px-4 py-2 text-right">
+                            {quantityLabel}
+                        </th>
+                        <th scope="col" className="py-2 pl-4 text-right">
+                            {revenueLabel}
+                        </th>
                     </tr>
                 </thead>
-                <tbody className="table-hover">
+                <tbody>
                     {rows.map((row) => (
-                        <tr key={row.id}>
-                            <td>{row.name}</td>
-                            <td>{row.quantity}</td>
-                            <td>{formatMoney(row.revenue)}</td>
+                        <tr
+                            key={row.id}
+                            className="border-b border-ink/10 hover:bg-ink/5"
+                        >
+                            <td className="py-2 pr-4">{row.name}</td>
+                            <td className="px-4 py-2 text-right">
+                                {row.quantity}
+                            </td>
+                            <td className="py-2 pl-4 text-right">
+                                {formatMoney(row.revenue)}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <h3 style={{ fontSize: "1.5rem", textAlign: "right" }}>
-                Total:{" "}
-                <span style={{ fontSize: "2.5rem" }}>
-                    {formatMoney(
-                        rows.reduce((total, row) => total + row.revenue, 0),
-                    )}
-                </span>
-            </h3>
         </div>
-    </>
+        <p className="m-0 text-right text-lg text-ink/70">
+            Total:{" "}
+            <strong className="text-3xl text-ink">
+                {formatMoney(
+                    rows.reduce((total, row) => total + row.revenue, 0),
+                )}
+            </strong>
+        </p>
+    </Panel>
 );
 
 /** Administrator home: sales report, optionally filtered by date range. */
@@ -67,67 +87,62 @@ export const AdminHomePage = () => {
     });
 
     return (
-        <div className={styles.body}>
+        <AdminPage>
             <AdminNav current="home" />
-            <div className="container mb-2 p-1 bg-transparent">
-                <div className="row">
-                    <h1 className="text-center">Relatórios</h1>
-                </div>
-                <div className="row section mb-3 mx-auto">
-                    <div className="col-md-6">
-                        <label htmlFor="from">De</label>
-                        <input
+            <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
+                <PageTitle>
+                    <BarChart3 className="size-9" aria-hidden />
+                    Relatórios
+                </PageTitle>
+                <Panel className="grid gap-4 sm:grid-cols-2">
+                    <Field label="De" htmlFor="from">
+                        <Input
                             type="date"
-                            className="form-control"
                             id="from"
                             value={from}
                             max={to || undefined}
                             onChange={(e) => setFrom(e.target.value)}
                         />
-                    </div>
-                    <div className="col-md-6">
-                        <label htmlFor="to">Até</label>
-                        <input
+                    </Field>
+                    <Field label="Até" htmlFor="to">
+                        <Input
                             type="date"
-                            className="form-control"
                             id="to"
                             value={to}
                             min={from || undefined}
                             onChange={(e) => setTo(e.target.value)}
                         />
-                    </div>
-                </div>
-                {isLoading && <p className="text-center">Carregando...</p>}
-                {error && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorMessage(error)}
-                    </div>
+                    </Field>
+                </Panel>
+                {isLoading && (
+                    <p className="text-center text-lg font-semibold text-white">
+                        Carregando...
+                    </p>
                 )}
+                {error && <Alert>{errorMessage(error)}</Alert>}
                 {report && (
                     <>
                         <ReportTable
-                            title="Pizzas Mais Compradas 📈"
+                            title="Pizzas Mais Compradas"
                             quantityLabel="Quantidade"
                             revenueLabel="Lucro"
                             rows={report.pizzas}
                         />
-                        <hr />
                         <ReportTable
-                            title="Ingredientes Mais Utilizados 📈"
+                            title="Ingredientes Mais Utilizados"
                             quantityLabel="Porções"
                             revenueLabel="Custo"
                             rows={report.ingredients}
                         />
-                        <hr />
                         <ReportTable
-                            title="Produtos Mais Comprados 📈"
+                            title="Produtos Mais Comprados"
                             quantityLabel="Quantidade"
                             revenueLabel="Lucro"
                             rows={report.products}
                         />
                     </>
                 )}
-            </div>
-        </div>
+            </main>
+        </AdminPage>
     );
 };

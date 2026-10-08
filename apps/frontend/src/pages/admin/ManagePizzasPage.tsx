@@ -1,7 +1,18 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import type { Pizza } from "@pizzaria/dtos";
+import { Check, Pizza as PizzaIcon } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
+import { AdminPage } from "../../components/admin/AdminPage";
+import { CatalogCard, CatalogRow } from "../../components/admin/CatalogCard";
+import { FormActions } from "../../components/admin/FormActions";
+import { Alert } from "../../components/ui/Alert";
+import { Field, FILE_INPUT_CLASS } from "../../components/ui/Field";
+import { Input } from "../../components/ui/Input";
+import { PageTitle } from "../../components/ui/PageTitle";
+import { Panel } from "../../components/ui/Panel";
+import { Textarea } from "../../components/ui/Textarea";
+import { cn } from "../../components/ui/cn";
 import {
     errorMessage,
     useDeletePizzaMutation,
@@ -11,7 +22,6 @@ import {
 } from "../../services/api";
 import { formatMoney } from "../../lib/format";
 import { imageUrl } from "../../lib/images";
-import styles from "./ManagePizzasPage.module.scss";
 
 /** Base price added by the API on top of the ingredient prices. */
 const BASE_PRICE = 20;
@@ -106,74 +116,47 @@ export const ManagePizzasPage = () => {
     };
 
     return (
-        <div className={styles.body}>
+        <AdminPage>
             <AdminNav current="pizzas" />
-            <h1 style={{ textAlign: "center" }}> Gerenciar Pizzas 🍕 </h1>
-            <div className="container">
+            <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
+                <PageTitle>
+                    <PizzaIcon className="size-9" aria-hidden />
+                    Gerenciar Pizzas
+                </PageTitle>
                 {(error || ingredientsError) && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorMessage(error ?? ingredientsError)}
-                    </div>
+                    <Alert>{errorMessage(error ?? ingredientsError)}</Alert>
                 )}
-                <div className="row m-1 section">
+                <Panel className="space-y-3">
+                    <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
+                        Pizzas Cadastradas
+                    </h2>
                     {isLoading && <p>Carregando...</p>}
-                    {/* Existing pizzas */}
-                    <div className="scrollmenu">
+                    <CatalogRow>
                         {pizzas.map((pizza) => (
-                            <div
-                                style={{
-                                    width: "18rem",
-                                    margin: "0.5rem",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "0.25rem",
-                                    padding: "1rem",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
+                            <CatalogCard
                                 key={pizza.id}
-                            >
-                                <img
-                                    className="card-img-top"
-                                    src={imageUrl(pizza.image)}
-                                    alt={pizza.name}
-                                    style={{
-                                        width: "12rem",
-                                        height: "12rem",
-                                        objectFit: "cover",
-                                        borderRadius: "0.25rem",
-                                    }}
-                                />
-                                <div className="card-body">
-                                    <h5 className="card-title">{pizza.name}</h5>
-                                    <button
-                                        type="button"
-                                        className="btn btn-lg btn-primary btn-success"
-                                        onClick={() => toggleSelected(pizza)}
-                                    >
-                                        {selectedId === pizza.id
-                                            ? "Desselecionar"
-                                            : "Selecionar"}
-                                    </button>
-                                </div>
-                            </div>
+                                name={pizza.name}
+                                image={pizza.image}
+                                price={pizza.price}
+                                selected={selectedId === pizza.id}
+                                onToggle={() => toggleSelected(pizza)}
+                            />
                         ))}
-                    </div>
-                </div>
-                {/* Create / edit form */}
-                <div className="row m-1 section">
-                    <form id="form-pizza" onSubmit={handleSave}>
-                        {formError && (
-                            <div className="alert alert-danger" role="alert">
-                                {formError}
-                            </div>
-                        )}
-                        <div className="form-group mb-2">
-                            <label htmlFor="name">Nome</label>
-                            <input
+                    </CatalogRow>
+                </Panel>
+                <Panel>
+                    <form
+                        id="form-pizza"
+                        onSubmit={handleSave}
+                        className="space-y-4"
+                    >
+                        <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
+                            {selectedId ? "Editar Pizza" : "Adicionar Pizza"}
+                        </h2>
+                        {formError && <Alert>{formError}</Alert>}
+                        <Field label="Nome" htmlFor="name">
+                            <Input
                                 type="text"
-                                className="form-control"
                                 id="name"
                                 placeholder="Nome"
                                 autoComplete="off"
@@ -181,11 +164,9 @@ export const ManagePizzasPage = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
-                        </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="description">Descrição</label>
-                            <textarea
-                                className="form-control"
+                        </Field>
+                        <Field label="Descrição" htmlFor="description">
+                            <Textarea
                                 id="description"
                                 placeholder="Descrição"
                                 autoComplete="off"
@@ -193,94 +174,104 @@ export const ManagePizzasPage = () => {
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
-                        </div>
-                        <div className="form-group mb-2">
-                            <label htmlFor="image">Imagem</label>
-                            <input
+                        </Field>
+                        <Field label="Imagem" htmlFor="image">
+                            <Input
                                 key={fileKey}
                                 type="file"
                                 accept="image/*"
-                                className="form-control"
                                 id="image"
+                                className={FILE_INPUT_CLASS}
                                 required={!selectedId}
                                 onChange={(e) =>
                                     setImage(e.target.files?.[0] ?? null)
                                 }
                             />
-                        </div>
-                        <div className="scrollmenu">
-                            {ingredients.map((ingredient) => (
-                                <div className="ingredient" key={ingredient.id}>
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor={`ingredient-${ingredient.id}`}
-                                    >
-                                        {ingredient.name}
-                                    </label>
-                                    <br />
-                                    <img
-                                        src={imageUrl(ingredient.image)}
-                                        alt={ingredient.name}
-                                        style={{
-                                            width: "100px",
-                                            borderRadius: "10px",
-                                        }}
-                                    />
-                                    <br />
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        style={{
-                                            width: "40px",
-                                            height: "40px",
-                                        }}
-                                        id={`ingredient-${ingredient.id}`}
-                                        checked={ingredientIds.includes(
-                                            ingredient.id,
-                                        )}
-                                        onChange={(e) =>
-                                            toggleIngredient(
-                                                ingredient.id,
-                                                e.target.checked,
-                                            )
-                                        }
-                                    />
-                                    <p>{formatMoney(ingredient.price)}</p>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="row">
-                            <div
-                                className="col-md-12"
-                                style={{
-                                    textAlign: "right",
-                                    marginBottom: "20px",
-                                }}
-                            >
-                                <h3>Preço total:</h3>
-                                <h3>{formatMoney(price)}</h3>
+                        </Field>
+                        <fieldset className="m-0 min-w-0 border-0 p-0">
+                            <legend className="mb-2 p-0 text-base font-extrabold text-ink">
+                                Ingredientes
+                            </legend>
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                                {ingredients.map((ingredient) => {
+                                    const checked = ingredientIds.includes(
+                                        ingredient.id,
+                                    );
+                                    return (
+                                        <div
+                                            key={ingredient.id}
+                                            data-slot="ingredient"
+                                            className="relative"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                className="peer sr-only"
+                                                id={`ingredient-${ingredient.id}`}
+                                                checked={checked}
+                                                onChange={(e) =>
+                                                    toggleIngredient(
+                                                        ingredient.id,
+                                                        e.target.checked,
+                                                    )
+                                                }
+                                            />
+                                            <label
+                                                htmlFor={`ingredient-${ingredient.id}`}
+                                                className={cn(
+                                                    "flex cursor-pointer flex-col items-center gap-1 rounded-xl border-2 border-transparent bg-white p-2 text-center shadow-sm transition",
+                                                    "peer-focus-visible:outline-2 peer-focus-visible:outline-tomato-600",
+                                                    checked &&
+                                                        "border-basil-600 bg-basil-500/15",
+                                                )}
+                                            >
+                                                <img
+                                                    src={imageUrl(
+                                                        ingredient.image,
+                                                    )}
+                                                    alt=""
+                                                    loading="lazy"
+                                                    className="aspect-square w-full rounded-lg bg-cheese-400/20 object-cover"
+                                                />
+                                                <span className="text-sm leading-tight font-bold text-ink">
+                                                    {ingredient.name}
+                                                </span>
+                                                <span className="text-xs font-semibold text-ink/60">
+                                                    {formatMoney(
+                                                        ingredient.price,
+                                                    )}
+                                                </span>
+                                            </label>
+                                            {checked ? (
+                                                <span className="pointer-events-none absolute top-3 right-3 flex size-6 items-center justify-center rounded-full bg-basil-600 text-white">
+                                                    <Check
+                                                        className="size-4"
+                                                        aria-hidden
+                                                    />
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        </div>
-                        <div className="row section">
-                            <button
-                                type="submit"
-                                className="btn btn-lg btn-success"
-                                disabled={saving}
+                        </fieldset>
+                        <p className="m-0 text-right text-lg text-ink/70">
+                            Preço total:{" "}
+                            <strong
+                                data-slot="price"
+                                className="text-3xl text-ink"
                             >
-                                {selectedId ? "Salvar 💿" : "Adicionar ✅"}
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-lg btn-danger"
-                                onClick={handleDeleteOrCancel}
-                                disabled={deleting}
-                            >
-                                {selectedId ? "Deletar 🗑️" : "Cancelar ❌"}
-                            </button>
-                        </div>
+                                {formatMoney(price)}
+                            </strong>
+                        </p>
+                        <FormActions
+                            editing={Boolean(selectedId)}
+                            saving={saving}
+                            deleting={deleting}
+                            onDeleteOrCancel={() => void handleDeleteOrCancel()}
+                        />
                     </form>
-                </div>
-            </div>
-        </div>
+                </Panel>
+            </main>
+        </AdminPage>
     );
 };
