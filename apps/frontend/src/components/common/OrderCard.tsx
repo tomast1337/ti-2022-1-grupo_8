@@ -1,5 +1,15 @@
 import type { Order } from "@pizzaria/dtos";
-import { formatDateTime, ORDER_STATUS_LABEL } from "../../lib/format";
+import { ArrowRight, CircleCheck, Mail, MapPin } from "lucide-react";
+import { formatDateTime, formatMoney } from "../../lib/format";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/Button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../ui/card";
 
 interface OrderCardProps {
     order: Order;
@@ -8,43 +18,74 @@ interface OrderCardProps {
     advancing?: boolean;
 }
 
-export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => (
-    <div className="card" style={{ width: "18rem", lineHeight: "1" }}>
-        <div className="card-header text-center">
-            <h5 className="card-title" style={{ fontSize: "1.15rem" }}>
-                Pedido #{order.id.slice(0, 8)}
-            </h5>
-            <p style={{ marginBottom: 0 }}>{formatDateTime(order.createdAt)}</p>
-        </div>
-        <div className="card-body">
-            <p className="card-text">
-                <strong>E-mail:</strong> {order.userEmail}
-            </p>
-            <p className="card-text">
-                <strong>Endereço:</strong> {order.address}
-            </p>
-        </div>
-        <ul className="list-group list-group-flush">
-            {order.items.map((item) => (
-                <li key={item.id} className="list-group-item">
-                    <strong>{item.quantity}x </strong>
-                    {item.name}
-                </li>
-            ))}
-        </ul>
-        <div className="card-footer">
-            {onAdvance && order.status !== "completed" ? (
-                <button
-                    type="button"
-                    className="btn btn-primary float-end"
-                    onClick={onAdvance}
-                    disabled={advancing}
-                >
-                    {"Avançar >"}
-                </button>
-            ) : (
-                ORDER_STATUS_LABEL[order.status]
-            )}
-        </div>
-    </div>
-);
+/** Order as the kitchen sees it: who, where and what to prepare. */
+export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => {
+    const total = order.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+    );
+
+    return (
+        <Card data-slot="order">
+            <CardHeader>
+                <CardTitle className="whitespace-nowrap">
+                    Pedido #{order.id.slice(0, 8)}
+                </CardTitle>
+                <p className="m-0 text-sm font-semibold text-ink/60">
+                    {formatDateTime(order.createdAt)}
+                </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                <div className="space-y-1 text-base text-ink">
+                    <p className="m-0 flex items-start gap-2">
+                        <Mail
+                            className="mt-0.5 size-4 shrink-0 text-ink/50"
+                            aria-hidden
+                        />
+                        <span className="min-w-0 break-words">
+                            {order.userEmail}
+                        </span>
+                    </p>
+                    <p className="m-0 flex items-start gap-2">
+                        <MapPin
+                            className="mt-0.5 size-4 shrink-0 text-ink/50"
+                            aria-hidden
+                        />
+                        <span className="min-w-0 break-words">
+                            {order.address}
+                        </span>
+                    </p>
+                </div>
+                <ul className="m-0 list-none divide-y divide-ink/10 border-t border-ink/10 p-0">
+                    {order.items.map((item) => (
+                        <li key={item.id} className="py-2 text-base text-ink">
+                            <strong>{item.quantity}x</strong> {item.name}
+                            {item.type === "custom_pizza" &&
+                            item.description ? (
+                                <span className="block text-sm text-ink/60">
+                                    {item.description}
+                                </span>
+                            ) : null}
+                        </li>
+                    ))}
+                </ul>
+            </CardContent>
+            <CardFooter className="border-t border-ink/10 pt-4">
+                <span className="text-base text-ink">
+                    Total: <strong>{formatMoney(total)}</strong>
+                </span>
+                {onAdvance && order.status !== "completed" ? (
+                    <Button size="sm" onClick={onAdvance} disabled={advancing}>
+                        Avançar
+                        <ArrowRight className="size-4" aria-hidden />
+                    </Button>
+                ) : (
+                    <Badge tone="success">
+                        <CircleCheck className="size-4" aria-hidden />
+                        Concluído
+                    </Badge>
+                )}
+            </CardFooter>
+        </Card>
+    );
+};
