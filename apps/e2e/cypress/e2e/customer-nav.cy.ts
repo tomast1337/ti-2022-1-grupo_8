@@ -39,7 +39,7 @@ describe("customer navigation", () => {
             cy.contains("nav a", "Carrinho")
                 .find("[aria-label]")
                 .should("not.exist");
-            cy.contains("[data-slot=card]", "Coca Cola 2L")
+            cy.contains("[data-slot=card]", "Refrigerante Cola 2L")
                 .contains("button", "Adicionar ao carrinho")
                 .click();
             cy.contains("nav a", "Carrinho")
