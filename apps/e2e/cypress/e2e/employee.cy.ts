@@ -96,6 +96,7 @@ describe("employee order queue", () => {
             cy.contains("3x");
             cy.contains("customer@pizzaria.local");
         });
+        cy.snap("employee-queue-counts");
     });
 
     it("moves an order one step at a time and updates the counts", () => {
@@ -144,6 +145,7 @@ describe("employee order queue", () => {
         cy.viewport(390, 844);
         cy.visitAs("employee", "/employee/orders");
         cy.contains("[data-slot=column]", "Pendentes").should("be.visible");
+        cy.snap("employee-queue-mobile");
         cy.contains("[data-slot=column]", "Prontos")
             .scrollIntoView()
             .should("be.visible");

@@ -15,6 +15,7 @@ describe("authentication", () => {
     it("rejects a wrong password", () => {
         cy.loginViaUi("customer@pizzaria.local", "wrong-password");
         cy.get("[role=alert]").should("contain", "Invalid email or password");
+        cy.snap("login-wrong-password");
         cy.location("pathname").should("eq", "/login");
     });
 
@@ -43,6 +44,7 @@ describe("authentication", () => {
         it(`logs in as ${role} and lands on ${home}`, () => {
             cy.loginViaUi(email, Cypress.expose("seedPassword") as string);
             cy.location("pathname").should("eq", home);
+            cy.snap(`home-${role}`);
         });
     }
 
@@ -52,6 +54,7 @@ describe("authentication", () => {
         cy.get('input[name="email"]').type("maria@example.com");
         cy.get('input[name="password"]').type("secret123");
         cy.get('input[name="confirmPassword"]').type("secret123");
+        cy.snap("register-form");
         cy.contains("button", "Cadastrar").click();
         cy.location("pathname").should("eq", "/login");
 

@@ -34,6 +34,7 @@ describe("admin: catalog and users", () => {
             cy.visitAs("admin", "/admin");
             cy.contains("nav a", "Pizzas").should("not.be.visible");
             cy.get('button[aria-label="Abrir menu"]').click();
+            cy.snap("admin-mobile-menu");
             cy.contains("nav a", "Pizzas").click();
             cy.location("pathname").should("eq", "/admin/pizzas");
         });
@@ -49,6 +50,7 @@ describe("admin: catalog and users", () => {
             cy.contains("button", "Adicionar").click();
 
             cy.contains("[data-slot=card]", "Suco de Teste 1L");
+            cy.snap("admin-product-created");
         });
 
         it("shows the new product to customers", () => {
@@ -109,6 +111,7 @@ describe("admin: catalog and users", () => {
             cy.get("[data-slot=price]").should("contain", "20,00");
             cy.contains("[data-slot=ingredient]", "Rúcula").click();
             cy.get("[data-slot=price]").should("contain", "21,20");
+            cy.snap("admin-pizza-form");
             cy.contains("[data-slot=ingredient]", "Rúcula").click();
             cy.get("[data-slot=price]").should("contain", "20,00");
         });
@@ -132,6 +135,7 @@ describe("admin: catalog and users", () => {
                 .click();
             cy.contains("label", "Funcionário").click();
             cy.get("#role-employee").should("be.checked");
+            cy.snap("admin-user-role");
             cy.contains("button", "Confirmar").click();
 
             // back to the list, which shows the new role
@@ -167,6 +171,7 @@ describe("admin: catalog and users", () => {
             cy.get("#from").type("2020-01-01");
             cy.get("#to").type("2020-01-31");
             cy.contains("Pizzas Mais Compradas");
+            cy.snap("admin-report-filtered");
         });
     });
 });
