@@ -1,8 +1,21 @@
 import type { Ingredient, PizzaSize } from "@pizzaria/dtos";
+import {
+    ArrowLeft,
+    Minus,
+    Pizza,
+    Plus,
+    ShoppingCart,
+    Wand2,
+} from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CustomerNav } from "../../components/customer/CustomerNav";
+import { CustomerPage } from "../../components/customer/CustomerPage";
+import { Alert } from "../../components/ui/Alert";
+import { Button, buttonClass } from "../../components/ui/Button";
+import { cn } from "../../components/ui/cn";
+import { Panel } from "../../components/ui/Panel";
 import {
     HalfPizza,
     MAX_INGREDIENTS_PER_HALF,
@@ -17,7 +30,6 @@ import {
 } from "../../features/pizzaBuilder/pizzaBuilderSlice";
 import { formatMoney, PIZZA_SIZE_LABEL } from "../../lib/format";
 import { errorMessage, useGetIngredientsQuery } from "../../services/api";
-import styles from "./BuildPizzaPage.module.scss";
 
 const MAX_HALVES = 4;
 
@@ -28,11 +40,11 @@ const SIZE_BASE_PRICE: Record<PizzaSize, number> = {
     family: 25,
 };
 
-const SIZE_OPTIONS: { value: PizzaSize; label: string }[] = [
-    { value: "small", label: "Pequena 🤏 15cm" },
-    { value: "medium", label: "Media 🫄🏻 20cm" },
-    { value: "large", label: "Grande 📏 25cm" },
-    { value: "family", label: "Família 😱 40cm" },
+const SIZE_OPTIONS: { value: PizzaSize; diameter: string; icon: string }[] = [
+    { value: "small", diameter: "15cm", icon: "size-7" },
+    { value: "medium", diameter: "20cm", icon: "size-9" },
+    { value: "large", diameter: "25cm", icon: "size-11" },
+    { value: "family", diameter: "40cm", icon: "size-14" },
 ];
 
 const SAUCE_NAME = "Molho";
@@ -140,164 +152,167 @@ export const BuildPizzaPage = () => {
     };
 
     return (
-        <div className={styles.body}>
+        <CustomerPage>
             <CustomerNav current="build-pizza" />
-            <form onSubmit={(e) => e.preventDefault()}>
-                <div className="container">
-                    <div className="row">
-                        <h1 className="text-center">Monte sua pizza 🍕</h1>
-                    </div>
-                    <div className="row">
-                        <h5
-                            className="text-center"
-                            id="error-message"
-                            style={{ color: "red" }}
-                        >
-                            {showSizeError ? sizeError : ""}
-                            {error ? errorMessage(error) : ""}
-                        </h5>
-                    </div>
-                    <div className="row section">
-                        <p>
-                            <b>Tamanho</b>
-                        </p>
-                        <div>
-                            <div className="form-check form-switch">
-                                <div
-                                    className="tamanho p-2"
-                                    style={{
-                                        width: "50%",
-                                        fontSize: "1.25rem",
-                                    }}
-                                >
-                                    {SIZE_OPTIONS.map((option) => (
-                                        <div
-                                            className="col mb-1"
-                                            key={option.value}
-                                        >
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id={`size-${option.value}`}
-                                                name="size"
-                                                value={option.value}
-                                                checked={size === option.value}
-                                                onChange={() =>
-                                                    handleSizeChange(
-                                                        option.value,
-                                                    )
-                                                }
-                                            />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor={`size-${option.value}`}
-                                            >
-                                                {option.label}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row" style={{ textAlign: "center" }}>
-                        <h3 id="ingredients">Ingredientes</h3>
-                        <h4
-                            style={{
-                                color: "white",
-                                textShadow: "1px 1px 4px black",
-                            }}
-                        >
-                            Escolha até {MAX_INGREDIENTS_PER_HALF} em cada
-                            metade
-                        </h4>
-                    </div>
-                    {isLoading ? (
-                        <p className="text-center">Carregando...</p>
-                    ) : null}
-                    {halves.map((selectedIds, index) => (
-                        <HalfPizza
-                            key={index}
-                            index={index}
-                            ingredients={ingredients}
-                            selectedIds={selectedIds}
-                            onChange={(ingredientIds) =>
-                                dispatch(
-                                    halfIngredientsChanged({
-                                        index,
-                                        ingredientIds,
-                                    }),
-                                )
-                            }
-                        />
-                    ))}
+            <main className="mx-auto w-full max-w-7xl space-y-6 px-4 pt-6 pb-44">
+                <h1 className="flex items-center justify-center gap-3 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
+                    <Wand2 className="size-9" aria-hidden />
+                    Monte sua pizza
+                </h1>
 
-                    <div className="row section">
-                        <div className="col-sm-12" style={{ display: "flex" }}>
-                            {halves.length > 1 && (
-                                <button
-                                    type="button"
-                                    style={{ width: "100%" }}
-                                    className="btn btn-danger"
-                                    onClick={handleRemoveHalf}
-                                >
-                                    Remover Metade
-                                </button>
-                            )}
-                            {halves.length < MAX_HALVES && (
-                                <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    style={{ width: "100%" }}
-                                    onClick={handleAddHalf}
-                                >
-                                    Adicionar Metade
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                <div id="error-message" role="alert" aria-live="polite">
+                    {showSizeError || error ? (
+                        <Alert>
+                            {showSizeError ? sizeError : errorMessage(error)}
+                        </Alert>
+                    ) : null}
                 </div>
-                <hr />
-                <div
-                    className="row"
-                    style={{
-                        textAlign: "right",
-                        marginBottom: "20px",
-                        marginRight: "10%",
-                    }}
-                >
-                    <div className="col-md-12">
-                        <h3>Preço total:</h3>
-                        <h3>
+
+                <Panel className="p-5">
+                    <fieldset className="m-0 border-0 p-0">
+                        <legend className="mb-3 text-xl font-extrabold text-ink">
+                            1. Escolha o tamanho
+                        </legend>
+                        <div
+                            id="size-options"
+                            className="grid grid-cols-2 gap-3 md:grid-cols-4"
+                        >
+                            {SIZE_OPTIONS.map((option) => {
+                                const selected = size === option.value;
+                                return (
+                                    <div key={option.value}>
+                                        <input
+                                            id={`size-${option.value}`}
+                                            type="radio"
+                                            name="size"
+                                            value={option.value}
+                                            className="peer sr-only"
+                                            checked={selected}
+                                            onChange={() =>
+                                                handleSizeChange(option.value)
+                                            }
+                                        />
+                                        <label
+                                            htmlFor={`size-${option.value}`}
+                                            className={cn(
+                                                "flex h-full cursor-pointer flex-col items-center justify-end gap-1 rounded-2xl border-2 bg-white px-3 py-4 text-center shadow-sm transition",
+                                                "hover:-translate-y-0.5 hover:shadow-md",
+                                                "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-tomato-600",
+                                                selected
+                                                    ? "border-tomato-600 bg-tomato-50 shadow-md"
+                                                    : "border-transparent",
+                                            )}
+                                        >
+                                            <span className="flex h-16 items-end">
+                                                <Pizza
+                                                    className={cn(
+                                                        option.icon,
+                                                        selected
+                                                            ? "text-tomato-600"
+                                                            : "text-cheese-600",
+                                                    )}
+                                                    aria-hidden
+                                                />
+                                            </span>
+                                            <span className="text-lg font-extrabold text-ink">
+                                                {PIZZA_SIZE_LABEL[option.value]}
+                                            </span>
+                                            <span className="text-sm font-semibold text-ink/60">
+                                                {option.diameter}
+                                            </span>
+                                            <span className="text-base font-bold text-ink">
+                                                {formatMoney(
+                                                    SIZE_BASE_PRICE[
+                                                        option.value
+                                                    ],
+                                                )}
+                                            </span>
+                                        </label>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </fieldset>
+                </Panel>
+
+                <div id="ingredients" className="text-center">
+                    <h2 className="text-3xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
+                        2. Ingredientes
+                    </h2>
+                    <p className="mt-1 text-lg font-semibold text-white [text-shadow:1px_1px_4px_black]">
+                        Escolha até {MAX_INGREDIENTS_PER_HALF} em cada metade
+                    </p>
+                </div>
+
+                {isLoading ? (
+                    <p className="text-center text-lg font-semibold">
+                        Carregando...
+                    </p>
+                ) : null}
+
+                {halves.map((selectedIds, index) => (
+                    <HalfPizza
+                        key={index}
+                        index={index}
+                        ingredients={ingredients}
+                        selectedIds={selectedIds}
+                        onChange={(ingredientIds) =>
+                            dispatch(
+                                halfIngredientsChanged({
+                                    index,
+                                    ingredientIds,
+                                }),
+                            )
+                        }
+                    />
+                ))}
+
+                <div className="flex flex-wrap justify-center gap-3">
+                    {halves.length > 1 && (
+                        <Button variant="danger" onClick={handleRemoveHalf}>
+                            <Minus className="size-5" aria-hidden />
+                            Remover Metade
+                        </Button>
+                    )}
+                    {halves.length < MAX_HALVES && (
+                        <Button variant="ghost" onClick={handleAddHalf}>
+                            <Plus className="size-5" aria-hidden />
+                            Adicionar Metade
+                        </Button>
+                    )}
+                </div>
+            </main>
+
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white/95 shadow-[0_-8px_30px_rgb(35_24_21/0.18)] backdrop-blur-md">
+                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+                    <div>
+                        <p className="m-0 text-sm font-bold tracking-wide text-ink/60 uppercase">
+                            Preço total
+                        </p>
+                        <p
+                            data-slot="price"
+                            className="m-0 text-2xl leading-tight font-extrabold text-ink"
+                        >
                             {size === null
                                 ? "Tamanho não selecionado"
                                 : formatMoney(price)}
-                        </h3>
+                        </p>
+                    </div>
+                    <div className="flex gap-3">
+                        <Link
+                            to="/customer/menu"
+                            className={buttonClass({ variant: "ghost" })}
+                        >
+                            <ArrowLeft className="size-5" aria-hidden />
+                            Cancelar
+                        </Link>
+                        <Button onClick={handleAddToCart}>
+                            <ShoppingCart className="size-5" aria-hidden />
+                            Adicionar ao carrinho
+                        </Button>
                     </div>
                 </div>
-            </form>
-            <div
-                className="row section"
-                style={{
-                    textAlign: "center",
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                    width: "80%",
-                    marginBottom: "1rem",
-                }}
-            >
-                <button
-                    type="button"
-                    className="btn btn-primary mb-3"
-                    onClick={handleAddToCart}
-                >
-                    Adicionar ao carrinho
-                </button>
-
-                <Link to="/customer/menu" className="btn btn-danger">
-                    Cancelar
-                </Link>
             </div>
-        </div>
+        </CustomerPage>
     );
 };

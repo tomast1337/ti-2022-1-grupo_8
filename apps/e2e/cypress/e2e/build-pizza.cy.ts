@@ -30,10 +30,11 @@ const expectedPrice = (size: PizzaSize, names: string[]): number =>
 /** pt-BR money digits, e.g. 21.98 -> "21,98" (the currency symbol uses a non-breaking space). */
 const brl = (value: number): string => value.toFixed(2).replace(".", ",");
 
-const half = (n: number) => cy.contains(".row.section", `Metade ${n}`);
+const half = (n: number) => cy.contains("[data-slot=half]", `Metade ${n}`);
 const toggle = (n: number, name: string) =>
     half(n).contains("label", name).click();
-const chooseSize = (size: PizzaSize) => cy.get(`#size-${size}`).check();
+const chooseSize = (size: PizzaSize) =>
+    cy.get(`label[for=size-${size}]`).click();
 
 const apiLogin = (role: keyof typeof accounts) =>
     cy
@@ -72,21 +73,36 @@ describe("build your own pizza", () => {
 
     it("updates the price live with size and ingredients", () => {
         chooseSize("large");
-        cy.contains("h3", brl(expectedPrice("large", [])));
+        cy.get("[data-slot=price]").should(
+            "contain",
+            brl(expectedPrice("large", [])),
+        );
 
         toggle(1, "Queijo");
-        cy.contains("h3", brl(expectedPrice("large", ["Queijo"])));
+        cy.get("[data-slot=price]").should(
+            "contain",
+            brl(expectedPrice("large", ["Queijo"])),
+        );
 
         toggle(1, "Molho");
-        cy.contains("h3", brl(expectedPrice("large", ["Queijo", "Molho"])));
+        cy.get("[data-slot=price]").should(
+            "contain",
+            brl(expectedPrice("large", ["Queijo", "Molho"])),
+        );
 
         // another size keeps the chosen ingredients
         chooseSize("family");
-        cy.contains("h3", brl(expectedPrice("family", ["Queijo", "Molho"])));
+        cy.get("[data-slot=price]").should(
+            "contain",
+            brl(expectedPrice("family", ["Queijo", "Molho"])),
+        );
 
         // unchecking removes the ingredient's price again
         toggle(1, "Queijo");
-        cy.contains("h3", brl(expectedPrice("family", ["Molho"])));
+        cy.get("[data-slot=price]").should(
+            "contain",
+            brl(expectedPrice("family", ["Molho"])),
+        );
     });
 
     it("accepts at most 7 ingredients per half", () => {
@@ -103,8 +119,13 @@ describe("build your own pizza", () => {
         for (const name of eight) toggle(1, name);
 
         half(1).find('input[type="checkbox"]:checked').should("have.length", 7);
+        half(1).should("contain", "7/7 ingredientes");
         half(1)
-            .contains(".ingredient", "Presunto")
+            .contains("[data-slot=ingredient]", "Presunto")
+            .find("input")
+            .should("be.disabled");
+        half(1)
+            .contains("[data-slot=ingredient]", "Presunto")
             .find("input")
             .should("not.be.checked");
     });
@@ -129,19 +150,19 @@ describe("build your own pizza", () => {
         toggle(2, "Bacon");
 
         half(1)
-            .contains(".ingredient", "Queijo")
+            .contains("[data-slot=ingredient]", "Queijo")
             .find("input")
             .should("be.checked");
         half(1)
-            .contains(".ingredient", "Bacon")
+            .contains("[data-slot=ingredient]", "Bacon")
             .find("input")
             .should("not.be.checked");
         half(2)
-            .contains(".ingredient", "Bacon")
+            .contains("[data-slot=ingredient]", "Bacon")
             .find("input")
             .should("be.checked");
         half(2)
-            .contains(".ingredient", "Queijo")
+            .contains("[data-slot=ingredient]", "Queijo")
             .find("input")
             .should("not.be.checked");
     });
@@ -155,7 +176,7 @@ describe("build your own pizza", () => {
         cy.contains("button", "Adicionar Metade").click();
         for (const name of half1) toggle(1, name);
         for (const name of half2) toggle(2, name);
-        cy.contains("h3", brl(total));
+        cy.get("[data-slot=price]").should("contain", brl(total));
         cy.contains("button", "Adicionar ao carrinho").click();
 
         // cart

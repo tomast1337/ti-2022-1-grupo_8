@@ -2,6 +2,7 @@ import { Flame, GlassWater, Pizza, Wand2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { CustomerNav } from "../../components/customer/CustomerNav";
+import { CustomerPage } from "../../components/customer/CustomerPage";
 import { ProductCard } from "../../components/customer/ProductCard";
 import { buttonClass } from "../../components/ui/Button";
 import {
@@ -17,7 +18,6 @@ import {
     useGetPizzasQuery,
     useGetProductsQuery,
 } from "../../services/api";
-import styles from "./MenuPage.module.scss";
 
 const SectionTitle = ({
     icon,
@@ -77,7 +77,7 @@ export const MenuPage = () => {
     const products = useGetProductsQuery();
 
     return (
-        <div className={styles.body}>
+        <CustomerPage>
             <CustomerNav current="menu" />
             <main className="mx-auto w-full max-w-7xl px-4 pb-16">
                 {pizzas.isLoading || products.isLoading ? (
@@ -128,6 +128,6 @@ export const MenuPage = () => {
                     ))}
                 </Grid>
             </main>
-        </div>
+        </CustomerPage>
     );
 };
