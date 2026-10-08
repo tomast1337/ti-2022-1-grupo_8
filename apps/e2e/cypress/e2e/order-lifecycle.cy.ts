@@ -24,8 +24,8 @@ describe("order lifecycle", () => {
         cy.contains("Produto no carrinho!");
 
         cy.visit("/customer/cart");
-        cy.contains("td", "Pizza de Mussarela");
-        cy.contains("td", "Refrigerante Cola 2L");
+        cy.contains("[data-slot=cart-item]", "Pizza de Mussarela");
+        cy.contains("[data-slot=cart-item]", "Refrigerante Cola 2L");
         // pizza 21.12 + drink 8.00 (seed prices)
         cy.contains("29,12");
 
@@ -36,7 +36,7 @@ describe("order lifecycle", () => {
 
         cy.location("pathname").should("eq", "/customer/orders");
         cy.contains("Meus Pedidos");
-        cy.contains(".badge", "Pendente");
+        cy.contains("[data-slot=badge]", "Pendente");
         cy.contains("Pizza de Mussarela");
 
         // the cart was emptied
@@ -72,7 +72,7 @@ describe("order lifecycle", () => {
 
     it("customer sees the order as ready", () => {
         cy.visitAs("customer", "/customer/orders");
-        cy.contains(".badge", "Pronto");
+        cy.contains("[data-slot=badge]", "Pronto");
     });
 
     it("admin report counts the sold items", () => {

@@ -1,12 +1,13 @@
 import type { ComponentProps } from "react";
 import { cn } from "./cn";
 
-type Tone = "default" | "success" | "warning";
+type Tone = "default" | "success" | "warning" | "danger";
 
 const TONE: Record<Tone, string> = {
     default: "bg-ink/10 text-ink",
     success: "bg-basil-600/15 text-basil-700",
     warning: "bg-cheese-500/25 text-ink",
+    danger: "bg-tomato-600/15 text-tomato-700",
 };
 
 export const Badge = ({
