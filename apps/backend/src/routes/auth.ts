@@ -7,6 +7,8 @@ import { parse } from "../lib/validate.js";
 import type { Repositories } from "../repositories/index.js";
 
 const SALT_ROUNDS = 10;
+// compared against when the email is unknown, so a miss costs as much as a hit
+const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", SALT_ROUNDS);
 
 export const authRoutes = (repos: Repositories) => {
     const router = Router();
@@ -14,10 +16,11 @@ export const authRoutes = (repos: Repositories) => {
     router.post("/login", async (req, res) => {
         const { email, password } = parse(loginInputSchema, req.body);
         const credentials = await repos.users.findCredentialsByEmail(email);
-        // same message for both failures so emails cannot be enumerated
-        const valid =
-            credentials &&
-            (await bcrypt.compare(password, credentials.passwordHash));
+        // same message and same work for both failures so emails cannot be enumerated
+        const valid = await bcrypt.compare(
+            password,
+            credentials?.passwordHash ?? DUMMY_HASH,
+        );
         if (!credentials || !valid)
             throw new HttpError(401, "Invalid email or password");
 

@@ -15,7 +15,8 @@ export type User = z.infer<typeof userSchema>;
 export const registerInputSchema = z.object({
     name: z.string().min(1),
     email: emailSchema,
-    password: z.string().min(6),
+    // bcrypt only reads the first 72 bytes, so longer passwords are refused
+    password: z.string().min(8).max(72),
 });
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 

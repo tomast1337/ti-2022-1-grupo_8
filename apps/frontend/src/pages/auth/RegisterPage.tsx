@@ -16,7 +16,7 @@ const validationMessage = (field: PropertyKey | undefined): string => {
         case "email":
             return "E-mail inválido";
         case "password":
-            return "Senha deve ter no mínimo 6 caracteres";
+            return "Senha deve ter entre 8 e 72 caracteres";
         default:
             return "Dados inválidos";
     }

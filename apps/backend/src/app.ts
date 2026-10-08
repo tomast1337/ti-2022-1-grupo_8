@@ -1,10 +1,15 @@
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
 import { config } from "./config.js";
 import type { Db } from "./db/index.js";
 import { uploadsDir } from "./lib/storage.js";
-import { authenticate, requireRole } from "./middleware/auth.js";
+import {
+    authenticate as authenticateWith,
+    requireRole,
+} from "./middleware/auth.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
+import { authRateLimit } from "./middleware/rate-limit.js";
 import { createRepositories } from "./repositories/index.js";
 import { adminRoutes } from "./routes/admin.js";
 import { authRoutes } from "./routes/auth.js";
@@ -18,6 +23,8 @@ export const createApp = (db: Db) => {
     const repos = createRepositories(db);
     const app = express();
 
+    // images are loaded from the frontend origin, so they must stay cross-origin
+    app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
     app.use(cors({ origin: config.CORS_ORIGIN.split(",") }));
     app.use(express.json());
 
@@ -27,7 +34,15 @@ export const createApp = (db: Db) => {
 
     app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
-    app.use("/auth", authRoutes(repos));
+    app.use(
+        "/auth",
+        authRateLimit(
+            config.AUTH_RATE_LIMIT_MAX,
+            config.AUTH_RATE_LIMIT_WINDOW_MINUTES,
+        ),
+        authRoutes(repos),
+    );
+    const authenticate = authenticateWith(repos.users);
     app.use("/catalog", authenticate, catalogRoutes(repos));
     app.use(
         "/customer",

@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import type { Role, TokenPayload } from "@pizzaria/dtos";
+import type { Role, TokenPayload, User } from "@pizzaria/dtos";
 import { HttpError } from "../lib/errors.js";
 import { verifyToken } from "../lib/auth.js";
 
@@ -14,19 +14,33 @@ declare global {
 const extractToken = (header: string | undefined): string | undefined =>
     header?.replace(/^Bearer\s+/i, "") || undefined;
 
-/** Requires a valid JWT in `Authorization: Bearer <token>`. */
-export const authenticate: RequestHandler = (req, _res, next) => {
-    const token =
-        extractToken(req.header("authorization")) ??
-        extractToken(req.header("x-access-token"));
-    if (!token) throw new HttpError(401, "No token provided");
-    try {
-        req.user = verifyToken(token);
-    } catch {
-        throw new HttpError(401, "Invalid or expired token");
-    }
-    next();
-};
+interface UserLookup {
+    findById(id: string): Promise<User | undefined>;
+}
+
+/**
+ * Requires a valid JWT in `Authorization: Bearer <token>`.
+ *
+ * The token only proves who the user is. Email and role are read from the
+ * database on every request, so a deleted user is locked out and a role change
+ * applies immediately instead of when the token expires.
+ */
+export const authenticate =
+    (users: UserLookup): RequestHandler =>
+    async (req, _res, next) => {
+        const token = extractToken(req.header("authorization"));
+        if (!token) throw new HttpError(401, "No token provided");
+        let claims: TokenPayload;
+        try {
+            claims = verifyToken(token);
+        } catch {
+            throw new HttpError(401, "Invalid or expired token");
+        }
+        const user = await users.findById(claims.id);
+        if (!user) throw new HttpError(401, "Invalid or expired token");
+        req.user = { id: user.id, email: user.email, role: user.role };
+        next();
+    };
 
 /** Must run after `authenticate`. */
 export const requireRole =

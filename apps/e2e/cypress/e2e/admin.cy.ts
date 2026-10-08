@@ -1,3 +1,7 @@
+import type { LoginResponse } from "@pizzaria/dtos";
+
+const apiUrl = Cypress.expose("apiUrl") as string;
+
 describe("admin: catalog and users", () => {
     before(() => cy.resetDb());
     // cy.viewport persists across tests, so every test starts desktop-sized
@@ -144,6 +148,56 @@ describe("admin: catalog and users", () => {
                 "contain",
                 "Funcionário",
             );
+        });
+
+        it("applies a role change to tokens issued before it", () => {
+            // the customer was promoted above, but this token still says "customer"
+            cy.request<LoginResponse>("POST", `${apiUrl}/auth/login`, {
+                email: "employee@pizzaria.local",
+                password: Cypress.expose("seedPassword"),
+            }).then(({ body: employee }) => {
+                cy.request<LoginResponse>("POST", `${apiUrl}/auth/login`, {
+                    email: "admin@pizzaria.local",
+                    password: Cypress.expose("seedPassword"),
+                }).then(({ body: admin }) => {
+                    const adminAuth = {
+                        authorization: `Bearer ${admin.token}`,
+                    };
+                    // demote the employee: their existing token must lose access at once
+                    cy.request({
+                        url: `${apiUrl}/employee/orders`,
+                        headers: { authorization: `Bearer ${employee.token}` },
+                    })
+                        .its("status")
+                        .should("eq", 200);
+                    cy.request({
+                        method: "PATCH",
+                        url: `${apiUrl}/admin/users/${employee.user.id}/role`,
+                        headers: adminAuth,
+                        body: { role: "customer" },
+                    });
+                    cy.request({
+                        url: `${apiUrl}/employee/orders`,
+                        headers: { authorization: `Bearer ${employee.token}` },
+                        failOnStatusCode: false,
+                    })
+                        .its("status")
+                        .should("eq", 403);
+                    // and a deleted user's token stops working altogether
+                    cy.request({
+                        method: "DELETE",
+                        url: `${apiUrl}/admin/users/${employee.user.id}`,
+                        headers: adminAuth,
+                    });
+                    cy.request({
+                        url: `${apiUrl}/catalog/products`,
+                        headers: { authorization: `Bearer ${employee.token}` },
+                        failOnStatusCode: false,
+                    })
+                        .its("status")
+                        .should("eq", 401);
+                });
+            });
         });
 
         it("the promoted user now lands on the employee area", () => {
