@@ -46,7 +46,7 @@ describe("order lifecycle", () => {
 
     it("employee sees the order and moves it to in progress", () => {
         cy.visitAs("employee", "/employee/orders");
-        cy.contains(".col-md-4", "Pendentes").within(() => {
+        cy.contains("[data-slot=column]", "Pendentes").within(() => {
             cy.contains("customer@pizzaria.local");
             cy.contains("Rua das Pizzas, 42");
             cy.contains("Refrigerante Cola 2L");
@@ -57,14 +57,14 @@ describe("order lifecycle", () => {
     it("employee advances the order through the queue", () => {
         cy.visitAs("employee", "/employee/orders");
 
-        cy.contains(".col-md-4", "Pendentes").within(() => {
+        cy.contains("[data-slot=column]", "Pendentes").within(() => {
             cy.contains("button", "Avançar").click();
         });
-        cy.contains(".col-md-4", "Em andamento").within(() => {
+        cy.contains("[data-slot=column]", "Em andamento").within(() => {
             cy.contains("customer@pizzaria.local");
             cy.contains("button", "Avançar").click();
         });
-        cy.contains(".col-md-4", "Prontos").within(() => {
+        cy.contains("[data-slot=column]", "Prontos").within(() => {
             cy.contains("customer@pizzaria.local");
             cy.contains("button", "Avançar").should("not.exist");
         });
