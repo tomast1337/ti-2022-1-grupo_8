@@ -11,11 +11,11 @@ describe("order lifecycle", () => {
     it("customer fills the cart, keeps it across a reload and places the order", () => {
         cy.visitAs("customer", "/customer/menu");
 
-        cy.contains(".card", "Pizza de Mussarela").within(() => {
+        cy.contains("[data-slot=card]", "Pizza de Mussarela").within(() => {
             cy.contains("button", "Adicionar ao carrinho").click();
             cy.contains("Produto no carrinho!");
         });
-        cy.contains(".card", "Coca Cola 2L").within(() => {
+        cy.contains("[data-slot=card]", "Coca Cola 2L").within(() => {
             cy.contains("button", "Adicionar ao carrinho").click();
         });
 
