@@ -106,11 +106,13 @@ Specs live in `apps/e2e/cypress/e2e` and drive the real UI against a running sta
 docker compose up -d                 # or `npm run dev` with a local Postgres
 npm run e2e                          # headless
 npm run e2e:open                     # interactive runner
+npm run e2e:report                   # headless run + screenshot gallery
 ```
 
 - **They wipe the database.** Each spec starts with `db:reset` (re-seed), which needs `DATABASE_URL` (root `.env`) to reach the same Postgres as the API from the host. Never point it at data you care about.
 - If your ports differ from the defaults: `CYPRESS_BASE_URL=http://localhost:4527 CYPRESS_apiUrl=http://localhost:4518 npm run e2e`.
 - On a machine without a display use `xvfb-run -a npm run e2e`.
+- `npm run e2e:report` runs the suite in headless Chromium and writes `apps/e2e/cypress/report/index.html`: every test with its pass/fail state and the screenshots taken by `cy.snap("name")` (add one wherever a screen is worth seeing; failures get a screenshot automatically). `-- --spec <glob>` limits the run. The report is git-ignored.
 - Specs log in through the API (`cy.visitAs(role, path)`) except the auth spec, which uses the form.
 
 ## API overview

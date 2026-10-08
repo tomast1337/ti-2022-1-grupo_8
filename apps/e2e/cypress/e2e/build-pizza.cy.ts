@@ -65,6 +65,7 @@ describe("build your own pizza", () => {
         cy.contains("Tamanho não selecionado");
         cy.contains("button", "Adicionar ao carrinho").click();
         cy.contains("Selecione um tamanho");
+        cy.snap("builder-size-required");
         cy.location("pathname").should("eq", "/customer/build-pizza");
 
         chooseSize("small");
@@ -177,12 +178,16 @@ describe("build your own pizza", () => {
         for (const name of half1) toggle(1, name);
         for (const name of half2) toggle(2, name);
         cy.get("[data-slot=price]").should("contain", brl(total));
+        cy.snap("builder-size-and-halves");
+        cy.contains("[data-slot=half]", "Metade 2").scrollIntoView();
+        cy.snap("builder-ingredients");
         cy.contains("button", "Adicionar ao carrinho").click();
 
         // cart
         cy.location("pathname").should("eq", "/customer/cart");
         cy.contains("[data-slot=cart-item]", /Pizza Grande/);
         cy.contains(brl(total));
+        cy.snap("builder-pizza-in-cart");
 
         // checkout
         cy.get('input[placeholder="Endereço"]').type("Rua da Meia Pizza, 7");

@@ -10,11 +10,13 @@ describe("cart and orders pages", () => {
     it("shows the empty states", () => {
         cy.visitAs("customer", "/customer/cart");
         cy.contains("Carrinho vazio!");
+        cy.snap("cart-empty");
         cy.contains("a", "Voltar para o menu").click();
         cy.location("pathname").should("eq", "/customer/menu");
 
         cy.visit("/customer/orders");
         cy.contains("Poxa, nenhum pedido!");
+        cy.snap("orders-empty");
         cy.contains("a", "Ver o menu").should("be.visible");
     });
 
@@ -41,6 +43,7 @@ describe("cart and orders pages", () => {
             );
             // pizza 21.12 + 2 x 8.00
             cy.get("[data-slot=total]").should("contain", "37,12");
+            cy.snap("cart-quantities");
         });
 
         it("does not go below one unit", () => {

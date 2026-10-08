@@ -38,3 +38,4 @@ apps/backend/uploads
 apps/e2e/cypress/screenshots
 apps/e2e/cypress/videos
 apps/e2e/cypress/downloads
+apps/e2e/cypress/report

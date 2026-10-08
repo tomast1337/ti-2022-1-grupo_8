@@ -23,7 +23,8 @@
         "docker:reset": "docker compose down -v && docker compose up --build",
         "docker:seed": "docker compose exec backend npm run db:reset -w @pizzaria/backend",
         "e2e": "npm run e2e -w @pizzaria/e2e",
-        "e2e:open": "npm run e2e:open -w @pizzaria/e2e"
+        "e2e:open": "npm run e2e:open -w @pizzaria/e2e",
+        "e2e:report": "npm run e2e:report -w @pizzaria/e2e"
     },
     "devDependencies": {
         "prettier": "^3.6.0",

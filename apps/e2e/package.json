@@ -6,7 +6,8 @@
     "scripts": {
         "e2e": "cypress run",
         "e2e:open": "cypress open",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "e2e:report": "node scripts/report.mjs"
     },
     "devDependencies": {
         "@pizzaria/dtos": "*",

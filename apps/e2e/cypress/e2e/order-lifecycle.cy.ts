@@ -15,6 +15,7 @@ describe("order lifecycle", () => {
             cy.contains("button", "Adicionar ao carrinho").click();
             cy.contains("Produto no carrinho!");
         });
+        cy.snap("menu-item-in-cart");
         cy.contains("[data-slot=card]", "Refrigerante Cola 2L").within(() => {
             cy.contains("button", "Adicionar ao carrinho").click();
         });
@@ -28,6 +29,7 @@ describe("order lifecycle", () => {
         cy.contains("[data-slot=cart-item]", "Refrigerante Cola 2L");
         // pizza 21.12 + drink 8.00 (seed prices)
         cy.contains("29,12");
+        cy.snap("cart-with-items");
 
         // an address is required before checkout
         cy.contains("button", "Finalizar Compra").should("be.disabled");
@@ -38,6 +40,7 @@ describe("order lifecycle", () => {
         cy.contains("Meus Pedidos");
         cy.contains("[data-slot=badge]", "Pendente");
         cy.contains("Pizza de Mussarela");
+        cy.snap("order-placed");
 
         // the cart was emptied
         cy.visit("/customer/cart");
@@ -52,6 +55,7 @@ describe("order lifecycle", () => {
             cy.contains("Refrigerante Cola 2L");
             cy.contains("2x").should("not.exist");
         });
+        cy.snap("employee-new-order");
     });
 
     it("employee advances the order through the queue", () => {
@@ -68,16 +72,19 @@ describe("order lifecycle", () => {
             cy.contains("customer@pizzaria.local");
             cy.contains("button", "Avançar").should("not.exist");
         });
+        cy.snap("employee-order-done");
     });
 
     it("customer sees the order as ready", () => {
         cy.visitAs("customer", "/customer/orders");
         cy.contains("[data-slot=badge]", "Pronto");
+        cy.snap("customer-order-ready");
     });
 
     it("admin report counts the sold items", () => {
         cy.visitAs("admin", "/admin");
         cy.contains("tr", "Pizza de Mussarela").should("contain", "1");
         cy.contains("tr", "Refrigerante Cola 2L").should("contain", "1");
+        cy.snap("admin-report");
     });
 });
