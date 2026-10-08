@@ -1,6 +1,7 @@
 import type { Order } from "@pizzaria/dtos";
 import { ArrowRight, CircleCheck, Mail, MapPin } from "lucide-react";
 import { formatDateTime, formatMoney } from "../../lib/format";
+import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/Button";
 import {
@@ -79,11 +80,13 @@ export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => {
                         Avançar
                         <ArrowRight className="size-4" aria-hidden />
                     </Button>
-                ) : (
+                ) : order.status === "completed" ? (
                     <Badge tone="success">
                         <CircleCheck className="size-4" aria-hidden />
                         Concluído
                     </Badge>
+                ) : (
+                    <OrderStatusBadge status={order.status} />
                 )}
             </CardFooter>
         </Card>

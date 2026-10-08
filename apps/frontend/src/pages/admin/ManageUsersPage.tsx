@@ -1,7 +1,16 @@
 import { useState } from "react";
 import type { Role } from "@pizzaria/dtos";
+import { ArrowLeft, Check, Trash2, Users } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
+import { AdminPage } from "../../components/admin/AdminPage";
 import { OrderCard } from "../../components/common/OrderCard";
+import { Alert } from "../../components/ui/Alert";
+import { Button } from "../../components/ui/Button";
+import { Field } from "../../components/ui/Field";
+import { Input } from "../../components/ui/Input";
+import { PageTitle } from "../../components/ui/PageTitle";
+import { Panel } from "../../components/ui/Panel";
+import { cn } from "../../components/ui/cn";
 import {
     errorMessage,
     useDeleteUserMutation,
@@ -9,7 +18,6 @@ import {
     useGetUsersQuery,
     useSetUserRoleMutation,
 } from "../../services/api";
-import styles from "./ManageUsersPage.module.scss";
 
 const ROLE_LABEL: Record<Role, string> = {
     customer: "Usuário",
@@ -30,14 +38,20 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
     const [pickedRole, setPickedRole] = useState<Role | null>(null);
     const [actionError, setActionError] = useState("");
 
-    if (isLoading) return <p>Carregando...</p>;
+    if (isLoading) {
+        return (
+            <p className="text-center text-lg font-semibold text-white">
+                Carregando...
+            </p>
+        );
+    }
     if (error || !user) {
         return (
-            <div className="alert alert-danger" role="alert">
+            <Alert>
                 {error
                     ? errorMessage(error)
                     : "Usuário não encontrado. Tente novamente!"}
-            </div>
+            </Alert>
         );
     }
 
@@ -64,30 +78,32 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
     };
 
     return (
-        <>
-            {actionError && (
-                <div className="alert alert-danger" role="alert">
-                    {actionError}
-                </div>
-            )}
-            <div className="row section mt-2">
-                <h3>Nome:</h3>
-                <div>{user.name}</div>
-            </div>
-
-            <div className="row section mt-2">
-                <h3>Email:</h3>
-                <div>{user.email}</div>
-            </div>
-
-            <div className="row section mt-2">
-                <h3>Tipo:</h3>
-                <div style={{ fontSize: "1.3em" }}>
-                    <div className="form-check form-switch">
+        <div className="space-y-6">
+            {actionError && <Alert>{actionError}</Alert>}
+            <Panel className="space-y-5">
+                <dl className="m-0 grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <dt className="text-sm font-bold text-ink/60">Nome</dt>
+                        <dd className="m-0 text-xl font-extrabold text-ink">
+                            {user.name}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="text-sm font-bold text-ink/60">Email</dt>
+                        <dd className="m-0 text-xl font-extrabold break-all text-ink">
+                            {user.email}
+                        </dd>
+                    </div>
+                </dl>
+                <fieldset className="m-0 mt-5 min-w-0 border-0 p-0">
+                    <legend className="mb-2 p-0 text-base font-extrabold text-ink">
+                        Tipo
+                    </legend>
+                    <div className="grid gap-3 sm:grid-cols-3">
                         {ROLES.map((option) => (
                             <div key={option}>
                                 <input
-                                    className="form-check-input"
+                                    className="peer sr-only"
                                     type="radio"
                                     name="role"
                                     id={`role-${option}`}
@@ -96,50 +112,61 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
                                     onChange={() => setPickedRole(option)}
                                 />
                                 <label
-                                    className="form-check-label"
                                     htmlFor={`role-${option}`}
+                                    className={cn(
+                                        "flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-transparent bg-white px-4 py-3 text-lg font-bold text-ink shadow-sm transition",
+                                        "peer-focus-visible:outline-2 peer-focus-visible:outline-tomato-600",
+                                        role === option &&
+                                            "border-tomato-600 text-tomato-700",
+                                    )}
                                 >
+                                    {role === option ? (
+                                        <Check className="size-5" aria-hidden />
+                                    ) : null}
                                     {ROLE_LABEL[option]}
                                 </label>
                             </div>
                         ))}
-                        <div className="d-grid gap-2 col-2 mx-auto">
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                onClick={confirmRole}
-                                disabled={saving || role === user.role}
-                            >
-                                Confirmar
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-warning"
-                                onClick={onBack}
-                            >
-                                Voltar
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                onClick={remove}
-                                disabled={deleting}
-                            >
-                                Excluir
-                            </button>
-                        </div>
                     </div>
+                </fieldset>
+                <div className="mt-5 flex flex-wrap gap-3">
+                    <Button
+                        variant="secondary"
+                        onClick={() => void confirmRole()}
+                        disabled={saving || role === user.role}
+                    >
+                        <Check className="size-5" aria-hidden />
+                        Confirmar
+                    </Button>
+                    <Button variant="ghost" onClick={onBack}>
+                        <ArrowLeft className="size-5" aria-hidden />
+                        Voltar
+                    </Button>
+                    <Button
+                        className="ml-auto"
+                        onClick={() => void remove()}
+                        disabled={deleting}
+                    >
+                        <Trash2 className="size-5" aria-hidden />
+                        Excluir
+                    </Button>
                 </div>
-            </div>
-            <div className="row section mt-2">
-                <h3>Pedidos Registrados:</h3>
-            </div>
-            <div className="row section mt-2 mx-auto">
-                {user.orders.map((order) => (
-                    <OrderCard key={order.id} order={order} />
-                ))}
-            </div>
-        </>
+            </Panel>
+            <h2 className="m-0 text-center font-sans text-3xl font-extrabold tracking-normal text-white normal-case [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
+                Pedidos Registrados
+            </h2>
+            {user.orders.length === 0 ? (
+                <p className="text-center text-lg font-semibold text-white">
+                    Nenhum pedido ainda.
+                </p>
+            ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {user.orders.map((order) => (
+                        <OrderCard key={order.id} order={order} />
+                    ))}
+                </div>
+            )}
+        </div>
     );
 };
 
@@ -157,9 +184,13 @@ export const ManageUsersPage = () => {
     );
 
     return (
-        <div className={styles.body}>
+        <AdminPage>
             <AdminNav current="users" />
-            <div className="container mb-2 p-1 bg-transparent">
+            <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
+                <PageTitle>
+                    <Users className="size-9" aria-hidden />
+                    Usuários
+                </PageTitle>
                 {selectedId ? (
                     <UserDetails
                         key={selectedId}
@@ -167,64 +198,68 @@ export const ManageUsersPage = () => {
                         onBack={() => setSelectedId(null)}
                     />
                 ) : (
-                    <div className="row section mt-2 mx-auto">
-                        <div
-                            className="form-group"
-                            style={{ fontSize: "1.5em" }}
-                        >
-                            <label htmlFor="search">Email</label>
-                            <input
+                    <Panel className="space-y-4">
+                        <Field label="Email" htmlFor="search">
+                            <Input
                                 type="search"
-                                className="form-control"
                                 id="search"
                                 placeholder="Email"
                                 autoComplete="off"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                        </div>
-                        {isLoading && <p className="mt-2">Carregando...</p>}
-                        {error && (
-                            <div
-                                className="alert alert-danger mt-2"
-                                role="alert"
-                            >
-                                {errorMessage(error)}
-                            </div>
-                        )}
-                        <table className="table table-hover mt-2">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Nome</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Tipo</th>
-                                    <th scope="col" />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filtered.map((user) => (
-                                    <tr key={user.id}>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>{ROLE_LABEL[user.role]}</td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                className="btn btn-primary"
-                                                onClick={() =>
-                                                    setSelectedId(user.id)
-                                                }
-                                            >
-                                                Selecionar
-                                            </button>
-                                        </td>
+                        </Field>
+                        {isLoading && <p>Carregando...</p>}
+                        {error && <Alert>{errorMessage(error)}</Alert>}
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-left text-base text-ink">
+                                <thead>
+                                    <tr className="border-b-2 border-ink/15">
+                                        <th scope="col" className="py-2 pr-4">
+                                            Nome
+                                        </th>
+                                        <th scope="col" className="px-4 py-2">
+                                            Email
+                                        </th>
+                                        <th scope="col" className="px-4 py-2">
+                                            Tipo
+                                        </th>
+                                        <th scope="col" />
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {filtered.map((user) => (
+                                        <tr
+                                            key={user.id}
+                                            className="border-b border-ink/10 hover:bg-ink/5"
+                                        >
+                                            <td className="py-2 pr-4">
+                                                {user.name}
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                {user.email}
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                {ROLE_LABEL[user.role]}
+                                            </td>
+                                            <td className="py-2 pl-4 text-right">
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        setSelectedId(user.id)
+                                                    }
+                                                >
+                                                    Selecionar
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Panel>
                 )}
-            </div>
-        </div>
+            </main>
+        </AdminPage>
     );
 };
