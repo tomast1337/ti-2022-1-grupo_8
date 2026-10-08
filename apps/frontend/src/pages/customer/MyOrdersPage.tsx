@@ -14,10 +14,12 @@ import {
     CardTitle,
 } from "../../components/ui/card";
 import { Panel } from "../../components/ui/Panel";
-import { formatDateTime, formatMoney } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatDateTime, formatMoney } from "../../i18n/format";
 import { errorMessage, useGetMyOrdersQuery } from "../../services/api";
 
 const OrderCard = ({ order }: { order: Order }) => {
+    const { t } = useTranslation();
     const total = order.items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0,
@@ -28,7 +30,7 @@ const OrderCard = ({ order }: { order: Order }) => {
             <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                     <CardTitle className="whitespace-nowrap">
-                        Pedido #{order.id.slice(0, 8)}
+                        {t("order.title", { id: order.id.slice(0, 8) })}
                     </CardTitle>
                     <OrderStatusBadge status={order.status} />
                 </div>
@@ -55,7 +57,7 @@ const OrderCard = ({ order }: { order: Order }) => {
             </CardContent>
             <CardFooter className="justify-end border-t border-ink/10 pt-4">
                 <span className="text-lg text-ink">
-                    Total: <strong>{formatMoney(total)}</strong>
+                    {t("total")} <strong>{formatMoney(total)}</strong>
                 </span>
             </CardFooter>
         </Card>
@@ -63,6 +65,7 @@ const OrderCard = ({ order }: { order: Order }) => {
 };
 
 export const MyOrdersPage = () => {
+    const { t } = useTranslation("customer");
     const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
     return (
@@ -71,11 +74,11 @@ export const MyOrdersPage = () => {
             <main className="mx-auto w-full max-w-7xl px-4 pt-6 pb-16">
                 <h1 className="mb-8 flex items-center justify-center gap-3 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
                     <Receipt className="size-9" aria-hidden />
-                    Meus Pedidos
+                    {t("orders.title")}
                 </h1>
                 {isLoading ? (
                     <p className="text-center text-lg font-semibold">
-                        Carregando...
+                        {t("loading")}
                     </p>
                 ) : null}
                 {error ? <Alert>{errorMessage(error)}</Alert> : null}
@@ -92,16 +95,16 @@ export const MyOrdersPage = () => {
                             aria-hidden
                         />
                         <h2 className="mt-4 mb-2 text-3xl font-extrabold text-ink [text-shadow:none]">
-                            Poxa, nenhum pedido!
+                            {t("orders.emptyTitle")}
                         </h2>
                         <p className="mb-6 text-lg text-ink/70">
-                            Por que não fazer um agora?
+                            {t("orders.emptyText")}
                         </p>
                         <Link
                             to="/customer/menu"
                             className={buttonClass({ variant: "primary" })}
                         >
-                            Ver o menu
+                            {t("orders.viewMenu")}
                         </Link>
                     </Panel>
                 ) : null}

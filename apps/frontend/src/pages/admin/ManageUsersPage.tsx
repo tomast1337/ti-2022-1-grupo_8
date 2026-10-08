@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import type { Role } from "@pizzaria/dtos";
 import { ArrowLeft, Check, Trash2, Users } from "lucide-react";
@@ -19,11 +20,6 @@ import {
     useSetUserRoleMutation,
 } from "../../services/api";
 
-const ROLE_LABEL: Record<Role, string> = {
-    customer: "Usuário",
-    admin: "Administrador",
-    employee: "Funcionário",
-};
 const ROLES: Role[] = ["customer", "admin", "employee"];
 
 interface UserDetailsProps {
@@ -32,6 +28,7 @@ interface UserDetailsProps {
 }
 
 const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
+    const { t } = useTranslation(["admin", "common"]);
     const { data: user, isLoading, error } = useGetUserQuery(userId);
     const [setUserRole, { isLoading: saving }] = useSetUserRoleMutation();
     const [deleteUser, { isLoading: deleting }] = useDeleteUserMutation();
@@ -41,17 +38,13 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
     if (isLoading) {
         return (
             <p className="text-center text-lg font-semibold text-white">
-                Carregando...
+                {t("loading")}
             </p>
         );
     }
     if (error || !user) {
         return (
-            <Alert>
-                {error
-                    ? errorMessage(error)
-                    : "Usuário não encontrado. Tente novamente!"}
-            </Alert>
+            <Alert>{error ? errorMessage(error) : t("users.notFound")}</Alert>
         );
     }
 
@@ -68,7 +61,8 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
     };
 
     const remove = async () => {
-        if (!window.confirm(`Deseja realmente excluir ${user.email}?`)) return;
+        if (!window.confirm(t("users.confirmDelete", { email: user.email })))
+            return;
         try {
             await deleteUser(user.id).unwrap();
             onBack();
@@ -83,13 +77,17 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
             <Panel className="space-y-5">
                 <dl className="m-0 grid gap-4 sm:grid-cols-2">
                     <div>
-                        <dt className="text-sm font-bold text-ink/60">Nome</dt>
+                        <dt className="text-sm font-bold text-ink/60">
+                            {t("fields.name")}
+                        </dt>
                         <dd className="m-0 text-xl font-extrabold text-ink">
                             {user.name}
                         </dd>
                     </div>
                     <div>
-                        <dt className="text-sm font-bold text-ink/60">Email</dt>
+                        <dt className="text-sm font-bold text-ink/60">
+                            {t("fields.email")}
+                        </dt>
                         <dd className="m-0 text-xl font-extrabold break-all text-ink">
                             {user.email}
                         </dd>
@@ -97,7 +95,7 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
                 </dl>
                 <fieldset className="m-0 mt-5 min-w-0 border-0 p-0">
                     <legend className="mb-2 p-0 text-base font-extrabold text-ink">
-                        Tipo
+                        {t("users.role")}
                     </legend>
                     <div className="grid gap-3 sm:grid-cols-3">
                         {ROLES.map((option) => (
@@ -123,7 +121,7 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
                                     {role === option ? (
                                         <Check className="size-5" aria-hidden />
                                     ) : null}
-                                    {ROLE_LABEL[option]}
+                                    {t(`roles.${option}`)}
                                 </label>
                             </div>
                         ))}
@@ -136,11 +134,11 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
                         disabled={saving || role === user.role}
                     >
                         <Check className="size-5" aria-hidden />
-                        Confirmar
+                        {t("users.confirm")}
                     </Button>
                     <Button variant="ghost" onClick={onBack}>
                         <ArrowLeft className="size-5" aria-hidden />
-                        Voltar
+                        {t("common:back")}
                     </Button>
                     <Button
                         className="ml-auto"
@@ -148,16 +146,16 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
                         disabled={deleting}
                     >
                         <Trash2 className="size-5" aria-hidden />
-                        Excluir
+                        {t("users.delete")}
                     </Button>
                 </div>
             </Panel>
             <h2 className="m-0 text-center font-sans text-3xl font-extrabold tracking-normal text-white normal-case [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
-                Pedidos Registrados
+                {t("users.orders")}
             </h2>
             {user.orders.length === 0 ? (
                 <p className="text-center text-lg font-semibold text-white">
-                    Nenhum pedido ainda.
+                    {t("users.noOrders")}
                 </p>
             ) : (
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -172,6 +170,7 @@ const UserDetails = ({ userId, onBack }: UserDetailsProps) => {
 
 /** Admin page to list users, change their role, delete them and see orders. */
 export const ManageUsersPage = () => {
+    const { t } = useTranslation(["admin", "common"]);
     const { data: users = [], isLoading, error } = useGetUsersQuery();
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [search, setSearch] = useState("");
@@ -189,7 +188,7 @@ export const ManageUsersPage = () => {
             <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
                 <PageTitle>
                     <Users className="size-9" aria-hidden />
-                    Usuários
+                    {t("users.title")}
                 </PageTitle>
                 {selectedId ? (
                     <UserDetails
@@ -199,30 +198,30 @@ export const ManageUsersPage = () => {
                     />
                 ) : (
                     <Panel className="space-y-4">
-                        <Field label="Email" htmlFor="search">
+                        <Field label={t("fields.email")} htmlFor="search">
                             <Input
                                 type="search"
                                 id="search"
-                                placeholder="Email"
+                                placeholder={t("fields.email")}
                                 autoComplete="off"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </Field>
-                        {isLoading && <p>Carregando...</p>}
+                        {isLoading && <p>{t("loading")}</p>}
                         {error && <Alert>{errorMessage(error)}</Alert>}
                         <div className="overflow-x-auto">
                             <table className="w-full border-collapse text-left text-base text-ink">
                                 <thead>
                                     <tr className="border-b-2 border-ink/15">
                                         <th scope="col" className="py-2 pr-4">
-                                            Nome
+                                            {t("fields.name")}
                                         </th>
                                         <th scope="col" className="px-4 py-2">
-                                            Email
+                                            {t("fields.email")}
                                         </th>
                                         <th scope="col" className="px-4 py-2">
-                                            Tipo
+                                            {t("users.role")}
                                         </th>
                                         <th scope="col" />
                                     </tr>
@@ -240,7 +239,7 @@ export const ManageUsersPage = () => {
                                                 {user.email}
                                             </td>
                                             <td className="px-4 py-2">
-                                                {ROLE_LABEL[user.role]}
+                                                {t(`roles.${user.role}`)}
                                             </td>
                                             <td className="py-2 pl-4 text-right">
                                                 <Button
@@ -249,7 +248,7 @@ export const ManageUsersPage = () => {
                                                         setSelectedId(user.id)
                                                     }
                                                 >
-                                                    Selecionar
+                                                    {t("catalog.select")}
                                                 </Button>
                                             </td>
                                         </tr>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { LogOut, Menu, Pizza, X, type LucideIcon } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import { Link } from "react-router";
@@ -22,6 +24,7 @@ interface AppNavProps {
 
 /** Top bar for every role: inline links on desktop, a burger menu on mobile. */
 export const AppNav = ({ brand, links, current, onLogout }: AppNavProps) => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const menuId = useId();
 
@@ -37,7 +40,7 @@ export const AppNav = ({ brand, links, current, onLogout }: AppNavProps) => {
     return (
         <header className="sticky top-0 z-50 border-b border-ink/10 bg-white/90 font-sans shadow-sm backdrop-blur-md">
             <nav
-                aria-label="Navegação principal"
+                aria-label={t("nav.main")}
                 className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 px-4 py-2"
             >
                 <span className="flex items-center gap-2 text-xl font-extrabold text-ink">
@@ -47,7 +50,7 @@ export const AppNav = ({ brand, links, current, onLogout }: AppNavProps) => {
 
                 <button
                     type="button"
-                    aria-label={open ? "Fechar menu" : "Abrir menu"}
+                    aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
                     aria-expanded={open}
                     aria-controls={menuId}
                     onClick={() => setOpen((value) => !value)}
@@ -106,6 +109,9 @@ export const AppNav = ({ brand, links, current, onLogout }: AppNavProps) => {
                             );
                         },
                     )}
+                    <li className="px-4 py-1 md:py-0">
+                        <LanguageSwitcher />
+                    </li>
                     <li className="mt-1 border-t border-ink/10 pt-2 md:mt-0 md:ml-2 md:border-t-0 md:pt-0">
                         <button
                             type="button"
@@ -113,7 +119,7 @@ export const AppNav = ({ brand, links, current, onLogout }: AppNavProps) => {
                             className="flex w-full cursor-pointer items-center gap-2 rounded-xl border-0 bg-transparent px-4 py-2.5 text-base font-bold text-tomato-700 transition hover:bg-tomato-50"
                         >
                             <LogOut className="size-5" aria-hidden />
-                            Sair
+                            {t("logout")}
                         </button>
                     </li>
                 </ul>

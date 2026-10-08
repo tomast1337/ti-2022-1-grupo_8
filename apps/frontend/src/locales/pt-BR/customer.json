@@ -1,0 +1,73 @@
+{
+    "loading": "Carregando...",
+    "nav": {
+        "menu": "Menu",
+        "buildPizza": "Criar Pizza",
+        "orders": "Meus Pedidos",
+        "cart": "Carrinho",
+        "cartCount": "{count, plural, one {# item} other {# itens}} no carrinho",
+        "titles": {
+            "menu": "Pizzaria ON - Menu",
+            "cart": "Pizzaria ON - Carrinho",
+            "build-pizza": "Pizzaria ON - Criar Pizza",
+            "orders": "Pizzaria ON - Meus Pedidos"
+        }
+    },
+    "menu": {
+        "buildTitle": "Crie sua própria pizza",
+        "buildSubtitle": "Do seu jeitinho",
+        "buildCta": "Clique aqui",
+        "popular": "Mais pedidas",
+        "drinks": "Bebidas e outros produtos",
+        "allFlavors": "Todos os sabores"
+    },
+    "card": {
+        "inCart": "Produto no carrinho!",
+        "addToCart": "Adicionar ao carrinho"
+    },
+    "half": {
+        "title": "Metade {number}",
+        "count": "{selected}/{max} ingredientes"
+    },
+    "cart": {
+        "title": "Carrinho",
+        "each": "{price} cada",
+        "quantityOf": "Quantidade de {name}",
+        "decrease": "Diminuir quantidade",
+        "increase": "Aumentar quantidade",
+        "remove": "Remover {name}",
+        "emptyTitle": "Carrinho vazio!",
+        "emptyText": "Por que não dá uma olhadinha nos nossos produtos?",
+        "backToMenu": "Voltar para o menu",
+        "total": "Total",
+        "addressLabel": "Endereço de entrega",
+        "addressPlaceholder": "Endereço",
+        "checkout": "Finalizar Compra",
+        "back": "Voltar",
+        "clear": "Limpar Carrinho"
+    },
+    "orders": {
+        "title": "Meus Pedidos",
+        "emptyTitle": "Poxa, nenhum pedido!",
+        "emptyText": "Por que não fazer um agora?",
+        "viewMenu": "Ver o menu"
+    },
+    "builder": {
+        "title": "Monte sua pizza",
+        "step1": "1. Escolha o tamanho",
+        "step2": "2. Ingredientes",
+        "limit": "Escolha até {max} em cada metade",
+        "sizeRequired": "Selecione um tamanho",
+        "noSize": "Tamanho não selecionado",
+        "totalPrice": "Preço total",
+        "removeHalf": "Remover Metade",
+        "addHalf": "Adicionar Metade",
+        "name": "Pizza {size}",
+        "joiners": {
+            "of": "de",
+            "with": "com",
+            "and": "e"
+        },
+        "description": "Ingredientes: {list}"
+    }
+}

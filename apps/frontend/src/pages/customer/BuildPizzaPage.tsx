@@ -28,7 +28,9 @@ import {
     selectBuilder,
     sizeChosen,
 } from "../../features/pizzaBuilder/pizzaBuilderSlice";
-import { formatMoney, PIZZA_SIZE_LABEL } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatMoney } from "../../i18n/format";
+import type { TFunction } from "i18next";
 import { errorMessage, useGetIngredientsQuery } from "../../services/api";
 
 const MAX_HALVES = 4;
@@ -48,31 +50,33 @@ const SIZE_OPTIONS: { value: PizzaSize; diameter: string; icon: string }[] = [
 ];
 
 const SAUCE_NAME = "Molho";
-const NAME_PREFIXES = ["de", "com", "e"];
+const NAME_PREFIXES = ["of", "with", "and"] as const;
 
 /** Builds a name like "Pizza Grande de Queijo com Tomate" from random picks. */
 const buildPizzaName = (
     size: PizzaSize,
     halves: string[][],
     all: Ingredient[],
+    t: TFunction<["customer", "common"]>,
 ) => {
     const names = [...new Set(halves.flat())]
         .map((id) => all.find((ingredient) => ingredient.id === id)?.name)
         .filter((name): name is string => !!name && name !== SAUCE_NAME);
 
-    let name = `Pizza ${PIZZA_SIZE_LABEL[size]}`;
+    let name = t("builder.name", { size: t(`common:pizzaSize.${size}`) });
     for (const prefix of NAME_PREFIXES) {
         if (names.length === 0) break;
         const [picked] = names.splice(
             Math.floor(Math.random() * names.length),
             1,
         );
-        name += ` ${prefix} ${picked}`;
+        name += ` ${t(`builder.joiners.${prefix}`)} ${picked}`;
     }
     return name;
 };
 
 export const BuildPizzaPage = () => {
+    const { t } = useTranslation(["customer", "common"]);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { size, halves } = useAppSelector(selectBuilder);
@@ -83,7 +87,7 @@ export const BuildPizzaPage = () => {
     } = useGetIngredientsQuery();
     const [showSizeError, setShowSizeError] = useState(false);
 
-    const sizeError = size === null ? "Selecione um tamanho" : "";
+    const sizeError = size === null ? t("builder.sizeRequired") : "";
 
     const price =
         size === null
@@ -139,12 +143,14 @@ export const BuildPizzaPage = () => {
             itemAdded({
                 type: "custom_pizza",
                 id: crypto.randomUUID(),
-                name: buildPizzaName(size, halves, ingredients),
+                name: buildPizzaName(size, halves, ingredients, t),
                 price,
                 quantity: 1,
                 size,
                 halves,
-                description: "Ingredientes: " + names.join(", "),
+                description: t("builder.description", {
+                    list: names.join(", "),
+                }),
             }),
         );
         dispatch(builderReset());
@@ -157,7 +163,7 @@ export const BuildPizzaPage = () => {
             <main className="mx-auto w-full max-w-7xl space-y-6 px-4 pt-6 pb-44">
                 <h1 className="flex items-center justify-center gap-3 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
                     <Wand2 className="size-9" aria-hidden />
-                    Monte sua pizza
+                    {t("builder.title")}
                 </h1>
 
                 <div id="error-message" role="alert" aria-live="polite">
@@ -171,7 +177,7 @@ export const BuildPizzaPage = () => {
                 <Panel className="p-5">
                     <fieldset className="m-0 border-0 p-0">
                         <legend className="mb-3 text-xl font-extrabold text-ink">
-                            1. Escolha o tamanho
+                            {t("builder.step1")}
                         </legend>
                         <div
                             id="size-options"
@@ -215,7 +221,9 @@ export const BuildPizzaPage = () => {
                                                 />
                                             </span>
                                             <span className="text-lg font-extrabold text-ink">
-                                                {PIZZA_SIZE_LABEL[option.value]}
+                                                {t(
+                                                    `common:pizzaSize.${option.value}`,
+                                                )}
                                             </span>
                                             <span className="text-sm font-semibold text-ink/60">
                                                 {option.diameter}
@@ -237,16 +245,16 @@ export const BuildPizzaPage = () => {
 
                 <div id="ingredients" className="text-center">
                     <h2 className="text-3xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
-                        2. Ingredientes
+                        {t("builder.step2")}
                     </h2>
                     <p className="mt-1 text-lg font-semibold text-white [text-shadow:1px_1px_4px_black]">
-                        Escolha até {MAX_INGREDIENTS_PER_HALF} em cada metade
+                        {t("builder.limit", { max: MAX_INGREDIENTS_PER_HALF })}
                     </p>
                 </div>
 
                 {isLoading ? (
                     <p className="text-center text-lg font-semibold">
-                        Carregando...
+                        {t("loading")}
                     </p>
                 ) : null}
 
@@ -271,13 +279,13 @@ export const BuildPizzaPage = () => {
                     {halves.length > 1 && (
                         <Button variant="danger" onClick={handleRemoveHalf}>
                             <Minus className="size-5" aria-hidden />
-                            Remover Metade
+                            {t("builder.removeHalf")}
                         </Button>
                     )}
                     {halves.length < MAX_HALVES && (
                         <Button variant="ghost" onClick={handleAddHalf}>
                             <Plus className="size-5" aria-hidden />
-                            Adicionar Metade
+                            {t("builder.addHalf")}
                         </Button>
                     )}
                 </div>
@@ -287,14 +295,14 @@ export const BuildPizzaPage = () => {
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
                     <div>
                         <p className="m-0 text-sm font-bold tracking-wide text-ink/60 uppercase">
-                            Preço total
+                            {t("builder.totalPrice")}
                         </p>
                         <p
                             data-slot="price"
                             className="m-0 text-2xl leading-tight font-extrabold text-ink"
                         >
                             {size === null
-                                ? "Tamanho não selecionado"
+                                ? t("builder.noSize")
                                 : formatMoney(price)}
                         </p>
                     </div>
@@ -304,11 +312,11 @@ export const BuildPizzaPage = () => {
                             className={buttonClass({ variant: "ghost" })}
                         >
                             <ArrowLeft className="size-5" aria-hidden />
-                            Cancelar
+                            {t("common:actions.cancel")}
                         </Link>
                         <Button onClick={handleAddToCart}>
                             <ShoppingCart className="size-5" aria-hidden />
-                            Adicionar ao carrinho
+                            {t("card.addToCart")}
                         </Button>
                     </div>
                 </div>

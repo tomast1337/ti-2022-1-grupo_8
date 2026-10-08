@@ -1,0 +1,83 @@
+{
+    "brand": "Pizzaria ON",
+    "noDate": "Sem Data",
+    "logout": "Sair",
+    "total": "Total:",
+    "advance": "Avançar",
+    "completed": "Concluído",
+    "back": "Voltar",
+    "nav": {
+        "main": "Navegação principal",
+        "openMenu": "Abrir menu",
+        "closeMenu": "Fechar menu"
+    },
+    "language": {
+        "label": "Idioma",
+        "pt-BR": "Português",
+        "en": "English",
+        "lt": "Lietuvių"
+    },
+    "actions": {
+        "save": "Salvar",
+        "add": "Adicionar",
+        "delete": "Deletar",
+        "cancel": "Cancelar"
+    },
+    "orderStatus": {
+        "placed": "Feito",
+        "in_progress": "Em andamento",
+        "completed": "Concluído"
+    },
+    "customerStatus": {
+        "placed": "Pendente",
+        "in_progress": "Preparando",
+        "completed": "Pronto"
+    },
+    "pizzaSize": {
+        "small": "Pequena",
+        "medium": "Média",
+        "large": "Grande",
+        "family": "Família"
+    },
+    "order": {
+        "title": "Pedido #{id}"
+    },
+    "notFound": {
+        "title": "Nem uma pizza por aqui!",
+        "home": "Voltar para o início"
+    },
+    "errors": {
+        "unknown": "Erro desconhecido",
+        "generic": "Algo deu errado. Tente novamente.",
+        "no_token": "Faça login para continuar.",
+        "invalid_token": "Sessão expirada. Entre novamente.",
+        "forbidden": "Acesso negado.",
+        "not_authenticated": "Faça login para continuar.",
+        "csrf": "Requisição não autorizada.",
+        "invalid_credentials": "E-mail ou senha inválidos",
+        "no_refresh_token": "Sessão expirada. Entre novamente.",
+        "invalid_refresh_token": "Sessão expirada. Entre novamente.",
+        "refresh_token_expired": "Sessão expirada. Entre novamente.",
+        "refresh_token_reused": "Sessão encerrada por segurança. Entre novamente.",
+        "email_taken": "E-mail já cadastrado",
+        "validation": "Dados inválidos",
+        "invalid_image": "A imagem deve ser png, jpeg ou webp",
+        "not_found": "{what} não encontrado(a)",
+        "unknown_item": "Item desconhecido: {what}",
+        "order_status_mismatch": "O pedido não está no status esperado",
+        "order_status_changed": "O status do pedido mudou. Atualize a página.",
+        "cannot_demote_self": "Você não pode remover seu próprio acesso de administrador",
+        "cannot_delete_self": "Você não pode excluir sua própria conta",
+        "ingredients_missing": "Um ou mais ingredientes não existem",
+        "entities": {
+            "User": "Usuário",
+            "Ingredient": "Ingrediente",
+            "Pizza": "Pizza",
+            "Product": "Produto",
+            "Order": "Pedido",
+            "pizza": "pizza",
+            "product": "produto",
+            "ingredient": "ingrediente"
+        }
+    }
+}

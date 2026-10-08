@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
     BarChart3,
     Carrot,
@@ -15,33 +16,13 @@ import { AppNav, type NavLink } from "../ui/AppNav";
 export type AdminSection =
     "home" | "ingredients" | "pizzas" | "products" | "users";
 
-const SECTIONS: {
-    key: AdminSection;
-    to: string;
-    label: string;
-    icon: LucideIcon;
-}[] = [
-    { key: "home", to: "/admin", label: "Relatórios", icon: BarChart3 },
-    {
-        key: "ingredients",
-        to: "/admin/ingredients",
-        label: "Ingredientes",
-        icon: Carrot,
-    },
-    { key: "pizzas", to: "/admin/pizzas", label: "Pizzas", icon: Pizza },
-    { key: "products", to: "/admin/products", label: "Produtos", icon: Wine },
-    { key: "users", to: "/admin/users", label: "Usuários", icon: Users },
+const SECTIONS: { key: AdminSection; to: string; icon: LucideIcon }[] = [
+    { key: "home", to: "/admin", icon: BarChart3 },
+    { key: "ingredients", to: "/admin/ingredients", icon: Carrot },
+    { key: "pizzas", to: "/admin/pizzas", icon: Pizza },
+    { key: "products", to: "/admin/products", icon: Wine },
+    { key: "users", to: "/admin/users", icon: Users },
 ];
-
-const LINKS: NavLink[] = SECTIONS;
-
-const TITLES: Record<AdminSection, string> = {
-    home: "Pizzaria ON Admin - Menu",
-    ingredients: "Pizzaria ON Admin - Ingredientes",
-    pizzas: "Pizzaria ON Admin - Pizzas",
-    products: "Pizzaria ON Admin - Produtos",
-    users: "Pizzaria ON Admin - Gerir Usuários",
-};
 
 interface AdminNavProps {
     /** Section of the page currently being shown. */
@@ -52,7 +33,13 @@ interface AdminNavProps {
 export const AdminNav = ({ current }: AdminNavProps) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const title = TITLES[current];
+    const { t } = useTranslation(["common", "admin"]);
+    const title = t(`admin:nav.titles.${current}`);
+    const links: NavLink[] = SECTIONS.map(({ key, ...rest }) => ({
+        key,
+        label: t(`admin:nav.sections.${key}`),
+        ...rest,
+    }));
 
     useEffect(() => {
         document.title = title;
@@ -65,8 +52,8 @@ export const AdminNav = ({ current }: AdminNavProps) => {
 
     return (
         <AppNav
-            brand="Pizzaria ON - Admin"
-            links={LINKS}
+            brand={t("admin:nav.brand")}
+            links={links}
             current={current}
             onLogout={logout}
         />

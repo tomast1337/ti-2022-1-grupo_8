@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import type { Pizza } from "@pizzaria/dtos";
@@ -20,7 +21,7 @@ import {
     useGetPizzasQuery,
     useSavePizzaMutation,
 } from "../../services/api";
-import { formatMoney } from "../../lib/format";
+import { formatMoney } from "../../i18n/format";
 import { imageUrl } from "../../lib/images";
 
 /** Base price added by the API on top of the ingredient prices. */
@@ -28,6 +29,7 @@ const BASE_PRICE = 20;
 
 /** Admin page to create, edit and delete pizzas. */
 export const ManagePizzasPage = () => {
+    const { t } = useTranslation("admin");
     const navigate = useNavigate();
     const { data: pizzas = [], isLoading, error } = useGetPizzasQuery();
     const { data: ingredients = [], error: ingredientsError } =
@@ -82,7 +84,7 @@ export const ManagePizzasPage = () => {
     const handleSave = async (e: FormEvent) => {
         e.preventDefault();
         if (ingredientIds.length === 0) {
-            setFormError("Selecione ao menos um ingrediente");
+            setFormError(t("pizzas.needIngredient"));
             return;
         }
         const body = new FormData();
@@ -106,7 +108,7 @@ export const ManagePizzasPage = () => {
             navigate(-1);
             return;
         }
-        if (!window.confirm("Deseja realmente excluir esta pizza?")) return;
+        if (!window.confirm(t("pizzas.confirmDelete"))) return;
         try {
             await deletePizza(selectedId).unwrap();
             reset();
@@ -121,16 +123,16 @@ export const ManagePizzasPage = () => {
             <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
                 <PageTitle>
                     <PizzaIcon className="size-9" aria-hidden />
-                    Gerenciar Pizzas
+                    {t("pizzas.title")}
                 </PageTitle>
                 {(error || ingredientsError) && (
                     <Alert>{errorMessage(error ?? ingredientsError)}</Alert>
                 )}
                 <Panel className="space-y-3">
                     <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
-                        Pizzas Cadastradas
+                        {t("pizzas.registered")}
                     </h2>
-                    {isLoading && <p>Carregando...</p>}
+                    {isLoading && <p>{t("loading")}</p>}
                     <CatalogRow>
                         {pizzas.map((pizza) => (
                             <CatalogCard
@@ -151,31 +153,34 @@ export const ManagePizzasPage = () => {
                         className="space-y-4"
                     >
                         <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
-                            {selectedId ? "Editar Pizza" : "Adicionar Pizza"}
+                            {selectedId ? t("pizzas.edit") : t("pizzas.new")}
                         </h2>
                         {formError && <Alert>{formError}</Alert>}
-                        <Field label="Nome" htmlFor="name">
+                        <Field label={t("fields.name")} htmlFor="name">
                             <Input
                                 type="text"
                                 id="name"
-                                placeholder="Nome"
+                                placeholder={t("fields.name")}
                                 autoComplete="off"
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </Field>
-                        <Field label="Descrição" htmlFor="description">
+                        <Field
+                            label={t("fields.description")}
+                            htmlFor="description"
+                        >
                             <Textarea
                                 id="description"
-                                placeholder="Descrição"
+                                placeholder={t("fields.description")}
                                 autoComplete="off"
                                 required
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                         </Field>
-                        <Field label="Imagem" htmlFor="image">
+                        <Field label={t("fields.image")} htmlFor="image">
                             <Input
                                 key={fileKey}
                                 type="file"
@@ -190,7 +195,7 @@ export const ManagePizzasPage = () => {
                         </Field>
                         <fieldset className="m-0 min-w-0 border-0 p-0">
                             <legend className="mb-2 p-0 text-base font-extrabold text-ink">
-                                Ingredientes
+                                {t("pizzas.ingredients")}
                             </legend>
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                                 {ingredients.map((ingredient) => {
@@ -255,7 +260,7 @@ export const ManagePizzasPage = () => {
                             </div>
                         </fieldset>
                         <p className="m-0 text-right text-lg text-ink/70">
-                            Preço total:{" "}
+                            {t("pizzas.totalPrice")}{" "}
                             <strong
                                 data-slot="price"
                                 className="text-3xl text-ink"

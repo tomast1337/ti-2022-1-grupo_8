@@ -14,7 +14,7 @@ export const parse = <S extends z.ZodType>(
                     `${issue.path.join(".") || "body"}: ${issue.message}`,
             )
             .join("; ");
-        throw new HttpError(400, message);
+        throw new HttpError(400, message, "validation");
     }
     return result.data;
 };

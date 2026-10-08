@@ -1,21 +1,22 @@
+import { useTranslation } from "react-i18next";
 import { ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../app/hooks";
 import { signOut } from "../../features/session/sessionThunks";
 import { AppNav, type NavLink } from "../ui/AppNav";
 
-const LINKS: NavLink[] = [
-    {
-        key: "orders",
-        to: "/employee/orders",
-        label: "Pedidos",
-        icon: ClipboardList,
-    },
-];
-
 export const EmployeeNav = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation(["common", "employee"]);
+    const links: NavLink[] = [
+        {
+            key: "orders",
+            to: "/employee/orders",
+            label: t("employee:nav.orders"),
+            icon: ClipboardList,
+        },
+    ];
 
     const handleLogout = () => {
         dispatch(signOut());
@@ -24,8 +25,8 @@ export const EmployeeNav = () => {
 
     return (
         <AppNav
-            brand="Pizzaria ON - Funcionário"
-            links={LINKS}
+            brand={t("employee:nav.brand")}
+            links={links}
             current="orders"
             onLogout={handleLogout}
         />

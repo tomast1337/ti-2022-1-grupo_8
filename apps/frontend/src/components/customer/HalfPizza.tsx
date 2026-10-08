@@ -1,6 +1,7 @@
 import type { Ingredient } from "@pizzaria/dtos";
 import { Check } from "lucide-react";
-import { formatMoney } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatMoney } from "../../i18n/format";
 import { imageUrl } from "../../lib/images";
 import { Badge } from "../ui/badge";
 import { cn } from "../ui/cn";
@@ -23,6 +24,7 @@ export const HalfPizza = ({
     onChange,
     maxIngredients = MAX_INGREDIENTS_PER_HALF,
 }: HalfPizzaProps) => {
+    const { t } = useTranslation("customer");
     const full = selectedIds.length >= maxIngredients;
 
     const handleToggle = (id: string, checked: boolean) => {
@@ -37,10 +39,13 @@ export const HalfPizza = ({
         <Panel data-slot="half" id={`half-scroll-${index}`} className="p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
                 <h3 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
-                    Metade {index + 1}
+                    {t("half.title", { number: index + 1 })}
                 </h3>
                 <Badge tone={full ? "warning" : "default"}>
-                    {selectedIds.length}/{maxIngredients} ingredientes
+                    {t("half.count", {
+                        selected: selectedIds.length,
+                        max: maxIngredients,
+                    })}
                 </Badge>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { OrderStatus } from "@pizzaria/dtos";
 import { ChefHat, CircleCheck, Clock, type LucideIcon } from "lucide-react";
 import { useEffect } from "react";
@@ -55,6 +56,7 @@ const OrderColumn = ({
     onAdvance,
     advancing,
 }: ColumnProps) => {
+    const { t } = useTranslation("employee");
     const { data, isLoading, error } = useGetEmployeeOrdersQuery(status, {
         pollingInterval: POLLING_INTERVAL_MS,
     });
@@ -85,7 +87,7 @@ const OrderColumn = ({
             </header>
             {isLoading ? (
                 <p className="text-center text-lg font-semibold">
-                    Carregando...
+                    {t("loading")}
                 </p>
             ) : null}
             {error ? <Alert>{errorMessage(error)}</Alert> : null}
@@ -109,13 +111,14 @@ const OrderColumn = ({
 };
 
 export const OrdersPage = () => {
+    const { t } = useTranslation("employee");
     const [startOrder, start] = useStartOrderMutation();
     const [completeOrder, complete] = useCompleteOrderMutation();
     const mutationError = start.error ?? complete.error;
 
     useEffect(() => {
-        document.title = "Pizzaria ON - Pedidos";
-    }, []);
+        document.title = t("pageTitle");
+    }, [t]);
 
     const advancing = start.isLoading || complete.isLoading;
 
@@ -124,7 +127,7 @@ export const OrdersPage = () => {
             <EmployeeNav />
             <main className="mx-auto w-full max-w-7xl px-4 pt-6 pb-16">
                 <h1 className="mb-6 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
-                    Pedidos
+                    {t("title")}
                 </h1>
                 {mutationError ? (
                     <div className="mb-4">
@@ -134,36 +137,37 @@ export const OrdersPage = () => {
                 <div className="grid items-start gap-6 md:grid-cols-3">
                     <OrderColumn
                         status="placed"
-                        title="Pendentes"
+                        title={t("columns.placed.title")}
                         tone="danger"
                         icon={Clock}
-                        emptyText="Nenhum pedido pendente!"
+                        emptyText={t("columns.placed.empty")}
                         onAdvance={(id) => void startOrder(id)}
                         advancing={advancing}
                     />
                     <OrderColumn
                         status="in_progress"
-                        title="Em andamento"
+                        title={t("columns.in_progress.title")}
                         tone="warning"
                         icon={ChefHat}
-                        emptyText="Nenhum pedido em andamento!"
+                        emptyText={t("columns.in_progress.empty")}
                         onAdvance={(id) => void completeOrder(id)}
                         advancing={advancing}
                     />
                     <OrderColumn
                         status="completed"
-                        title="Prontos"
+                        title={t("columns.completed.title")}
                         tone="success"
                         icon={CircleCheck}
-                        emptyText="Nenhum pedido concluído!"
+                        emptyText={t("columns.completed.empty")}
                         limit={MAX_COMPLETED_SHOWN}
                         advancing={advancing}
                     />
                 </div>
                 <p className="mt-8 text-center text-sm font-semibold text-white [text-shadow:1px_1px_3px_black]">
-                    Atualiza sozinho a cada {POLLING_INTERVAL_MS / 1000}{" "}
-                    segundos. Em "Prontos" aparecem os {MAX_COMPLETED_SHOWN}{" "}
-                    mais recentes.
+                    {t("footnote", {
+                        seconds: POLLING_INTERVAL_MS / 1000,
+                        count: MAX_COMPLETED_SHOWN,
+                    })}
                 </p>
             </main>
         </EmployeePage>

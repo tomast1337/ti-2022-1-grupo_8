@@ -1,0 +1,83 @@
+{
+    "brand": "Pizzaria ON",
+    "noDate": "Be datos",
+    "logout": "Atsijungti",
+    "total": "Iš viso:",
+    "advance": "Pirmyn",
+    "completed": "Įvykdyta",
+    "back": "Atgal",
+    "nav": {
+        "main": "Pagrindinė naršymo juosta",
+        "openMenu": "Atidaryti meniu",
+        "closeMenu": "Uždaryti meniu"
+    },
+    "language": {
+        "label": "Kalba",
+        "pt-BR": "Português",
+        "en": "English",
+        "lt": "Lietuvių"
+    },
+    "actions": {
+        "save": "Išsaugoti",
+        "add": "Pridėti",
+        "delete": "Ištrinti",
+        "cancel": "Atšaukti"
+    },
+    "orderStatus": {
+        "placed": "Pateiktas",
+        "in_progress": "Vykdomas",
+        "completed": "Įvykdytas"
+    },
+    "customerStatus": {
+        "placed": "Laukiama",
+        "in_progress": "Ruošiama",
+        "completed": "Paruošta"
+    },
+    "pizzaSize": {
+        "small": "Maža",
+        "medium": "Vidutinė",
+        "large": "Didelė",
+        "family": "Šeimos"
+    },
+    "order": {
+        "title": "Užsakymas #{id}"
+    },
+    "notFound": {
+        "title": "Nė vienos picos čia!",
+        "home": "Grįžti į pradžią"
+    },
+    "errors": {
+        "unknown": "Nežinoma klaida",
+        "generic": "Kažkas nepavyko. Bandykite dar kartą.",
+        "no_token": "Prisijunkite, kad tęstumėte.",
+        "invalid_token": "Sesija baigėsi. Prisijunkite iš naujo.",
+        "forbidden": "Prieiga uždrausta.",
+        "not_authenticated": "Prisijunkite, kad tęstumėte.",
+        "csrf": "Užklausa neleidžiama.",
+        "invalid_credentials": "Neteisingas el. paštas arba slaptažodis",
+        "no_refresh_token": "Sesija baigėsi. Prisijunkite iš naujo.",
+        "invalid_refresh_token": "Sesija baigėsi. Prisijunkite iš naujo.",
+        "refresh_token_expired": "Sesija baigėsi. Prisijunkite iš naujo.",
+        "refresh_token_reused": "Sesija nutraukta dėl saugumo. Prisijunkite iš naujo.",
+        "email_taken": "El. paštas jau užregistruotas",
+        "validation": "Neteisingi duomenys",
+        "invalid_image": "Paveikslėlis turi būti png, jpeg arba webp",
+        "not_found": "{what}: nerasta",
+        "unknown_item": "Nežinomas elementas: {what}",
+        "order_status_mismatch": "Užsakymas nėra laukiamos būsenos",
+        "order_status_changed": "Užsakymo būsena pasikeitė. Atnaujinkite puslapį.",
+        "cannot_demote_self": "Negalite atimti administratoriaus teisių sau",
+        "cannot_delete_self": "Negalite ištrinti savo paskyros",
+        "ingredients_missing": "Vieno ar daugiau ingredientų nėra",
+        "entities": {
+            "User": "Vartotojas",
+            "Ingredient": "Ingredientas",
+            "Pizza": "Pica",
+            "Product": "Produktas",
+            "Order": "Užsakymas",
+            "pizza": "pica",
+            "product": "produktas",
+            "ingredient": "ingredientas"
+        }
+    }
+}

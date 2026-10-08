@@ -1,0 +1,24 @@
+{
+    "loading": "Loading...",
+    "pageTitle": "Pizzaria ON - Orders",
+    "title": "Orders",
+    "nav": {
+        "brand": "Pizzaria ON - Employee",
+        "orders": "Orders"
+    },
+    "columns": {
+        "placed": {
+            "title": "Pending",
+            "empty": "No pending orders!"
+        },
+        "in_progress": {
+            "title": "In progress",
+            "empty": "No orders in progress!"
+        },
+        "completed": {
+            "title": "Ready",
+            "empty": "No completed orders!"
+        }
+    },
+    "footnote": "Refreshes itself every {seconds} seconds. \"Ready\" shows the {count} most recent."
+}

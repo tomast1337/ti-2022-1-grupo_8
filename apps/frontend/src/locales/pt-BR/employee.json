@@ -1,0 +1,24 @@
+{
+    "loading": "Carregando...",
+    "pageTitle": "Pizzaria ON - Pedidos",
+    "title": "Pedidos",
+    "nav": {
+        "brand": "Pizzaria ON - Funcionário",
+        "orders": "Pedidos"
+    },
+    "columns": {
+        "placed": {
+            "title": "Pendentes",
+            "empty": "Nenhum pedido pendente!"
+        },
+        "in_progress": {
+            "title": "Em andamento",
+            "empty": "Nenhum pedido em andamento!"
+        },
+        "completed": {
+            "title": "Prontos",
+            "empty": "Nenhum pedido concluído!"
+        }
+    },
+    "footnote": "Atualiza sozinho a cada {seconds} segundos. Em \"Prontos\" aparecem os {count} mais recentes."
+}

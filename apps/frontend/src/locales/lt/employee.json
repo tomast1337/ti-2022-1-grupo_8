@@ -1,0 +1,24 @@
+{
+    "loading": "Kraunama...",
+    "pageTitle": "Pizzaria ON - Užsakymai",
+    "title": "Užsakymai",
+    "nav": {
+        "brand": "Pizzaria ON - Darbuotojas",
+        "orders": "Užsakymai"
+    },
+    "columns": {
+        "placed": {
+            "title": "Laukiantys",
+            "empty": "Laukiančių užsakymų nėra!"
+        },
+        "in_progress": {
+            "title": "Vykdomi",
+            "empty": "Vykdomų užsakymų nėra!"
+        },
+        "completed": {
+            "title": "Paruošti",
+            "empty": "Įvykdytų užsakymų nėra!"
+        }
+    },
+    "footnote": "Atsinaujina kas {seconds} sek. Skiltyje „Paruošti“ rodomi {count} naujausi."
+}

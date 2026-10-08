@@ -1,6 +1,7 @@
 import type { Order } from "@pizzaria/dtos";
 import { ArrowRight, CircleCheck, Mail, MapPin } from "lucide-react";
-import { formatDateTime, formatMoney } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatDateTime, formatMoney } from "../../i18n/format";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/Button";
@@ -21,6 +22,7 @@ interface OrderCardProps {
 
 /** Order as the kitchen sees it: who, where and what to prepare. */
 export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => {
+    const { t } = useTranslation();
     const total = order.items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0,
@@ -30,7 +32,7 @@ export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => {
         <Card data-slot="order">
             <CardHeader>
                 <CardTitle className="whitespace-nowrap">
-                    Pedido #{order.id.slice(0, 8)}
+                    {t("order.title", { id: order.id.slice(0, 8) })}
                 </CardTitle>
                 <p className="m-0 text-sm font-semibold text-ink/60">
                     {formatDateTime(order.createdAt)}
@@ -73,17 +75,17 @@ export const OrderCard = ({ order, onAdvance, advancing }: OrderCardProps) => {
             </CardContent>
             <CardFooter className="border-t border-ink/10 pt-4">
                 <span className="text-base text-ink">
-                    Total: <strong>{formatMoney(total)}</strong>
+                    {t("total")} <strong>{formatMoney(total)}</strong>
                 </span>
                 {onAdvance && order.status !== "completed" ? (
                     <Button size="sm" onClick={onAdvance} disabled={advancing}>
-                        Avançar
+                        {t("advance")}
                         <ArrowRight className="size-4" aria-hidden />
                     </Button>
                 ) : order.status === "completed" ? (
                     <Badge tone="success">
                         <CircleCheck className="size-4" aria-hidden />
-                        Concluído
+                        {t("completed")}
                     </Badge>
                 ) : (
                     <OrderStatusBadge status={order.status} />

@@ -37,20 +37,41 @@ export const priceCart = async (
             case "pizza": {
                 const pizza = pizzas.find((p) => p.id === item.id);
                 if (!pizza)
-                    throw new HttpError(400, `Unknown pizza ${item.id}`);
+                    throw new HttpError(
+                        400,
+                        `Unknown pizza ${item.id}`,
+                        "unknown_item",
+                        {
+                            what: "pizza",
+                        },
+                    );
                 return { ...item, name: pizza.name, price: pizza.price };
             }
             case "product": {
                 const product = products.find((p) => p.id === item.id);
                 if (!product)
-                    throw new HttpError(400, `Unknown product ${item.id}`);
+                    throw new HttpError(
+                        400,
+                        `Unknown product ${item.id}`,
+                        "unknown_item",
+                        {
+                            what: "product",
+                        },
+                    );
                 return { ...item, name: product.name, price: product.price };
             }
             case "custom_pizza": {
                 const prices = item.halves.flat().map((id) => {
                     const ingredient = ingredients.find((i) => i.id === id);
                     if (!ingredient)
-                        throw new HttpError(400, `Unknown ingredient ${id}`);
+                        throw new HttpError(
+                            400,
+                            `Unknown ingredient ${id}`,
+                            "unknown_item",
+                            {
+                                what: "ingredient",
+                            },
+                        );
                     return ingredient.price;
                 });
                 return { ...item, price: customPizzaPrice(item.size, prices) };
@@ -84,14 +105,23 @@ export const advanceOrder = async (
 ): Promise<Order> => {
     const to = NEXT_STATUS[expectedFrom];
     const order = await repos.orders.findById(id);
-    if (!order) throw new HttpError(404, "Order not found");
+    if (!order)
+        throw new HttpError(404, "Order not found", "not_found", {
+            what: "Order",
+        });
     if (!to || order.status !== expectedFrom) {
         throw new HttpError(
             409,
             `Order is ${order.status}, expected ${expectedFrom}`,
+            "order_status_mismatch",
         );
     }
     const updated = await repos.orders.transition(id, expectedFrom, to);
-    if (!updated) throw new HttpError(409, "Order status changed meanwhile");
+    if (!updated)
+        throw new HttpError(
+            409,
+            "Order status changed meanwhile",
+            "order_status_changed",
+        );
     return updated;
 };

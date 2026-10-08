@@ -1,0 +1,85 @@
+{
+    "loading": "Carregando...",
+    "nav": {
+        "brand": "Pizzaria ON - Admin",
+        "sections": {
+            "home": "Relatórios",
+            "ingredients": "Ingredientes",
+            "pizzas": "Pizzas",
+            "products": "Produtos",
+            "users": "Usuários"
+        },
+        "titles": {
+            "home": "Pizzaria ON Admin - Menu",
+            "ingredients": "Pizzaria ON Admin - Ingredientes",
+            "pizzas": "Pizzaria ON Admin - Pizzas",
+            "products": "Pizzaria ON Admin - Produtos",
+            "users": "Pizzaria ON Admin - Gerir Usuários"
+        }
+    },
+    "fields": {
+        "name": "Nome",
+        "email": "Email",
+        "price": "Preço",
+        "image": "Imagem",
+        "description": "Descrição",
+        "portionWeight": "Peso Porção em gramas",
+        "portionWeightShort": "Peso Porção"
+    },
+    "catalog": {
+        "select": "Selecionar",
+        "unselect": "Desselecionar"
+    },
+    "roles": {
+        "customer": "Usuário",
+        "admin": "Administrador",
+        "employee": "Funcionário"
+    },
+    "reports": {
+        "title": "Relatórios",
+        "from": "De",
+        "to": "Até",
+        "name": "Nome",
+        "quantity": "Quantidade",
+        "portions": "Porções",
+        "revenue": "Lucro",
+        "cost": "Custo",
+        "pizzas": "Pizzas Mais Compradas",
+        "ingredients": "Ingredientes Mais Utilizados",
+        "products": "Produtos Mais Comprados"
+    },
+    "products": {
+        "title": "Gerenciar Produtos",
+        "registered": "Produtos Cadastrados",
+        "edit": "Editar Produto",
+        "new": "Adicionar Novo Produto",
+        "confirmDelete": "Deseja realmente excluir este produto?"
+    },
+    "ingredients": {
+        "title": "Gerenciar Ingredientes",
+        "registered": "Ingredientes Cadastrados",
+        "edit": "Editar Ingrediente",
+        "new": "Adicionar Ingrediente",
+        "confirmDelete": "Deseja realmente excluir este ingrediente?"
+    },
+    "pizzas": {
+        "title": "Gerenciar Pizzas",
+        "registered": "Pizzas Cadastradas",
+        "edit": "Editar Pizza",
+        "new": "Adicionar Pizza",
+        "confirmDelete": "Deseja realmente excluir esta pizza?",
+        "ingredients": "Ingredientes",
+        "needIngredient": "Selecione ao menos um ingrediente",
+        "totalPrice": "Preço total:"
+    },
+    "users": {
+        "title": "Usuários",
+        "role": "Tipo",
+        "confirm": "Confirmar",
+        "delete": "Excluir",
+        "orders": "Pedidos Registrados",
+        "noOrders": "Nenhum pedido ainda.",
+        "notFound": "Usuário não encontrado. Tente novamente!",
+        "confirmDelete": "Deseja realmente excluir {email}?"
+    }
+}

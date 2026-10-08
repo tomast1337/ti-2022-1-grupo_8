@@ -3,7 +3,8 @@ import { Check, ImageOff, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { itemAdded, selectCartItems } from "../../features/cart/cartSlice";
-import { formatMoney } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatMoney } from "../../i18n/format";
 import { imageUrl } from "../../lib/images";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/Button";
@@ -23,6 +24,7 @@ type ProductCardProps = { className?: string } & (
 );
 
 export const ProductCard = ({ kind, item, className }: ProductCardProps) => {
+    const { t } = useTranslation("customer");
     const dispatch = useAppDispatch();
     const inCart = useAppSelector(selectCartItems).some(
         (cartItem) => cartItem.id === item.id,
@@ -76,7 +78,7 @@ export const ProductCard = ({ kind, item, className }: ProductCardProps) => {
                 {inCart ? (
                     <Badge tone="success">
                         <Check className="size-4" aria-hidden />
-                        Produto no carrinho!
+                        {t("card.inCart")}
                     </Badge>
                 ) : (
                     <Button
@@ -86,7 +88,7 @@ export const ProductCard = ({ kind, item, className }: ProductCardProps) => {
                         onClick={handleAdd}
                     >
                         <ShoppingCart className="size-4" aria-hidden />
-                        Adicionar ao carrinho
+                        {t("card.addToCart")}
                     </Button>
                 )}
             </CardFooter>

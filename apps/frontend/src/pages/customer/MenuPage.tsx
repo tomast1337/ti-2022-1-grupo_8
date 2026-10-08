@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Flame, GlassWater, Pizza, Wand2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
@@ -38,25 +39,28 @@ const Grid = ({ children }: { children: ReactNode }) => (
     </div>
 );
 
-const BuildPizzaSection = () => (
-    <Card className="mx-auto max-w-md text-center">
-        <CardHeader className="items-center">
-            <Wand2 className="size-8 text-tomato-600" aria-hidden />
-            <CardTitle>Crie sua própria pizza</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <CardDescription>Do seu jeitinho</CardDescription>
-        </CardContent>
-        <CardFooter className="justify-center">
-            <Link
-                to="/customer/build-pizza"
-                className={buttonClass({ variant: "primary" })}
-            >
-                Clique aqui
-            </Link>
-        </CardFooter>
-    </Card>
-);
+const BuildPizzaSection = () => {
+    const { t } = useTranslation("customer");
+    return (
+        <Card className="mx-auto max-w-md text-center">
+            <CardHeader className="items-center">
+                <Wand2 className="size-8 text-tomato-600" aria-hidden />
+                <CardTitle>{t("menu.buildTitle")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <CardDescription>{t("menu.buildSubtitle")}</CardDescription>
+            </CardContent>
+            <CardFooter className="justify-center">
+                <Link
+                    to="/customer/build-pizza"
+                    className={buttonClass({ variant: "primary" })}
+                >
+                    {t("menu.buildCta")}
+                </Link>
+            </CardFooter>
+        </Card>
+    );
+};
 
 const Message = ({
     error,
@@ -73,6 +77,7 @@ const Message = ({
 );
 
 export const MenuPage = () => {
+    const { t } = useTranslation("customer");
     const pizzas = useGetPizzasQuery();
     const products = useGetProductsQuery();
 
@@ -81,7 +86,7 @@ export const MenuPage = () => {
             <CustomerNav current="menu" />
             <main className="mx-auto w-full max-w-7xl px-4 pb-16">
                 {pizzas.isLoading || products.isLoading ? (
-                    <Message>Carregando...</Message>
+                    <Message>{t("loading")}</Message>
                 ) : null}
                 {pizzas.error ? (
                     <Message error>{errorMessage(pizzas.error)}</Message>
@@ -91,7 +96,7 @@ export const MenuPage = () => {
                 ) : null}
 
                 <SectionTitle icon={<Flame className="size-8" aria-hidden />}>
-                    Mais pedidas
+                    {t("menu.popular")}
                 </SectionTitle>
                 <Grid>
                     {(pizzas.data ?? []).slice(0, 4).map((pizza) => (
@@ -106,7 +111,7 @@ export const MenuPage = () => {
                 <SectionTitle
                     icon={<GlassWater className="size-8" aria-hidden />}
                 >
-                    Bebidas e outros produtos
+                    {t("menu.drinks")}
                 </SectionTitle>
                 <div className="-mx-4 flex snap-x gap-6 overflow-x-auto px-4 pb-4">
                     {(products.data ?? []).map((product) => (
@@ -120,7 +125,7 @@ export const MenuPage = () => {
                 </div>
 
                 <SectionTitle icon={<Pizza className="size-8" aria-hidden />}>
-                    Todos os sabores
+                    {t("menu.allFlavors")}
                 </SectionTitle>
                 <Grid>
                     {(pizzas.data ?? []).map((pizza) => (

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import type { Ingredient } from "@pizzaria/dtos";
@@ -34,6 +35,7 @@ const EMPTY_FORM: FormState = {
 
 /** Admin page to create, edit and delete ingredients. */
 export const ManageIngredientsPage = () => {
+    const { t } = useTranslation("admin");
     const navigate = useNavigate();
     const {
         data: ingredients = [],
@@ -106,7 +108,7 @@ export const ManageIngredientsPage = () => {
             navigate(-1);
             return;
         }
-        if (!window.confirm("Deseja realmente excluir este ingrediente?")) {
+        if (!window.confirm(t("ingredients.confirmDelete"))) {
             return;
         }
         try {
@@ -123,13 +125,13 @@ export const ManageIngredientsPage = () => {
             <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
                 <PageTitle>
                     <Carrot className="size-9" aria-hidden />
-                    Gerenciar Ingredientes
+                    {t("ingredients.title")}
                 </PageTitle>
                 <Panel className="space-y-3">
                     <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
-                        Ingredientes Cadastrados
+                        {t("ingredients.registered")}
                     </h2>
-                    {isLoading && <p>Carregando...</p>}
+                    {isLoading && <p>{t("loading")}</p>}
                     {error && <Alert>{errorMessage(error)}</Alert>}
                     <CatalogRow>
                         {ingredients.map((ingredient) => (
@@ -152,12 +154,12 @@ export const ManageIngredientsPage = () => {
                     >
                         <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
                             {selectedId
-                                ? "Editar Ingrediente"
-                                : "Adicionar Ingrediente"}
+                                ? t("ingredients.edit")
+                                : t("ingredients.new")}
                         </h2>
                         {formError && <Alert>{formError}</Alert>}
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <Field label="Nome" htmlFor="name">
+                            <Field label={t("fields.name")} htmlFor="name">
                                 <Input
                                     type="text"
                                     id="name"
@@ -170,11 +172,11 @@ export const ManageIngredientsPage = () => {
                                     }
                                 />
                             </Field>
-                            <Field label="Preço" htmlFor="price">
+                            <Field label={t("fields.price")} htmlFor="price">
                                 <Input
                                     type="number"
                                     id="price"
-                                    placeholder="Preço"
+                                    placeholder={t("fields.price")}
                                     step={0.01}
                                     min={0}
                                     autoComplete="off"
@@ -185,11 +187,14 @@ export const ManageIngredientsPage = () => {
                                     }
                                 />
                             </Field>
-                            <Field label="Descrição" htmlFor="description">
+                            <Field
+                                label={t("fields.description")}
+                                htmlFor="description"
+                            >
                                 <Input
                                     type="text"
                                     id="description"
-                                    placeholder="Descrição"
+                                    placeholder={t("fields.description")}
                                     autoComplete="off"
                                     required
                                     value={form.description}
@@ -199,14 +204,14 @@ export const ManageIngredientsPage = () => {
                                 />
                             </Field>
                             <Field
-                                label="Peso Porção em gramas"
+                                label={t("fields.portionWeight")}
                                 htmlFor="portionWeight"
                             >
                                 <Input
                                     type="number"
                                     step={0.01}
                                     id="portionWeight"
-                                    placeholder="Peso Porção"
+                                    placeholder={t("fields.portionWeightShort")}
                                     min="1"
                                     max="100"
                                     autoComplete="off"
@@ -221,7 +226,7 @@ export const ManageIngredientsPage = () => {
                                 />
                             </Field>
                         </div>
-                        <Field label="Imagem" htmlFor="image">
+                        <Field label={t("fields.image")} htmlFor="image">
                             <Input
                                 key={fileKey}
                                 type="file"

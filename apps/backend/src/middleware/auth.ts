@@ -29,15 +29,25 @@ export const authenticate =
     (users: UserLookup): RequestHandler =>
     async (req, _res, next) => {
         const token = extractToken(req.header("authorization"));
-        if (!token) throw new HttpError(401, "No token provided");
+        if (!token) throw new HttpError(401, "No token provided", "no_token");
         let claims: TokenPayload;
         try {
             claims = verifyToken(token);
         } catch {
-            throw new HttpError(401, "Invalid or expired token");
+            throw new HttpError(
+                401,
+                "Invalid or expired token",
+                "invalid_token",
+            );
         }
         const user = await users.findById(claims.id);
-        if (!user) throw new HttpError(401, "Invalid or expired token");
+        if (!user) {
+            throw new HttpError(
+                401,
+                "Invalid or expired token",
+                "invalid_token",
+            );
+        }
         req.user = { id: user.id, email: user.email, role: user.role };
         next();
     };
@@ -47,12 +57,13 @@ export const requireRole =
     (...roles: Role[]): RequestHandler =>
     (req, _res, next) => {
         if (!req.user || !roles.includes(req.user.role)) {
-            throw new HttpError(403, "Access denied");
+            throw new HttpError(403, "Access denied", "forbidden");
         }
         next();
     };
 
 export const currentUser = (req: Express.Request): TokenPayload => {
-    if (!req.user) throw new HttpError(401, "Not authenticated");
+    if (!req.user)
+        throw new HttpError(401, "Not authenticated", "not_authenticated");
     return req.user;
 };

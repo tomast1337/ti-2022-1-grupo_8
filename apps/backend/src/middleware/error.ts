@@ -8,7 +8,11 @@ export const notFoundHandler: RequestHandler = (_req, res) => {
 
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     if (error instanceof HttpError) {
-        res.status(error.status).json({ error: error.message });
+        res.status(error.status).json({
+            error: error.message,
+            code: error.code,
+            params: error.params,
+        });
         return;
     }
     if (error instanceof multer.MulterError) {

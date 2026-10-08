@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { BookOpen, ShoppingCart, Receipt, WandSparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -8,13 +9,6 @@ import { AppNav, type NavLink } from "../ui/AppNav";
 
 export type CustomerPage = "menu" | "build-pizza" | "cart" | "orders";
 
-const PAGE_TITLE: Record<CustomerPage, string> = {
-    menu: "Pizzaria ON - Menu",
-    cart: "Pizzaria ON - Carrinho",
-    "build-pizza": "Pizzaria ON - Criar Pizza",
-    orders: "Pizzaria ON - Meus Pedidos",
-};
-
 interface CustomerNavProps {
     current: CustomerPage;
 }
@@ -22,11 +16,12 @@ interface CustomerNavProps {
 export const CustomerNav = ({ current }: CustomerNavProps) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation(["common", "customer"]);
     const count = useAppSelector(selectCartItems).length;
 
     useEffect(() => {
-        document.title = PAGE_TITLE[current];
-    }, [current]);
+        document.title = t(`customer:nav.titles.${current}`);
+    }, [current, t]);
 
     const handleLogout = () => {
         dispatch(signOut());
@@ -35,32 +30,37 @@ export const CustomerNav = ({ current }: CustomerNavProps) => {
     };
 
     const links: NavLink[] = [
-        { key: "menu", to: "/customer/menu", label: "Menu", icon: BookOpen },
+        {
+            key: "menu",
+            to: "/customer/menu",
+            label: t("customer:nav.menu"),
+            icon: BookOpen,
+        },
         {
             key: "build-pizza",
             to: "/customer/build-pizza",
-            label: "Criar Pizza",
+            label: t("customer:nav.buildPizza"),
             icon: WandSparkles,
         },
         {
             key: "orders",
             to: "/customer/orders",
-            label: "Meus Pedidos",
+            label: t("customer:nav.orders"),
             icon: Receipt,
         },
         {
             key: "cart",
             to: "/customer/cart",
-            label: "Carrinho",
+            label: t("customer:nav.cart"),
             icon: ShoppingCart,
             count,
-            countLabel: `${count} ${count === 1 ? "item" : "itens"} no carrinho`,
+            countLabel: t("customer:nav.cartCount", { count }),
         },
     ];
 
     return (
         <AppNav
-            brand="Pizzaria ON"
+            brand={t("brand")}
             links={links}
             current={current}
             onLogout={handleLogout}

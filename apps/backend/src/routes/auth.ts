@@ -32,7 +32,8 @@ const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", SALT_ROUNDS);
  * (it forces a CORS preflight), which blocks CSRF on top of SameSite.
  */
 const requireCsrfHeader = (header: string | undefined) => {
-    if (header !== "pizzaria") throw new HttpError(403, "Missing CSRF header");
+    if (header !== "pizzaria")
+        throw new HttpError(403, "Missing CSRF header", "csrf");
 };
 
 export const authRoutes = (repos: Repositories) => {
@@ -65,7 +66,11 @@ export const authRoutes = (repos: Repositories) => {
             credentials?.passwordHash ?? DUMMY_HASH,
         );
         if (!credentials || !valid)
-            throw new HttpError(401, "Invalid email or password");
+            throw new HttpError(
+                401,
+                "Invalid email or password",
+                "invalid_credentials",
+            );
 
         await issueSession(res, credentials.user, randomUUID());
     });
@@ -73,23 +78,36 @@ export const authRoutes = (repos: Repositories) => {
     router.post("/refresh", async (req, res) => {
         requireCsrfHeader(req.header("x-requested-by"));
         const raw = readRefreshCookie(req);
-        if (!raw) throw new HttpError(401, "No refresh token");
+        if (!raw)
+            throw new HttpError(401, "No refresh token", "no_refresh_token");
 
         const tokenHash = hashRefreshToken(raw);
         let stored = await repos.refreshTokens.findByHash(tokenHash);
         if (!stored) {
             clearRefreshCookie(res);
-            throw new HttpError(401, "Invalid refresh token");
+            throw new HttpError(
+                401,
+                "Invalid refresh token",
+                "invalid_refresh_token",
+            );
         }
         if (stored.expiresAt.getTime() < Date.now()) {
             await repos.refreshTokens.revokeFamily(stored.familyId);
             clearRefreshCookie(res);
-            throw new HttpError(401, "Refresh token expired");
+            throw new HttpError(
+                401,
+                "Refresh token expired",
+                "refresh_token_expired",
+            );
         }
         const user = await repos.users.findById(stored.userId);
         if (!user) {
             clearRefreshCookie(res);
-            throw new HttpError(401, "Invalid refresh token");
+            throw new HttpError(
+                401,
+                "Invalid refresh token",
+                "invalid_refresh_token",
+            );
         }
 
         if (!(await repos.refreshTokens.markUsed(stored.id))) {
@@ -106,7 +124,11 @@ export const authRoutes = (repos: Repositories) => {
             }
             await repos.refreshTokens.revokeFamily(stored.familyId);
             clearRefreshCookie(res);
-            throw new HttpError(401, "Refresh token reuse detected");
+            throw new HttpError(
+                401,
+                "Refresh token reuse detected",
+                "refresh_token_reused",
+            );
         }
 
         await issueSession(res, user, stored.familyId);
@@ -126,7 +148,7 @@ export const authRoutes = (repos: Repositories) => {
     router.post("/register", async (req, res) => {
         const { name, email, password } = parse(registerInputSchema, req.body);
         if (await repos.users.findCredentialsByEmail(email)) {
-            throw new HttpError(409, "Email already registered");
+            throw new HttpError(409, "Email already registered", "email_taken");
         }
         const user = await repos.users.create({
             name,

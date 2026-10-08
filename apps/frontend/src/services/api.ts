@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import {
     createApi,
     fetchBaseQuery,
@@ -61,15 +62,36 @@ const baseQuery: BaseQueryFn<
     return result;
 };
 
-/** Message returned by the API (`{ error }`) or a generic fallback. */
+/**
+ * User-facing text for an API error. The API sends a stable `code` (and
+ * `params`) that is translated here; without a known code its English
+ * `error` message is shown as is.
+ */
 export const errorMessage = (error: unknown): string => {
-    const data =
-        (error as FetchBaseQueryError | undefined) &&
-        (error as { data?: unknown }).data;
-    if (data && typeof data === "object" && "error" in data) {
-        return String((data as { error: unknown }).error);
+    const data = (error as { data?: unknown } | undefined)?.data;
+    if (!data || typeof data !== "object")
+        return i18next.t("common:errors.unknown");
+    const {
+        code,
+        params,
+        error: message,
+    } = data as {
+        code?: string;
+        params?: Record<string, string>;
+        error?: unknown;
+    };
+    if (code && i18next.exists(`common:errors.${code}`)) {
+        const translated = Object.fromEntries(
+            Object.entries(params ?? {}).map(([key, value]) => [
+                key,
+                i18next.exists(`common:errors.entities.${value}`)
+                    ? i18next.t(`common:errors.entities.${value}` as never)
+                    : value,
+            ]),
+        );
+        return i18next.t(`common:errors.${code}` as never, translated);
     }
-    return "Erro desconhecido";
+    return message ? String(message) : i18next.t("common:errors.unknown");
 };
 
 export type UserWithOrders = User & { orders: Order[] };

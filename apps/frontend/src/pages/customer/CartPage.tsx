@@ -27,7 +27,8 @@ import {
     selectCartItems,
     selectCartTotal,
 } from "../../features/cart/cartSlice";
-import { formatMoney } from "../../lib/format";
+import { useTranslation } from "react-i18next";
+import { formatMoney } from "../../i18n/format";
 import { errorMessage, usePlaceOrderMutation } from "../../services/api";
 
 const ITEM_ICON: Record<CartItem["type"], LucideIcon> = {
@@ -40,6 +41,7 @@ const iconButton =
     "inline-flex size-9 cursor-pointer items-center justify-center rounded-lg border-0 bg-ink/5 text-ink transition hover:bg-ink/10 disabled:cursor-not-allowed disabled:opacity-40";
 
 const CartRow = ({ item }: { item: CartItem }) => {
+    const { t } = useTranslation("customer");
     const dispatch = useAppDispatch();
     const Icon = ITEM_ICON[item.type];
     const setQuantity = (quantity: number) =>
@@ -63,18 +65,18 @@ const CartRow = ({ item }: { item: CartItem }) => {
                     </p>
                 ) : null}
                 <p className="m-0 text-sm font-semibold text-ink/60">
-                    {formatMoney(item.price)} cada
+                    {t("cart.each", { price: formatMoney(item.price) })}
                 </p>
             </div>
             <div
                 className="flex items-center gap-2"
                 role="group"
-                aria-label={`Quantidade de ${item.name}`}
+                aria-label={t("cart.quantityOf", { name: item.name })}
             >
                 <button
                     type="button"
                     className={iconButton}
-                    aria-label="Diminuir quantidade"
+                    aria-label={t("cart.decrease")}
                     disabled={item.quantity === 1}
                     onClick={() => setQuantity(item.quantity - 1)}
                 >
@@ -89,7 +91,7 @@ const CartRow = ({ item }: { item: CartItem }) => {
                 <button
                     type="button"
                     className={iconButton}
-                    aria-label="Aumentar quantidade"
+                    aria-label={t("cart.increase")}
                     onClick={() => setQuantity(item.quantity + 1)}
                 >
                     <Plus className="size-4" aria-hidden />
@@ -104,7 +106,7 @@ const CartRow = ({ item }: { item: CartItem }) => {
             <button
                 type="button"
                 className={`${iconButton} text-tomato-700 hover:bg-tomato-50`}
-                aria-label={`Remover ${item.name}`}
+                aria-label={t("cart.remove", { name: item.name })}
                 onClick={() => dispatch(itemRemoved(item.id))}
             >
                 <Trash2 className="size-4" aria-hidden />
@@ -114,6 +116,7 @@ const CartRow = ({ item }: { item: CartItem }) => {
 };
 
 export const CartPage = () => {
+    const { t } = useTranslation("customer");
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const items = useAppSelector(selectCartItems);
@@ -138,7 +141,7 @@ export const CartPage = () => {
             <main className="mx-auto w-full max-w-6xl px-4 pt-6 pb-16">
                 <h1 className="mb-8 flex items-center justify-center gap-3 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
                     <ShoppingCart className="size-9" aria-hidden />
-                    Carrinho
+                    {t("cart.title")}
                 </h1>
 
                 {items.length === 0 ? (
@@ -148,16 +151,16 @@ export const CartPage = () => {
                             aria-hidden
                         />
                         <h2 className="mt-4 mb-2 text-3xl font-extrabold text-ink [text-shadow:none]">
-                            Carrinho vazio!
+                            {t("cart.emptyTitle")}
                         </h2>
                         <p className="mb-6 text-lg text-ink/70">
-                            Por que não dá uma olhadinha nos nossos produtos?
+                            {t("cart.emptyText")}
                         </p>
                         <Link
                             to="/customer/menu"
                             className={buttonClass({ variant: "primary" })}
                         >
-                            Voltar para o menu
+                            {t("cart.backToMenu")}
                         </Link>
                     </Panel>
                 ) : (
@@ -171,7 +174,7 @@ export const CartPage = () => {
                         <Panel className="space-y-4 lg:sticky lg:top-20">
                             <div className="flex items-baseline justify-between">
                                 <span className="text-lg font-bold text-ink/70">
-                                    Total
+                                    {t("cart.total")}
                                 </span>
                                 <span
                                     data-slot="total"
@@ -185,12 +188,12 @@ export const CartPage = () => {
                                     htmlFor="address"
                                     className="block text-lg font-extrabold text-ink"
                                 >
-                                    Endereço de entrega
+                                    {t("cart.addressLabel")}
                                 </label>
                                 <Input
                                     id="address"
                                     type="text"
-                                    placeholder="Endereço"
+                                    placeholder={t("cart.addressPlaceholder")}
                                     autoComplete="street-address"
                                     value={address}
                                     onChange={(e) =>
@@ -207,7 +210,7 @@ export const CartPage = () => {
                                 onClick={() => void handleCheckout()}
                                 disabled={isLoading || address.trim() === ""}
                             >
-                                Finalizar Compra
+                                {t("cart.checkout")}
                             </Button>
                             <div className="flex gap-3">
                                 <Link
@@ -215,7 +218,7 @@ export const CartPage = () => {
                                     className={`${buttonClass({ variant: "ghost", size: "sm" })} flex-1`}
                                 >
                                     <ArrowLeft className="size-4" aria-hidden />
-                                    Voltar
+                                    {t("cart.back")}
                                 </Link>
                                 <Button
                                     variant="ghost"
@@ -225,7 +228,7 @@ export const CartPage = () => {
                                     disabled={isLoading}
                                 >
                                     <Trash2 className="size-4" aria-hidden />
-                                    Limpar Carrinho
+                                    {t("cart.clear")}
                                 </Button>
                             </div>
                         </Panel>

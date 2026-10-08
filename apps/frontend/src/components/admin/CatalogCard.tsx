@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { Check, ImageOff } from "lucide-react";
 import { useState } from "react";
-import { formatMoney } from "../../lib/format";
+import { formatMoney } from "../../i18n/format";
 import { imageUrl } from "../../lib/images";
 import { Button } from "../ui/Button";
 import { Card, CardContent, CardMedia, CardTitle } from "../ui/card";
@@ -22,6 +23,7 @@ export const CatalogCard = ({
     selected,
     onToggle,
 }: CatalogCardProps) => {
+    const { t } = useTranslation("admin");
     const [failed, setFailed] = useState(false);
 
     return (
@@ -66,7 +68,7 @@ export const CatalogCard = ({
                     onClick={onToggle}
                 >
                     {selected ? <Check className="size-4" aria-hidden /> : null}
-                    {selected ? "Desselecionar" : "Selecionar"}
+                    {selected ? t("catalog.unselect") : t("catalog.select")}
                 </Button>
             </div>
         </Card>

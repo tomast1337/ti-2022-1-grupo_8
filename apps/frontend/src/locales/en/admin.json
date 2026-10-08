@@ -1,0 +1,85 @@
+{
+    "loading": "Loading...",
+    "nav": {
+        "brand": "Pizzaria ON - Admin",
+        "sections": {
+            "home": "Reports",
+            "ingredients": "Ingredients",
+            "pizzas": "Pizzas",
+            "products": "Products",
+            "users": "Users"
+        },
+        "titles": {
+            "home": "Pizzaria ON Admin - Menu",
+            "ingredients": "Pizzaria ON Admin - Ingredients",
+            "pizzas": "Pizzaria ON Admin - Pizzas",
+            "products": "Pizzaria ON Admin - Products",
+            "users": "Pizzaria ON Admin - Manage Users"
+        }
+    },
+    "fields": {
+        "name": "Name",
+        "email": "Email",
+        "price": "Price",
+        "image": "Image",
+        "description": "Description",
+        "portionWeight": "Portion weight in grams",
+        "portionWeightShort": "Portion weight"
+    },
+    "catalog": {
+        "select": "Select",
+        "unselect": "Deselect"
+    },
+    "roles": {
+        "customer": "User",
+        "admin": "Administrator",
+        "employee": "Employee"
+    },
+    "reports": {
+        "title": "Reports",
+        "from": "From",
+        "to": "To",
+        "name": "Name",
+        "quantity": "Quantity",
+        "portions": "Portions",
+        "revenue": "Revenue",
+        "cost": "Cost",
+        "pizzas": "Most Ordered Pizzas",
+        "ingredients": "Most Used Ingredients",
+        "products": "Most Ordered Products"
+    },
+    "products": {
+        "title": "Manage Products",
+        "registered": "Registered Products",
+        "edit": "Edit Product",
+        "new": "Add New Product",
+        "confirmDelete": "Do you really want to delete this product?"
+    },
+    "ingredients": {
+        "title": "Manage Ingredients",
+        "registered": "Registered Ingredients",
+        "edit": "Edit Ingredient",
+        "new": "Add Ingredient",
+        "confirmDelete": "Do you really want to delete this ingredient?"
+    },
+    "pizzas": {
+        "title": "Manage Pizzas",
+        "registered": "Registered Pizzas",
+        "edit": "Edit Pizza",
+        "new": "Add Pizza",
+        "confirmDelete": "Do you really want to delete this pizza?",
+        "ingredients": "Ingredients",
+        "needIngredient": "Select at least one ingredient",
+        "totalPrice": "Total price:"
+    },
+    "users": {
+        "title": "Users",
+        "role": "Role",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "orders": "Registered Orders",
+        "noOrders": "No orders yet.",
+        "notFound": "User not found. Please try again!",
+        "confirmDelete": "Do you really want to delete {email}?"
+    }
+}

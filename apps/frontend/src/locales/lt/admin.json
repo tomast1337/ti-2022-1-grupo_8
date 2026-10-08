@@ -1,0 +1,85 @@
+{
+    "loading": "Kraunama...",
+    "nav": {
+        "brand": "Pizzaria ON - Administratorius",
+        "sections": {
+            "home": "Ataskaitos",
+            "ingredients": "Ingredientai",
+            "pizzas": "Picos",
+            "products": "Produktai",
+            "users": "Vartotojai"
+        },
+        "titles": {
+            "home": "Pizzaria ON Admin - Meniu",
+            "ingredients": "Pizzaria ON Admin - Ingredientai",
+            "pizzas": "Pizzaria ON Admin - Picos",
+            "products": "Pizzaria ON Admin - Produktai",
+            "users": "Pizzaria ON Admin - Vartotojų valdymas"
+        }
+    },
+    "fields": {
+        "name": "Pavadinimas",
+        "email": "El. paštas",
+        "price": "Kaina",
+        "image": "Paveikslėlis",
+        "description": "Aprašymas",
+        "portionWeight": "Porcijos svoris gramais",
+        "portionWeightShort": "Porcijos svoris"
+    },
+    "catalog": {
+        "select": "Pasirinkti",
+        "unselect": "Atsisakyti"
+    },
+    "roles": {
+        "customer": "Vartotojas",
+        "admin": "Administratorius",
+        "employee": "Darbuotojas"
+    },
+    "reports": {
+        "title": "Ataskaitos",
+        "from": "Nuo",
+        "to": "Iki",
+        "name": "Pavadinimas",
+        "quantity": "Kiekis",
+        "portions": "Porcijos",
+        "revenue": "Pajamos",
+        "cost": "Kaina",
+        "pizzas": "Dažniausiai užsakomos picos",
+        "ingredients": "Dažniausiai naudojami ingredientai",
+        "products": "Dažniausiai užsakomi produktai"
+    },
+    "products": {
+        "title": "Produktų valdymas",
+        "registered": "Užregistruoti produktai",
+        "edit": "Redaguoti produktą",
+        "new": "Pridėti naują produktą",
+        "confirmDelete": "Ar tikrai norite ištrinti šį produktą?"
+    },
+    "ingredients": {
+        "title": "Ingredientų valdymas",
+        "registered": "Užregistruoti ingredientai",
+        "edit": "Redaguoti ingredientą",
+        "new": "Pridėti ingredientą",
+        "confirmDelete": "Ar tikrai norite ištrinti šį ingredientą?"
+    },
+    "pizzas": {
+        "title": "Picų valdymas",
+        "registered": "Užregistruotos picos",
+        "edit": "Redaguoti picą",
+        "new": "Pridėti picą",
+        "confirmDelete": "Ar tikrai norite ištrinti šią picą?",
+        "ingredients": "Ingredientai",
+        "needIngredient": "Pasirinkite bent vieną ingredientą",
+        "totalPrice": "Bendra kaina:"
+    },
+    "users": {
+        "title": "Vartotojai",
+        "role": "Tipas",
+        "confirm": "Patvirtinti",
+        "delete": "Ištrinti",
+        "orders": "Registruoti užsakymai",
+        "noOrders": "Užsakymų dar nėra.",
+        "notFound": "Vartotojas nerastas. Bandykite dar kartą!",
+        "confirmDelete": "Ar tikrai norite ištrinti {email}?"
+    }
+}

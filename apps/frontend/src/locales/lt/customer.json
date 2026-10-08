@@ -1,0 +1,73 @@
+{
+    "loading": "Kraunama...",
+    "nav": {
+        "menu": "Meniu",
+        "buildPizza": "Sukurti picą",
+        "orders": "Mano užsakymai",
+        "cart": "Krepšelis",
+        "cartCount": "{count, plural, one {# prekė} few {# prekės} other {# prekių}} krepšelyje",
+        "titles": {
+            "menu": "Pizzaria ON - Meniu",
+            "cart": "Pizzaria ON - Krepšelis",
+            "build-pizza": "Pizzaria ON - Sukurti picą",
+            "orders": "Pizzaria ON - Mano užsakymai"
+        }
+    },
+    "menu": {
+        "buildTitle": "Sukurkite savo picą",
+        "buildSubtitle": "Kaip jums patinka",
+        "buildCta": "Spauskite čia",
+        "popular": "Populiariausios",
+        "drinks": "Gėrimai ir kiti produktai",
+        "allFlavors": "Visi skoniai"
+    },
+    "card": {
+        "inCart": "Produktas krepšelyje!",
+        "addToCart": "Į krepšelį"
+    },
+    "half": {
+        "title": "{number} pusė",
+        "count": "{selected}/{max} ingredientų"
+    },
+    "cart": {
+        "title": "Krepšelis",
+        "each": "{price} už vnt.",
+        "quantityOf": "{name} kiekis",
+        "decrease": "Sumažinti kiekį",
+        "increase": "Padidinti kiekį",
+        "remove": "Pašalinti {name}",
+        "emptyTitle": "Krepšelis tuščias!",
+        "emptyText": "Kodėl gi neapsižvalgius po mūsų produktus?",
+        "backToMenu": "Atgal į meniu",
+        "total": "Iš viso",
+        "addressLabel": "Pristatymo adresas",
+        "addressPlaceholder": "Adresas",
+        "checkout": "Užsakyti",
+        "back": "Atgal",
+        "clear": "Išvalyti krepšelį"
+    },
+    "orders": {
+        "title": "Mano užsakymai",
+        "emptyTitle": "Deja, užsakymų dar nėra!",
+        "emptyText": "Kodėl nepadarius vieno dabar?",
+        "viewMenu": "Žiūrėti meniu"
+    },
+    "builder": {
+        "title": "Sukurkite savo picą",
+        "step1": "1. Pasirinkite dydį",
+        "step2": "2. Ingredientai",
+        "limit": "Pasirinkite iki {max} kiekvienoje pusėje",
+        "sizeRequired": "Pasirinkite dydį",
+        "noSize": "Dydis nepasirinktas",
+        "totalPrice": "Bendra kaina",
+        "removeHalf": "Pašalinti pusę",
+        "addHalf": "Pridėti pusę",
+        "name": "{size} pica",
+        "joiners": {
+            "of": "su",
+            "with": "ir",
+            "and": "ir"
+        },
+        "description": "Ingredientai: {list}"
+    }
+}

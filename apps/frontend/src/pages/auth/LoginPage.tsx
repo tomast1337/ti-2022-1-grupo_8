@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "../../components/ui/LanguageSwitcher";
 import { loginInputSchema } from "@pizzaria/dtos";
 import { useEffect, useState, type FormEvent } from "react";
 import { LogIn, UserPlus } from "lucide-react";
@@ -13,6 +15,7 @@ import { errorMessage, useLoginMutation } from "../../services/api";
 import { imageUrl } from "../../lib/images";
 
 export const LoginPage = () => {
+    const { t } = useTranslation(["auth", "common"]);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const role = useAppSelector(selectRole);
@@ -22,8 +25,8 @@ export const LoginPage = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        document.title = "Pizzaria ON - Login";
-    }, []);
+        document.title = t("login.pageTitle");
+    }, [t]);
 
     if (role) return <Navigate to={HOME_BY_ROLE[role]} replace />;
 
@@ -31,7 +34,7 @@ export const LoginPage = () => {
         event.preventDefault();
         const input = loginInputSchema.safeParse({ email, password });
         if (!input.success) {
-            setError("E-mail ou senha inválidos");
+            setError(t("login.invalid"));
             return;
         }
         setError("");
@@ -52,8 +55,9 @@ export const LoginPage = () => {
                 className="pointer-events-none fixed inset-x-0 bottom-0 -z-0 w-full"
             />
             <main className="relative mx-auto w-full max-w-xl px-4 pb-16">
+                <LanguageSwitcher className="absolute top-4 right-4 rounded-xl bg-white/80 px-2 py-1" />
                 <h1 className="my-8 text-center text-5xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
-                    Pizzaria ON
+                    {t("common:brand")}
                 </h1>
                 <Panel className="p-8">
                     <h2 className="mb-6 flex items-center justify-center gap-2 border-b-2 border-ink pb-3 text-3xl font-extrabold text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)]">
@@ -61,7 +65,7 @@ export const LoginPage = () => {
                             className="size-7 text-tomato-600 drop-shadow-none"
                             aria-hidden
                         />
-                        Login
+                        {t("login.title")}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-3">
                         {error && <Alert>{error}</Alert>}
@@ -69,7 +73,7 @@ export const LoginPage = () => {
                             id="email"
                             type="email"
                             name="email"
-                            placeholder="Email"
+                            placeholder={t("fields.email")}
                             autoComplete="email"
                             required
                             value={email}
@@ -78,19 +82,21 @@ export const LoginPage = () => {
                         <Input
                             type="password"
                             name="password"
-                            placeholder="Senha"
+                            placeholder={t("fields.password")}
                             autoComplete="current-password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <Button type="submit" block disabled={isLoading}>
-                            {isLoading ? "Entrando..." : "Logar"}
+                            {isLoading
+                                ? t("login.submitting")
+                                : t("login.submit")}
                         </Button>
                     </form>
                     <div className="mt-8 space-y-3">
                         <p className="font-semibold text-ink">
-                            Não possui conta? Cadastre-se
+                            {t("login.noAccount")}
                         </p>
                         <Link
                             to="/register"
@@ -100,7 +106,7 @@ export const LoginPage = () => {
                             })}
                         >
                             <UserPlus className="size-5" aria-hidden />
-                            Criar conta
+                            {t("login.createAccount")}
                         </Link>
                     </div>
                 </Panel>

@@ -14,7 +14,7 @@ describe("authentication", () => {
 
     it("rejects a wrong password", () => {
         cy.loginViaUi("customer@pizzaria.local", "wrong-password");
-        cy.get("[role=alert]").should("contain", "Invalid email or password");
+        cy.get("[role=alert]").should("contain", "E-mail ou senha inválidos");
         cy.snap("login-wrong-password");
         cy.location("pathname").should("eq", "/login");
     });
@@ -99,7 +99,7 @@ describe("authentication", () => {
         cy.get('input[name="password"]').type("secret123");
         cy.get('input[name="confirmPassword"]').type("secret123");
         cy.contains("button", "Cadastrar").click();
-        cy.contains("Email already registered");
+        cy.contains("E-mail já cadastrado");
     });
 
     it("keeps each role out of the other areas", () => {

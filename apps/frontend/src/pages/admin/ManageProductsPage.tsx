@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import type { Product } from "@pizzaria/dtos";
@@ -29,6 +30,7 @@ const EMPTY_FORM: FormState = { name: "", price: "", description: "" };
 
 /** Admin page to create, edit and delete products (drinks, desserts). */
 export const ManageProductsPage = () => {
+    const { t } = useTranslation("admin");
     const navigate = useNavigate();
     const { data: products = [], isLoading, error } = useGetProductsQuery();
     const [saveProduct, { isLoading: saving }] = useSaveProductMutation();
@@ -91,7 +93,7 @@ export const ManageProductsPage = () => {
             navigate(-1);
             return;
         }
-        if (!window.confirm("Deseja realmente excluir este produto?")) return;
+        if (!window.confirm(t("products.confirmDelete"))) return;
         try {
             await deleteProduct(selectedId).unwrap();
             reset();
@@ -106,13 +108,13 @@ export const ManageProductsPage = () => {
             <main className="mx-auto w-full max-w-5xl space-y-6 px-4 pb-16">
                 <PageTitle>
                     <Wine className="size-9" aria-hidden />
-                    Gerenciar Produtos
+                    {t("products.title")}
                 </PageTitle>
                 <Panel className="space-y-3">
                     <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
-                        Produtos Cadastrados
+                        {t("products.registered")}
                     </h2>
-                    {isLoading && <p>Carregando...</p>}
+                    {isLoading && <p>{t("loading")}</p>}
                     {error && <Alert>{errorMessage(error)}</Alert>}
                     <CatalogRow>
                         {products.map((product) => (
@@ -135,12 +137,12 @@ export const ManageProductsPage = () => {
                     >
                         <h2 className="m-0 font-sans text-2xl font-extrabold tracking-normal text-ink normal-case [text-shadow:none]">
                             {selectedId
-                                ? "Editar Produto"
-                                : "Adicionar Novo Produto"}
+                                ? t("products.edit")
+                                : t("products.new")}
                         </h2>
                         {formError && <Alert>{formError}</Alert>}
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <Field label="Nome" htmlFor="name">
+                            <Field label={t("fields.name")} htmlFor="name">
                                 <Input
                                     type="text"
                                     id="name"
@@ -151,7 +153,7 @@ export const ManageProductsPage = () => {
                                     }
                                 />
                             </Field>
-                            <Field label="Preço" htmlFor="price">
+                            <Field label={t("fields.price")} htmlFor="price">
                                 <Input
                                     type="number"
                                     step={0.01}
@@ -165,7 +167,7 @@ export const ManageProductsPage = () => {
                                 />
                             </Field>
                         </div>
-                        <Field label="Imagem" htmlFor="image">
+                        <Field label={t("fields.image")} htmlFor="image">
                             <Input
                                 key={fileKey}
                                 type="file"
@@ -178,7 +180,10 @@ export const ManageProductsPage = () => {
                                 }
                             />
                         </Field>
-                        <Field label="Descrição" htmlFor="description">
+                        <Field
+                            label={t("fields.description")}
+                            htmlFor="description"
+                        >
                             <Textarea
                                 id="description"
                                 required

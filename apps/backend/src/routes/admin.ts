@@ -39,7 +39,11 @@ export const adminRoutes = (repos: Repositories) => {
         const { role } = parse(z.object({ role: roleSchema }), req.body);
         const id = uuidParam(req.params.id);
         if (id === currentUser(req).id && role !== "admin") {
-            throw new HttpError(400, "You cannot remove your own admin role");
+            throw new HttpError(
+                400,
+                "You cannot remove your own admin role",
+                "cannot_demote_self",
+            );
         }
         const user = await repos.users.updateRole(id, role);
         if (!user) throw notFound("User");
@@ -49,7 +53,11 @@ export const adminRoutes = (repos: Repositories) => {
     router.delete("/users/:id", async (req, res) => {
         const id = uuidParam(req.params.id);
         if (id === currentUser(req).id) {
-            throw new HttpError(400, "You cannot delete your own account");
+            throw new HttpError(
+                400,
+                "You cannot delete your own account",
+                "cannot_delete_self",
+            );
         }
         const user = await repos.users.remove(id);
         if (!user) throw notFound("User");
@@ -155,6 +163,10 @@ export const adminRoutes = (repos: Repositories) => {
 const assertIngredientsExist = async (repos: Repositories, ids: string[]) => {
     const found = await repos.ingredients.findByIds(ids);
     if (found.length !== new Set(ids).size) {
-        throw new HttpError(400, "One or more ingredients do not exist");
+        throw new HttpError(
+            400,
+            "One or more ingredients do not exist",
+            "ingredients_missing",
+        );
     }
 };

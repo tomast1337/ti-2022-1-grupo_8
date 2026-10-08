@@ -1,0 +1,83 @@
+{
+    "brand": "Pizzaria ON",
+    "noDate": "No date",
+    "logout": "Sign out",
+    "total": "Total:",
+    "advance": "Advance",
+    "completed": "Completed",
+    "back": "Back",
+    "nav": {
+        "main": "Main navigation",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu"
+    },
+    "language": {
+        "label": "Language",
+        "pt-BR": "Português",
+        "en": "English",
+        "lt": "Lietuvių"
+    },
+    "actions": {
+        "save": "Save",
+        "add": "Add",
+        "delete": "Delete",
+        "cancel": "Cancel"
+    },
+    "orderStatus": {
+        "placed": "Placed",
+        "in_progress": "In progress",
+        "completed": "Completed"
+    },
+    "customerStatus": {
+        "placed": "Pending",
+        "in_progress": "Preparing",
+        "completed": "Ready"
+    },
+    "pizzaSize": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "family": "Family"
+    },
+    "order": {
+        "title": "Order #{id}"
+    },
+    "notFound": {
+        "title": "Not a single pizza here!",
+        "home": "Back to start"
+    },
+    "errors": {
+        "unknown": "Unknown error",
+        "generic": "Something went wrong. Please try again.",
+        "no_token": "Sign in to continue.",
+        "invalid_token": "Session expired. Sign in again.",
+        "forbidden": "Access denied.",
+        "not_authenticated": "Sign in to continue.",
+        "csrf": "Request not allowed.",
+        "invalid_credentials": "Invalid email or password",
+        "no_refresh_token": "Session expired. Sign in again.",
+        "invalid_refresh_token": "Session expired. Sign in again.",
+        "refresh_token_expired": "Session expired. Sign in again.",
+        "refresh_token_reused": "Session ended for security. Sign in again.",
+        "email_taken": "Email already registered",
+        "validation": "Invalid data",
+        "invalid_image": "The image must be png, jpeg or webp",
+        "not_found": "{what} not found",
+        "unknown_item": "Unknown item: {what}",
+        "order_status_mismatch": "The order is not in the expected status",
+        "order_status_changed": "The order status changed. Refresh the page.",
+        "cannot_demote_self": "You cannot remove your own admin access",
+        "cannot_delete_self": "You cannot delete your own account",
+        "ingredients_missing": "One or more ingredients do not exist",
+        "entities": {
+            "User": "User",
+            "Ingredient": "Ingredient",
+            "Pizza": "Pizza",
+            "Product": "Product",
+            "Order": "Order",
+            "pizza": "pizza",
+            "product": "product",
+            "ingredient": "ingredient"
+        }
+    }
+}

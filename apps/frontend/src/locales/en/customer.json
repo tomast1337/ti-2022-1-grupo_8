@@ -1,0 +1,73 @@
+{
+    "loading": "Loading...",
+    "nav": {
+        "menu": "Menu",
+        "buildPizza": "Build a Pizza",
+        "orders": "My Orders",
+        "cart": "Cart",
+        "cartCount": "{count, plural, one {# item} other {# items}} in the cart",
+        "titles": {
+            "menu": "Pizzaria ON - Menu",
+            "cart": "Pizzaria ON - Cart",
+            "build-pizza": "Pizzaria ON - Build a Pizza",
+            "orders": "Pizzaria ON - My Orders"
+        }
+    },
+    "menu": {
+        "buildTitle": "Build your own pizza",
+        "buildSubtitle": "Just the way you like it",
+        "buildCta": "Click here",
+        "popular": "Most ordered",
+        "drinks": "Drinks and other products",
+        "allFlavors": "All flavors"
+    },
+    "card": {
+        "inCart": "Product in the cart!",
+        "addToCart": "Add to cart"
+    },
+    "half": {
+        "title": "Half {number}",
+        "count": "{selected}/{max} ingredients"
+    },
+    "cart": {
+        "title": "Cart",
+        "each": "{price} each",
+        "quantityOf": "Quantity of {name}",
+        "decrease": "Decrease quantity",
+        "increase": "Increase quantity",
+        "remove": "Remove {name}",
+        "emptyTitle": "Your cart is empty!",
+        "emptyText": "Why not take a look at our products?",
+        "backToMenu": "Back to the menu",
+        "total": "Total",
+        "addressLabel": "Delivery address",
+        "addressPlaceholder": "Address",
+        "checkout": "Checkout",
+        "back": "Back",
+        "clear": "Clear cart"
+    },
+    "orders": {
+        "title": "My Orders",
+        "emptyTitle": "Oh no, no orders yet!",
+        "emptyText": "Why not place one now?",
+        "viewMenu": "See the menu"
+    },
+    "builder": {
+        "title": "Build your pizza",
+        "step1": "1. Choose the size",
+        "step2": "2. Ingredients",
+        "limit": "Choose up to {max} on each half",
+        "sizeRequired": "Select a size",
+        "noSize": "No size selected",
+        "totalPrice": "Total price",
+        "removeHalf": "Remove Half",
+        "addHalf": "Add Half",
+        "name": "{size} Pizza",
+        "joiners": {
+            "of": "with",
+            "with": "and",
+            "and": "and"
+        },
+        "description": "Ingredients: {list}"
+    }
+}
