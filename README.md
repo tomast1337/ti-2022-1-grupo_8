@@ -130,6 +130,14 @@ All routes except `/auth/*` and `/health` need `Authorization: Bearer <token>`.
 | `POST/PUT/DELETE /admin/{ingredients,pizzas,products}` | admin    |
 | `GET /admin/reports?from=&to=`                         | admin    |
 
+### Authentication
+
+- Passwords are hashed with bcrypt (8 to 72 characters on register). Emails are trimmed and lower-cased.
+- Login returns a signed JWT (HS256, `JWT_EXPIRES_IN`, 1h by default) that the frontend keeps in `localStorage` and sends as a Bearer token.
+- The token only identifies the user: the API reloads the user on every request, so a role change or a deleted account takes effect immediately instead of when the token expires.
+- Failed logins and registrations are throttled per IP (`AUTH_RATE_LIMIT_MAX` per `AUTH_RATE_LIMIT_WINDOW_MINUTES`, then `429`). Successful ones don't count.
+- Responses carry the usual security headers (helmet).
+
 Order prices are always recomputed on the server. Order status flows `placed` → `in_progress` → `completed`.
 
 ## Database

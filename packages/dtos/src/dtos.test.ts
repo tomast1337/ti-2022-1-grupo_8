@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
     cartItemSchema,
+    loginInputSchema,
     pizzaInputSchema,
     placeOrderInputSchema,
+    registerInputSchema,
 } from "./index.js";
 
 const uuid = "5f0c2b7e-6a0b-4f0e-9a52-0d3c1c1f6b11";
@@ -51,5 +53,31 @@ describe("placeOrderInputSchema", () => {
         expect(() =>
             placeOrderInputSchema.parse({ address: "Rua A", items: [] }),
         ).toThrow();
+    });
+});
+
+describe("auth schemas", () => {
+    it("normalizes emails so case and spaces do not create new accounts", () => {
+        const parsed = loginInputSchema.parse({
+            email: "  Ana@Example.COM ",
+            password: "x",
+        });
+        expect(parsed.email).toBe("ana@example.com");
+    });
+
+    it("rejects passwords outside 8..72 characters on register", () => {
+        const base = { name: "Ana", email: "ana@example.com" };
+        expect(
+            registerInputSchema.safeParse({ ...base, password: "1234567" })
+                .success,
+        ).toBe(false);
+        expect(
+            registerInputSchema.safeParse({ ...base, password: "a".repeat(73) })
+                .success,
+        ).toBe(false);
+        expect(
+            registerInputSchema.safeParse({ ...base, password: "12345678" })
+                .success,
+        ).toBe(true);
     });
 });

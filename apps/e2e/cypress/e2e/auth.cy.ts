@@ -19,6 +19,25 @@ describe("authentication", () => {
         cy.location("pathname").should("eq", "/login");
     });
 
+    it("treats the email as case-insensitive", () => {
+        cy.loginViaUi(
+            "  Customer@Pizzaria.LOCAL ",
+            Cypress.expose("seedPassword") as string,
+        );
+        cy.location("pathname").should("eq", "/customer/menu");
+    });
+
+    it("refuses a password shorter than 8 characters when registering", () => {
+        cy.visit("/register");
+        cy.get('input[name="name"]').type("Curta");
+        cy.get('input[name="email"]').type("curta@example.com");
+        cy.get('input[name="password"]').type("abc1234");
+        cy.get('input[name="confirmPassword"]').type("abc1234");
+        cy.contains("button", "Cadastrar").click();
+        cy.get("[role=alert]").should("contain", "entre 8 e 72");
+        cy.location("pathname").should("eq", "/register");
+    });
+
     it("rejects a malformed email without calling the API", () => {
         cy.intercept("POST", "**/auth/login").as("login");
         cy.visit("/login");
