@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { BookOpen, ShoppingCart, Receipt, WandSparkles } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cartCleared, selectCartItems } from "../../features/cart/cartSlice";
 import { signedOut } from "../../features/session/sessionSlice";
+import { AppNav, type NavLink } from "../ui/AppNav";
 
 export type CustomerPage = "menu" | "build-pizza" | "cart" | "orders";
 
@@ -13,22 +15,14 @@ const PAGE_TITLE: Record<CustomerPage, string> = {
     orders: "Pizzaria ON - Meus Pedidos",
 };
 
-const CURRENT_MARKER = "😋";
-
 interface CustomerNavProps {
     current: CustomerPage;
 }
 
-const CurrentBadge = ({ show }: { show: boolean }) =>
-    show ? (
-        <span className="badge badge-secondary">{CURRENT_MARKER}</span>
-    ) : null;
-
 export const CustomerNav = ({ current }: CustomerNavProps) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const cartItems = useAppSelector(selectCartItems);
-    const [expanded, setExpanded] = useState(false);
+    const count = useAppSelector(selectCartItems).length;
 
     useEffect(() => {
         document.title = PAGE_TITLE[current];
@@ -40,79 +34,36 @@ export const CustomerNav = ({ current }: CustomerNavProps) => {
         void navigate("/login");
     };
 
-    const count = cartItems.length;
+    const links: NavLink[] = [
+        { key: "menu", to: "/customer/menu", label: "Menu", icon: BookOpen },
+        {
+            key: "build-pizza",
+            to: "/customer/build-pizza",
+            label: "Criar Pizza",
+            icon: WandSparkles,
+        },
+        {
+            key: "orders",
+            to: "/customer/orders",
+            label: "Meus Pedidos",
+            icon: Receipt,
+        },
+        {
+            key: "cart",
+            to: "/customer/cart",
+            label: "Carrinho",
+            icon: ShoppingCart,
+            count,
+            countLabel: `${count} ${count === 1 ? "item" : "itens"} no carrinho`,
+        },
+    ];
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-            <span
-                className="navbar-brand"
-                style={{ fontSize: "1.5rem", marginLeft: "1rem" }}
-            >
-                Pizzaria ON
-            </span>
-            <button
-                className="navbar-toggler"
-                type="button"
-                onClick={() => setExpanded((value) => !value)}
-            >
-                <span className="navbar-toggler-icon">🍕</span>
-            </button>
-
-            <div
-                className={`collapse navbar-collapse ${expanded ? "show" : ""}`}
-                id="navbarNav"
-            >
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        width: "100%",
-                        padding: "0 2rem 0 2rem",
-                    }}
-                >
-                    <Link className="btn btn-primary " to="/customer/menu">
-                        Menu 📑
-                        <CurrentBadge show={current === "menu"} />
-                    </Link>
-                    <Link
-                        className="btn btn-primary "
-                        to="/customer/build-pizza"
-                    >
-                        Criar Pizza
-                        <CurrentBadge show={current === "build-pizza"} />
-                    </Link>
-                    <Link className="btn btn-primary " to="/customer/orders">
-                        Meus Pedidos
-                        <CurrentBadge show={current === "orders"} />
-                    </Link>
-                    <Link className="btn btn-primary " to="/customer/cart">
-                        Carrinho
-                        <CurrentBadge show={current === "cart"} />
-                        {count > 0 ? (
-                            <span
-                                className="badge"
-                                style={{
-                                    backgroundColor: "white",
-                                    color: "black",
-                                    marginLeft: "0.5rem",
-                                }}
-                            >
-                                {count} {count !== 1 ? "itens" : "item"} no
-                                carrinho
-                            </span>
-                        ) : null}
-                    </Link>
-                    <button
-                        type="button"
-                        className="btn btn-danger"
-                        onClick={handleLogout}
-                    >
-                        Sair 👋
-                    </button>
-                </div>
-            </div>
-        </nav>
+        <AppNav
+            brand="Pizzaria ON"
+            links={links}
+            current={current}
+            onLogout={handleLogout}
+        />
     );
 };
