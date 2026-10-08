@@ -1,3 +1,4 @@
+import { parseAcceptLanguage } from "../lib/localize.js";
 import { Router } from "express";
 import { z } from "zod";
 import {
@@ -14,6 +15,7 @@ import { currentUser } from "../middleware/auth.js";
 import { uploadImage } from "../middleware/upload.js";
 import type { Repositories } from "../repositories/index.js";
 import { generateReport } from "../services/reports.js";
+import { localizeOrders } from "../services/orders.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -31,7 +33,11 @@ export const adminRoutes = (repos: Repositories) => {
         if (!user) throw notFound("User");
         res.json({
             ...user,
-            orders: await repos.orders.listByUserEmail(user.email),
+            orders: await localizeOrders(
+                repos,
+                await repos.orders.listByUserEmail(user.email),
+                parseAcceptLanguage(req.header("accept-language")),
+            ),
         });
     });
 
@@ -154,7 +160,14 @@ export const adminRoutes = (repos: Repositories) => {
         const query = parse(reportQuerySchema, req.query);
         const to = query.to ?? new Date();
         const from = query.from ?? new Date(to.getTime() - 30 * DAY_MS);
-        res.json(await generateReport(repos, from, to));
+        res.json(
+            await generateReport(
+                repos,
+                from,
+                to,
+                parseAcceptLanguage(req.header("accept-language")),
+            ),
+        );
     });
 
     return router;

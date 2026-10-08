@@ -81,5 +81,8 @@
         "noOrders": "Nenhum pedido ainda.",
         "notFound": "Usuário não encontrado. Tente novamente!",
         "confirmDelete": "Deseja realmente excluir {email}?"
+    },
+    "translations": {
+        "hint": "Deixe um campo vazio para usar o texto em {language}."
     }
 }

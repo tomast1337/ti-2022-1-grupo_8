@@ -81,5 +81,8 @@
         "noOrders": "No orders yet.",
         "notFound": "User not found. Please try again!",
         "confirmDelete": "Do you really want to delete {email}?"
+    },
+    "translations": {
+        "hint": "Leave a field empty to use the {language} text."
     }
 }

@@ -1,5 +1,6 @@
-import type { Pizza } from "@pizzaria/dtos";
+import type { Pizza, Translations } from "@pizzaria/dtos";
 import type { Db } from "../db/index.js";
+import { cleanTranslations } from "../lib/localize.js";
 import { menuPizzaPrice } from "../lib/pricing.js";
 
 interface PizzaFields {
@@ -7,6 +8,7 @@ interface PizzaFields {
     description: string;
     ingredientIds: string[];
     image?: string;
+    translations: Translations;
 }
 
 export const pizzasRepository = (db: Db) => {
@@ -44,6 +46,7 @@ export const pizzasRepository = (db: Db) => {
                     name: pizza.name,
                     description: pizza.description,
                     image: pizza.image,
+                    translations: pizza.translations,
                     ingredientIds: mine.map((link) => link.ingredient_id),
                     price: menuPizzaPrice(mine.map((link) => link.price)),
                 };
@@ -72,6 +75,7 @@ export const pizzasRepository = (db: Db) => {
                         name: input.name,
                         description: input.description,
                         image: input.image ?? "",
+                        translations: cleanTranslations(input.translations),
                     })
                     .returning("id")
                     .executeTakeFirstOrThrow();
@@ -99,6 +103,7 @@ export const pizzasRepository = (db: Db) => {
                     .set({
                         name: input.name,
                         description: input.description,
+                        translations: cleanTranslations(input.translations),
                         ...(input.image !== undefined && {
                             image: input.image,
                         }),

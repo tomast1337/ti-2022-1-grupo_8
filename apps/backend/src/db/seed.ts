@@ -71,6 +71,7 @@ try {
                         price: i.price,
                         portion_weight: i.portionWeight,
                         image: i.image,
+                        translations: i.translations,
                     })),
                 )
                 .returning(["id", "name"])
@@ -86,6 +87,7 @@ try {
                         name: pizza.name,
                         description: pizza.description,
                         image: pizza.image,
+                        translations: pizza.translations,
                     })
                     .returning("id")
                     .executeTakeFirstOrThrow();

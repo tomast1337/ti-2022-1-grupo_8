@@ -6,7 +6,48 @@ import type {
 } from "@pizzaria/dtos";
 import { HttpError } from "../lib/errors.js";
 import { customPizzaPrice } from "../lib/pricing.js";
+import { localize } from "../lib/localize.js";
 import type { Repositories } from "../repositories/index.js";
+
+/**
+ * Orders keep the default (English) name of each menu item. When shown, pizzas
+ * and products still on the menu get their name in the reader's language;
+ * custom pizzas keep the name they were given.
+ */
+export const localizeOrders = async (
+    repos: Repositories,
+    orders: Order[],
+    languages: string[],
+): Promise<Order[]> => {
+    if (languages.length === 0) return orders;
+    const ids = (type: "pizza" | "product") => [
+        ...new Set(
+            orders.flatMap((order) =>
+                order.items.flatMap((item) =>
+                    item.type === type ? [item.id] : [],
+                ),
+            ),
+        ),
+    ];
+    const [pizzas, products] = await Promise.all([
+        repos.pizzas.findByIds(ids("pizza")),
+        repos.products.findByIds(ids("product")),
+    ]);
+    const names = new Map(
+        [...pizzas, ...products].map((entry) => [
+            entry.id,
+            localize(entry, languages).name,
+        ]),
+    );
+    return orders.map((order) => ({
+        ...order,
+        items: order.items.map((item) =>
+            item.type === "custom_pizza"
+                ? item
+                : { ...item, name: names.get(item.id) ?? item.name },
+        ),
+    }));
+};
 
 /**
  * Rebuilds the cart from the database so clients cannot choose their own

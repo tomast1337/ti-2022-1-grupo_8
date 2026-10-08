@@ -2,12 +2,14 @@ import { type Kysely, Migrator, type MigrationProvider } from "kysely";
 import { createDb } from "./index.js";
 import * as init from "./migrations/001_init.js";
 import * as refreshTokens from "./migrations/002_refresh_tokens.js";
+import * as translations from "./migrations/003_translations.js";
 
 // Register new migrations here, keyed by a sortable name.
 const provider: MigrationProvider = {
     getMigrations: async () => ({
         "001_init": init,
         "002_refresh_tokens": refreshTokens,
+        "003_translations": translations,
     }),
 };
 

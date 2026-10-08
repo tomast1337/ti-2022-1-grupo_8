@@ -16,7 +16,10 @@ const SIZE_PRICE: Record<PizzaSize, number> = {
 
 /** Seed price of an ingredient, so the spec does not hardcode catalog data. */
 const ingredientPrice = (name: string): number => {
-    const ingredient = seed.ingredients.find((i) => i.name === name);
+    // specs use the Portuguese names the UI shows
+    const ingredient = seed.ingredients.find(
+        (i) => i.translations["pt-BR"].name === name,
+    );
     if (!ingredient) throw new Error(`Unknown seed ingredient ${name}`);
     return ingredient.price;
 };
@@ -220,7 +223,7 @@ describe("build your own pizza", () => {
             const headers = { authorization: `Bearer ${token}` };
             cy.request<Ingredient[]>({
                 url: `${Cypress.expose("apiUrl")}/catalog/ingredients`,
-                headers,
+                headers: { ...headers, "accept-language": "pt-BR" },
             }).then(({ body: ingredients }) => {
                 const cheese = ingredients.find((i) => i.name === "Queijo")!;
                 cy.request({

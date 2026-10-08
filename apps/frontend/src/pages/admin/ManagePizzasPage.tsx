@@ -1,3 +1,4 @@
+import type { Translations } from "@pizzaria/dtos";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
@@ -6,6 +7,7 @@ import { Check, Pizza as PizzaIcon } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
 import { AdminPage } from "../../components/admin/AdminPage";
 import { CatalogCard, CatalogRow } from "../../components/admin/CatalogCard";
+import { TranslationFields } from "../../components/admin/TranslationFields";
 import { FormActions } from "../../components/admin/FormActions";
 import { Alert } from "../../components/ui/Alert";
 import { Field, FILE_INPUT_CLASS } from "../../components/ui/Field";
@@ -31,7 +33,11 @@ const BASE_PRICE = 20;
 export const ManagePizzasPage = () => {
     const { t } = useTranslation("admin");
     const navigate = useNavigate();
-    const { data: pizzas = [], isLoading, error } = useGetPizzasQuery();
+    const {
+        data: pizzas = [],
+        isLoading,
+        error,
+    } = useGetPizzasQuery({ raw: true });
     const { data: ingredients = [], error: ingredientsError } =
         useGetIngredientsQuery();
     const [savePizza, { isLoading: saving }] = useSavePizzaMutation();
@@ -45,6 +51,7 @@ export const ManagePizzasPage = () => {
     // changing the key remounts the file input, clearing it
     const [fileKey, setFileKey] = useState(0);
     const [formError, setFormError] = useState("");
+    const [translations, setTranslations] = useState<Translations>({});
 
     const price = ingredients
         .filter((ingredient) => ingredientIds.includes(ingredient.id))
@@ -58,6 +65,7 @@ export const ManagePizzasPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations({});
     };
 
     const toggleSelected = (pizza: Pizza) => {
@@ -72,6 +80,7 @@ export const ManagePizzasPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations(pizza.translations ?? {});
     };
 
     const toggleIngredient = (id: string, checked: boolean) =>
@@ -90,6 +99,7 @@ export const ManagePizzasPage = () => {
         const body = new FormData();
         body.append("name", name);
         body.append("description", description);
+        body.append("translations", JSON.stringify(translations));
         body.append("ingredientIds", ingredientIds.join(","));
         if (image) body.append("image", image);
         try {
@@ -268,6 +278,10 @@ export const ManagePizzasPage = () => {
                                 {formatMoney(price)}
                             </strong>
                         </p>
+                        <TranslationFields
+                            value={translations}
+                            onChange={setTranslations}
+                        />
                         <FormActions
                             editing={Boolean(selectedId)}
                             saving={saving}

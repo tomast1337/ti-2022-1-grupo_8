@@ -49,7 +49,8 @@ const SIZE_OPTIONS: { value: PizzaSize; diameter: string; icon: string }[] = [
     { value: "family", diameter: "40cm", icon: "size-14" },
 ];
 
-const SAUCE_NAME = "Molho";
+// the base ingredient, by its name in each language, is left out of pizza names
+const SAUCE_NAMES = ["Sauce", "Molho", "Padažas"];
 const NAME_PREFIXES = ["of", "with", "and"] as const;
 
 /** Builds a name like "Pizza Grande de Queijo com Tomate" from random picks. */
@@ -61,7 +62,9 @@ const buildPizzaName = (
 ) => {
     const names = [...new Set(halves.flat())]
         .map((id) => all.find((ingredient) => ingredient.id === id)?.name)
-        .filter((name): name is string => !!name && name !== SAUCE_NAME);
+        .filter(
+            (name): name is string => !!name && !SAUCE_NAMES.includes(name),
+        );
 
     let name = t("builder.name", { size: t(`common:pizzaSize.${size}`) });
     for (const prefix of NAME_PREFIXES) {

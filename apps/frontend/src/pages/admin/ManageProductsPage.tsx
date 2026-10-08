@@ -1,3 +1,4 @@
+import type { Translations } from "@pizzaria/dtos";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
@@ -6,6 +7,7 @@ import { Wine } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
 import { AdminPage } from "../../components/admin/AdminPage";
 import { CatalogCard, CatalogRow } from "../../components/admin/CatalogCard";
+import { TranslationFields } from "../../components/admin/TranslationFields";
 import { FormActions } from "../../components/admin/FormActions";
 import { Alert } from "../../components/ui/Alert";
 import { Field, FILE_INPUT_CLASS } from "../../components/ui/Field";
@@ -32,7 +34,11 @@ const EMPTY_FORM: FormState = { name: "", price: "", description: "" };
 export const ManageProductsPage = () => {
     const { t } = useTranslation("admin");
     const navigate = useNavigate();
-    const { data: products = [], isLoading, error } = useGetProductsQuery();
+    const {
+        data: products = [],
+        isLoading,
+        error,
+    } = useGetProductsQuery({ raw: true });
     const [saveProduct, { isLoading: saving }] = useSaveProductMutation();
     const [deleteProduct, { isLoading: deleting }] = useDeleteProductMutation();
 
@@ -42,6 +48,7 @@ export const ManageProductsPage = () => {
     // changing the key remounts the file input, clearing it
     const [fileKey, setFileKey] = useState(0);
     const [formError, setFormError] = useState("");
+    const [translations, setTranslations] = useState<Translations>({});
 
     const reset = () => {
         setSelectedId(null);
@@ -49,6 +56,7 @@ export const ManageProductsPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations({});
     };
 
     const toggleSelected = (product: Product) => {
@@ -65,6 +73,7 @@ export const ManageProductsPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations(product.translations ?? {});
     };
 
     const setField = (field: keyof FormState, value: string) =>
@@ -76,6 +85,7 @@ export const ManageProductsPage = () => {
         body.append("name", form.name);
         body.append("price", form.price);
         body.append("description", form.description);
+        body.append("translations", JSON.stringify(translations));
         if (image) body.append("image", image);
         try {
             await saveProduct({
@@ -193,6 +203,10 @@ export const ManageProductsPage = () => {
                                 }
                             />
                         </Field>
+                        <TranslationFields
+                            value={translations}
+                            onChange={setTranslations}
+                        />
                         <FormActions
                             editing={Boolean(selectedId)}
                             saving={saving}

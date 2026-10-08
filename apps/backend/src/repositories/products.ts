@@ -1,5 +1,6 @@
-import type { Product } from "@pizzaria/dtos";
+import type { Product, Translations } from "@pizzaria/dtos";
 import type { Selectable } from "kysely";
+import { cleanTranslations } from "../lib/localize.js";
 import type { Db } from "../db/index.js";
 import type { ProductsTable } from "../db/types.js";
 
@@ -9,6 +10,7 @@ const toProduct = (row: Selectable<ProductsTable>): Product => ({
     description: row.description,
     price: row.price,
     image: row.image,
+    translations: row.translations,
 });
 
 interface ProductFields {
@@ -16,6 +18,7 @@ interface ProductFields {
     description: string;
     price: number;
     image?: string;
+    translations: Translations;
 }
 
 export const productsRepository = (db: Db) => ({
@@ -50,7 +53,11 @@ export const productsRepository = (db: Db) => ({
     async create(input: ProductFields): Promise<Product> {
         const row = await db
             .insertInto("products")
-            .values({ ...input, image: input.image ?? "" })
+            .values({
+                ...input,
+                image: input.image ?? "",
+                translations: cleanTranslations(input.translations),
+            })
             .returningAll()
             .executeTakeFirstOrThrow();
         return toProduct(row);
@@ -63,7 +70,11 @@ export const productsRepository = (db: Db) => ({
         const { image, ...rest } = input;
         const row = await db
             .updateTable("products")
-            .set({ ...rest, ...(image !== undefined && { image }) })
+            .set({
+                ...rest,
+                translations: cleanTranslations(rest.translations),
+                ...(image !== undefined && { image }),
+            })
             .where("id", "=", id)
             .returningAll()
             .executeTakeFirst();

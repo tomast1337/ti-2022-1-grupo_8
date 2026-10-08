@@ -1,3 +1,4 @@
+import type { Translations } from "@pizzaria/dtos";
 import type { ColumnType, Generated, JSONColumnType } from "kysely";
 import type { CartItem, OrderStatus, Role } from "@pizzaria/dtos";
 
@@ -20,6 +21,7 @@ export interface IngredientsTable {
     price: number;
     portion_weight: number;
     image: string;
+    translations: Translations;
 }
 
 export interface PizzasTable {
@@ -27,6 +29,7 @@ export interface PizzasTable {
     name: string;
     description: string;
     image: string;
+    translations: Translations;
 }
 
 export interface PizzaIngredientsTable {
@@ -40,6 +43,7 @@ export interface ProductsTable {
     description: string;
     price: number;
     image: string;
+    translations: Translations;
 }
 
 export interface OrdersTable {

@@ -2,7 +2,7 @@
 
 Online pizza ordering app with three roles: **customers** build and order pizzas, **employees** work the order queue, **admins** manage the catalog, users and sales reports.
 
-The UI is available in Brazilian Portuguese (default), English and Lithuanian; code, API and database are in English. See [Languages](#languages).
+The UI is available in English (default), Brazilian Portuguese and Lithuanian; code, API and database are in English. See [Languages](#languages).
 
 ## Team
 
@@ -151,14 +151,14 @@ The frontend uses [i18next](https://www.i18next.com) with ICU message syntax (`i
 apps/frontend/src/locales/<language>/{common,auth,customer,employee,admin}.json
 ```
 
-- The language is the saved choice (`localStorage` key `lang`, set by the switcher in the navbar and on the login/register pages), then the browser language, then `pt-BR`.
-- Keys are typed from the `pt-BR` files, so a missing or misspelled key fails `npm run typecheck`. A unit test checks that every language has exactly the same keys and placeholders.
+- The language is the saved choice (`localStorage` key `lang`, set by the switcher in the navbar and on the login/register pages), then the browser language, then English.
+- Keys are typed from the English (default) files, so a missing or misspelled key fails `npm run typecheck`. A unit test checks that every language has exactly the same keys and placeholders.
 - Plurals and values use ICU: `"{count, plural, one {# item} other {# items}}"`. Keep messages as plain text (no JSX) so the files stay usable from other frameworks.
 - Prices are always in reais (BRL); only the number and date formatting follows the language (`src/i18n/format.ts`).
 - API errors carry a stable `code` (and `params`) next to the English `error` message; the frontend translates the code (`errors.*` in `common.json`) and falls back to the English text for unknown codes.
-- Catalog data (pizza, ingredient and product names and descriptions) is stored in the database and is not translated.
+- Catalog data (pizza, ingredient and product names and descriptions) is translated in the database: the item's `name`/`description` columns are the default (English) text and a `translations` JSON column holds the other languages (`{"pt-BR": {"name": "...", "description": "..."}}`). `GET /catalog/*` answers in the language of the `Accept-Language` header (a missing language or field falls back to English); `?raw=1` returns the default text plus every translation, which the admin forms use. The admin forms have one block per extra language; empty fields fall back to English. Order history and reports show menu items in the reader's language too. Custom pizza names keep the language they were built in.
 
-To add a language: copy `locales/pt-BR` to `locales/<code>`, translate the values, then register it in `src/i18n/index.ts` (imports, `resources` and `LANGUAGES`) and add its name under `language` in every `common.json`. The Cypress specs assert Portuguese; `cypress/support/e2e.ts` starts each page load in `pt-BR`.
+To add a language: copy `locales/en` to `locales/<code>`, translate the values, then register it in `src/i18n/index.ts` (imports, `resources` and `LANGUAGES`) and add its name under `language` in every `common.json`. Then add the language's `translations` for the items in `apps/backend/src/db/seed-data.json` (and in the admin forms for existing data; the forms list every language in `LANGUAGES`). The Cypress specs assert Portuguese; `cypress/support/e2e.ts` starts each page load in `pt-BR`.
 
 ## Database
 

@@ -1,3 +1,5 @@
+import { localizeOrders } from "./orders.js";
+import { localize } from "../lib/localize.js";
 import type { Report, ReportRow } from "@pizzaria/dtos";
 import { roundMoney } from "../lib/pricing.js";
 import type { Repositories } from "../repositories/index.js";
@@ -25,9 +27,12 @@ export const generateReport = async (
     repos: Repositories,
     from: Date,
     to: Date,
+    languages: string[] = [],
 ): Promise<Report> => {
     const [orders, ingredients] = await Promise.all([
-        repos.orders.listBetween(from, to),
+        repos.orders
+            .listBetween(from, to)
+            .then((found) => localizeOrders(repos, found, languages)),
         repos.ingredients.list(),
     ]);
 
@@ -60,7 +65,7 @@ export const generateReport = async (
                     add(
                         ingredientRows,
                         id,
-                        ingredient.name,
+                        localize(ingredient, languages).name,
                         item.quantity,
                         ingredient.price * item.quantity,
                     );

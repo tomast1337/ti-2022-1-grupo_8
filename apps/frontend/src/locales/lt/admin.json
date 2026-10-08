@@ -81,5 +81,8 @@
         "noOrders": "Užsakymų dar nėra.",
         "notFound": "Vartotojas nerastas. Bandykite dar kartą!",
         "confirmDelete": "Ar tikrai norite ištrinti {email}?"
+    },
+    "translations": {
+        "hint": "Palikite lauką tuščią, kad būtų naudojamas {language} tekstas."
     }
 }

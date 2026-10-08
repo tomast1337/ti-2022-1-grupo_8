@@ -2,7 +2,8 @@ import { Router } from "express";
 import { orderStatusSchema } from "@pizzaria/dtos";
 import { parse, uuidParam } from "../lib/validate.js";
 import type { Repositories } from "../repositories/index.js";
-import { advanceOrder } from "../services/orders.js";
+import { parseAcceptLanguage } from "../lib/localize.js";
+import { advanceOrder, localizeOrders } from "../services/orders.js";
 
 export const employeeRoutes = (repos: Repositories) => {
     const router = Router();
@@ -12,7 +13,13 @@ export const employeeRoutes = (repos: Repositories) => {
         const status = req.query.status
             ? parse(orderStatusSchema, req.query.status)
             : undefined;
-        res.json(await repos.orders.list(status));
+        res.json(
+            await localizeOrders(
+                repos,
+                await repos.orders.list(status),
+                parseAcceptLanguage(req.header("accept-language")),
+            ),
+        );
     });
 
     router.post("/orders/:id/start", async (req, res) => {

@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { saveCart } from "../features/cart/cartSlice";
 import pizzaBuilderReducer from "../features/pizzaBuilder/pizzaBuilderSlice";
 import sessionReducer from "../features/session/sessionSlice";
+import i18next from "i18next";
 import { api } from "../services/api";
 
 export const makeStore = () =>
@@ -27,6 +28,13 @@ store.subscribe(() => {
     // update before dispatching: resetApiState re-enters this subscriber
     previousToken = session.token;
     if (signedOut) store.dispatch(api.util.resetApiState());
+});
+
+// catalog text is served per language: refetch what is on screen
+i18next.on("languageChanged", () => {
+    store.dispatch(
+        api.util.invalidateTags(["Ingredient", "Pizza", "Product", "Order"]),
+    );
 });
 
 export type AppStore = ReturnType<typeof makeStore>;

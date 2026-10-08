@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { csvToArray, idSchema } from "./common.js";
+import {
+    csvToArray,
+    idSchema,
+    jsonToObject,
+    translationsSchema,
+} from "./common.js";
 
 export const pizzaSizeSchema = z.enum(["small", "medium", "large", "family"]);
 export type PizzaSize = z.infer<typeof pizzaSizeSchema>;
@@ -12,6 +17,8 @@ export const pizzaSchema = z.object({
     ingredientIds: z.array(idSchema),
     /** Computed by the API: base price + ingredient prices. */
     price: z.number().nonnegative(),
+    /** Other languages; present only when the admin asks for the raw item. */
+    translations: translationsSchema.optional(),
 });
 export type Pizza = z.infer<typeof pizzaSchema>;
 
@@ -20,5 +27,6 @@ export const pizzaInputSchema = z.object({
     name: z.string().min(1),
     description: z.string().min(1),
     ingredientIds: z.preprocess(csvToArray, z.array(idSchema).min(1)),
+    translations: z.preprocess(jsonToObject, translationsSchema).default({}),
 });
 export type PizzaInput = z.infer<typeof pizzaInputSchema>;

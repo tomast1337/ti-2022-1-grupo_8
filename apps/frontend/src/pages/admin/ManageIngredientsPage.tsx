@@ -1,3 +1,4 @@
+import type { Translations } from "@pizzaria/dtos";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
@@ -6,6 +7,7 @@ import { Carrot } from "lucide-react";
 import { AdminNav } from "../../components/admin/AdminNav";
 import { AdminPage } from "../../components/admin/AdminPage";
 import { CatalogCard, CatalogRow } from "../../components/admin/CatalogCard";
+import { TranslationFields } from "../../components/admin/TranslationFields";
 import { FormActions } from "../../components/admin/FormActions";
 import { Alert } from "../../components/ui/Alert";
 import { Field, FILE_INPUT_CLASS } from "../../components/ui/Field";
@@ -41,7 +43,7 @@ export const ManageIngredientsPage = () => {
         data: ingredients = [],
         isLoading,
         error,
-    } = useGetIngredientsQuery();
+    } = useGetIngredientsQuery({ raw: true });
     const [saveIngredient, { isLoading: saving }] = useSaveIngredientMutation();
     const [deleteIngredient, { isLoading: deleting }] =
         useDeleteIngredientMutation();
@@ -52,6 +54,7 @@ export const ManageIngredientsPage = () => {
     // changing the key remounts the file input, clearing it
     const [fileKey, setFileKey] = useState(0);
     const [formError, setFormError] = useState("");
+    const [translations, setTranslations] = useState<Translations>({});
 
     const reset = () => {
         setSelectedId(null);
@@ -59,6 +62,7 @@ export const ManageIngredientsPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations({});
     };
 
     const toggleSelected = (ingredient: Ingredient) => {
@@ -76,6 +80,7 @@ export const ManageIngredientsPage = () => {
         setImage(null);
         setFileKey((key) => key + 1);
         setFormError("");
+        setTranslations(ingredient.translations ?? {});
         document
             .getElementById("form-ingredient")
             ?.scrollIntoView({ behavior: "instant", block: "center" });
@@ -90,6 +95,7 @@ export const ManageIngredientsPage = () => {
         body.append("name", form.name);
         body.append("price", form.price);
         body.append("description", form.description);
+        body.append("translations", JSON.stringify(translations));
         body.append("portionWeight", form.portionWeight);
         if (image) body.append("image", image);
         try {
@@ -239,6 +245,10 @@ export const ManageIngredientsPage = () => {
                                 }
                             />
                         </Field>
+                        <TranslationFields
+                            value={translations}
+                            onChange={setTranslations}
+                        />
                         <FormActions
                             editing={Boolean(selectedId)}
                             saving={saving}

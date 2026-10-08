@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { idSchema, moneySchema } from "./common.js";
+import {
+    idSchema,
+    moneySchema,
+    jsonToObject,
+    translationsSchema,
+} from "./common.js";
 
 export const ingredientSchema = z.object({
     id: idSchema,
@@ -9,6 +14,8 @@ export const ingredientSchema = z.object({
     /** Weight of one portion, in grams. */
     portionWeight: z.number().positive(),
     image: z.string(),
+    /** Other languages; present only when the admin asks for the raw item. */
+    translations: translationsSchema.optional(),
 });
 export type Ingredient = z.infer<typeof ingredientSchema>;
 
@@ -19,5 +26,6 @@ export const ingredientInputSchema = z.object({
     description: z.string().min(1),
     price: moneySchema,
     portionWeight: z.coerce.number().positive(),
+    translations: z.preprocess(jsonToObject, translationsSchema).default({}),
 });
 export type IngredientInput = z.infer<typeof ingredientInputSchema>;

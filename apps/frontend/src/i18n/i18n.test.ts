@@ -56,8 +56,8 @@ describe("language handling", () => {
         expect(toSupportedLanguage("pt-BR")).toBe("pt-BR");
         expect(toSupportedLanguage("pt-PT")).toBe("pt-BR");
         expect(toSupportedLanguage("en-US")).toBe("en");
-        expect(toSupportedLanguage("fr")).toBe("pt-BR");
-        expect(toSupportedLanguage(undefined)).toBe("pt-BR");
+        expect(toSupportedLanguage("fr")).toBe("en");
+        expect(toSupportedLanguage(undefined)).toBe("en");
     });
 
     it("handles plurals with ICU", async () => {

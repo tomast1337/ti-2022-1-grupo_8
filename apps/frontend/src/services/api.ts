@@ -34,6 +34,8 @@ const rawBaseQuery = fetchBaseQuery({
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as TokenState).session.token;
         if (token) headers.set("authorization", `Bearer ${token}`);
+        // catalog names and descriptions come back in this language
+        headers.set("accept-language", i18next.language);
         return headers;
     },
 });
@@ -96,6 +98,10 @@ export const errorMessage = (error: unknown): string => {
 
 export type UserWithOrders = User & { orders: Order[] };
 
+/** `{ raw: true }` asks for the default text plus all translations (admin forms). */
+type RawArg = { raw?: boolean } | void;
+const rawSuffix = (arg: RawArg) => (arg?.raw ? "?raw=1" : "");
+
 type SaveArgs = { id?: string; form: FormData };
 
 export const api = createApi({
@@ -112,16 +118,16 @@ export const api = createApi({
         }),
 
         /* ---------- catalog (any logged user) ---------- */
-        getIngredients: build.query<Ingredient[], void>({
-            query: () => "/catalog/ingredients",
+        getIngredients: build.query<Ingredient[], RawArg>({
+            query: (arg) => `/catalog/ingredients${rawSuffix(arg)}`,
             providesTags: ["Ingredient"],
         }),
-        getPizzas: build.query<Pizza[], void>({
-            query: () => "/catalog/pizzas",
+        getPizzas: build.query<Pizza[], RawArg>({
+            query: (arg) => `/catalog/pizzas${rawSuffix(arg)}`,
             providesTags: ["Pizza"],
         }),
-        getProducts: build.query<Product[], void>({
-            query: () => "/catalog/products",
+        getProducts: build.query<Product[], RawArg>({
+            query: (arg) => `/catalog/products${rawSuffix(arg)}`,
             providesTags: ["Product"],
         }),
 

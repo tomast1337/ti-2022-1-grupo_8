@@ -1,5 +1,6 @@
-import type { Ingredient } from "@pizzaria/dtos";
+import type { Ingredient, Translations } from "@pizzaria/dtos";
 import type { Selectable } from "kysely";
+import { cleanTranslations } from "../lib/localize.js";
 import type { Db } from "../db/index.js";
 import type { IngredientsTable } from "../db/types.js";
 
@@ -10,6 +11,7 @@ const toIngredient = (row: Selectable<IngredientsTable>): Ingredient => ({
     price: row.price,
     portionWeight: row.portion_weight,
     image: row.image,
+    translations: row.translations,
 });
 
 interface IngredientFields {
@@ -18,6 +20,7 @@ interface IngredientFields {
     price: number;
     portionWeight: number;
     image?: string;
+    translations: Translations;
 }
 
 export const ingredientsRepository = (db: Db) => ({
@@ -58,6 +61,7 @@ export const ingredientsRepository = (db: Db) => ({
                 price: input.price,
                 portion_weight: input.portionWeight,
                 image: input.image ?? "",
+                translations: cleanTranslations(input.translations),
             })
             .returningAll()
             .executeTakeFirstOrThrow();
@@ -75,6 +79,7 @@ export const ingredientsRepository = (db: Db) => ({
                 description: input.description,
                 price: input.price,
                 portion_weight: input.portionWeight,
+                translations: cleanTranslations(input.translations),
                 // keep the current image when none was uploaded
                 ...(input.image !== undefined && { image: input.image }),
             })

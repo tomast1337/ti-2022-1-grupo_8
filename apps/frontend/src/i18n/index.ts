@@ -20,11 +20,11 @@ import ptEmployee from "../locales/pt-BR/employee.json";
 
 /**
  * To add a language: create `locales/<code>/*.json`, register it here and in
- * LANGUAGES. The pt-BR files are the source of truth for the key types.
+ * LANGUAGES. The default language (en) files are the source of truth for the key types.
  */
-export const LANGUAGES = ["pt-BR", "en", "lt"] as const;
+export const LANGUAGES = ["en", "pt-BR", "lt"] as const;
 export type Language = (typeof LANGUAGES)[number];
-export const DEFAULT_LANGUAGE: Language = "pt-BR";
+export const DEFAULT_LANGUAGE: Language = "en";
 export const LANGUAGE_STORAGE_KEY = "lang";
 
 export const resources = {
@@ -54,7 +54,9 @@ export const resources = {
 /** Maps whatever the browser reports ("en-US", "pt-PT"...) to a language we ship. */
 export const toSupportedLanguage = (code: string | undefined): Language =>
     LANGUAGES.find((language) => language === code) ??
-    LANGUAGES.find((language) => code?.split("-")[0] === language) ??
+    LANGUAGES.find(
+        (language) => code?.split("-")[0] === language.split("-")[0],
+    ) ??
     DEFAULT_LANGUAGE;
 
 await i18next
