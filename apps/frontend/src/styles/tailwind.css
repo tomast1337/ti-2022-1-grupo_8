@@ -1,0 +1,36 @@
+/*
+ * Tailwind without preflight: Bootstrap's reboot still styles unmigrated pages.
+ * Tailwind utilities are !important and their layer comes before Bootstrap's:
+ * for important declarations the earlier layer wins, so they beat Bootstrap's
+ * own !important spacing utilities (.px-5, .mt-2...) and the unlayered SCSS.
+ */
+@layer theme, utilities, bootstrap;
+@import "bootstrap/dist/css/bootstrap.min.css" layer(bootstrap);
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) important;
+
+@theme {
+    --font-sans: "Assistant", ui-sans-serif, system-ui, sans-serif;
+    --font-brand: "Water Brush", cursive;
+
+    --color-tomato-50: #fff1ef;
+    --color-tomato-500: #e5483a;
+    --color-tomato-600: #d63a2f;
+    --color-tomato-700: #b32d24;
+    --color-cheese-400: #ffc933;
+    --color-cheese-500: #fdb813;
+    --color-cheese-600: #e0a000;
+    --color-basil-500: #27a05a;
+    --color-basil-600: #1f8a4c;
+    --color-basil-700: #186f3d;
+    --color-ink: #231815;
+
+    --shadow-panel: 0 8px 30px rgb(35 24 21 / 0.18);
+    --radius-panel: 1.25rem;
+}
+
+/* Temporary: Tailwind's `collapse` utility (visibility) clashes with Bootstrap's
+   navbar collapse. Remove together with Bootstrap. */
+@utility collapse {
+    visibility: visible;
+}

@@ -60,7 +60,9 @@ npm run docker:up       # same as docker compose up --build
 npm run docker:down
 npm run docker:reset    # wipe volumes (database, uploads) and start over
 npm run docker:seed     # reset and re-seed a running database
-docker compose up --build -V   # after changing any package.json
+docker compose down
+docker volume ls -q | grep node_modules | xargs docker volume rm   # after changing any package.json
+docker compose up --build
 ```
 
 On macOS/Windows set `CHOKIDAR_USEPOLLING=1` in `.env` if the frontend does not hot-reload.

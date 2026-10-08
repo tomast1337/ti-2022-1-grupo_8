@@ -14,7 +14,7 @@ describe("authentication", () => {
 
     it("rejects a wrong password", () => {
         cy.loginViaUi("customer@pizzaria.local", "wrong-password");
-        cy.get(".alert-danger").should("contain", "Invalid email or password");
+        cy.get("[role=alert]").should("contain", "Invalid email or password");
         cy.location("pathname").should("eq", "/login");
     });
 

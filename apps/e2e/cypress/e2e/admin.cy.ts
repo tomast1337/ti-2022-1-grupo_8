@@ -15,7 +15,7 @@ describe("admin: catalog and users", () => {
 
         it("shows the new product to customers", () => {
             cy.visitAs("customer", "/customer/menu");
-            cy.contains(".card", "Suco de Teste 1L").within(() => {
+            cy.contains("[data-slot=card]", "Suco de Teste 1L").within(() => {
                 cy.contains("R$").should("contain", "6,50");
                 cy.get("img").should(($img) => {
                     expect(
@@ -34,7 +34,10 @@ describe("admin: catalog and users", () => {
             cy.contains("button", "Salvar").click();
 
             cy.visitAs("customer", "/customer/menu");
-            cy.contains(".card", "Suco de Teste 1L").should("contain", "7,90");
+            cy.contains("[data-slot=card]", "Suco de Teste 1L").should(
+                "contain",
+                "7,90",
+            );
         });
 
         it("deletes the product", () => {
