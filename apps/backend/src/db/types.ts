@@ -53,6 +53,21 @@ export interface OrdersTable {
     created_at: Timestamp;
 }
 
+export interface RefreshTokensTable {
+    id: Generated<string>;
+    user_id: string;
+    family_id: string;
+    token_hash: string;
+    expires_at: Timestamp;
+    /** Set when the token was exchanged for a new one. */
+    used_at: ColumnType<
+        Date | null,
+        Date | string | null | undefined,
+        Date | string | null
+    >;
+    created_at: Timestamp;
+}
+
 export interface Database {
     users: UsersTable;
     ingredients: IngredientsTable;
@@ -60,4 +75,5 @@ export interface Database {
     pizza_ingredients: PizzaIngredientsTable;
     products: ProductsTable;
     orders: OrdersTable;
+    refresh_tokens: RefreshTokensTable;
 }

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { cartCleared, selectCartItems } from "../../features/cart/cartSlice";
-import { signedOut } from "../../features/session/sessionSlice";
+import { signOut } from "../../features/session/sessionThunks";
 import { AppNav, type NavLink } from "../ui/AppNav";
 
 export type CustomerPage = "menu" | "build-pizza" | "cart" | "orders";
@@ -29,7 +29,7 @@ export const CustomerNav = ({ current }: CustomerNavProps) => {
     }, [current]);
 
     const handleLogout = () => {
-        dispatch(signedOut());
+        dispatch(signOut());
         dispatch(cartCleared());
         void navigate("/login");
     };

@@ -9,7 +9,7 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../app/hooks";
-import { signedOut } from "../../features/session/sessionSlice";
+import { signOut } from "../../features/session/sessionThunks";
 import { AppNav, type NavLink } from "../ui/AppNav";
 
 export type AdminSection =
@@ -59,7 +59,7 @@ export const AdminNav = ({ current }: AdminNavProps) => {
     }, [title]);
 
     const logout = () => {
-        dispatch(signedOut());
+        dispatch(signOut());
         void navigate("/login");
     };
 

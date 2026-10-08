@@ -1,7 +1,7 @@
 import { ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../app/hooks";
-import { signedOut } from "../../features/session/sessionSlice";
+import { signOut } from "../../features/session/sessionThunks";
 import { AppNav, type NavLink } from "../ui/AppNav";
 
 const LINKS: NavLink[] = [
@@ -18,7 +18,7 @@ export const EmployeeNav = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        dispatch(signedOut());
+        dispatch(signOut());
         void navigate("/login");
     };
 

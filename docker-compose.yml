@@ -45,6 +45,7 @@ services:
             BACKEND_PORT: 4518
             # the e2e suite logs in a lot and fails on purpose; keep dev from throttling it
             AUTH_RATE_LIMIT_MAX: 5000
+            REFRESH_REUSE_GRACE_SECONDS: 1
             CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-4517}
             UPLOADS_DIR: /uploads
         ports:

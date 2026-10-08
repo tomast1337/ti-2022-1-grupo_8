@@ -6,41 +6,14 @@ export interface SessionState {
     user: User | null;
 }
 
-const STORAGE_KEY = "session";
-
-/** Reads the persisted session, dropping it if the JWT already expired. */
-export const loadSession = (): SessionState => {
-    const empty: SessionState = { token: null, user: null };
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return empty;
-        const session = JSON.parse(raw) as SessionState;
-        if (!session.token || !session.user) return empty;
-        const payload = JSON.parse(atob(session.token.split(".")[1] ?? "")) as {
-            exp?: number;
-        };
-        if (payload.exp && payload.exp * 1000 < Date.now()) return empty;
-        return session;
-    } catch {
-        return empty;
-    }
-};
-
-export const saveSession = (session: SessionState) => {
-    try {
-        if (session.token) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-        } else {
-            localStorage.removeItem(STORAGE_KEY);
-        }
-    } catch {
-        // storage unavailable (private mode): session lives in memory only
-    }
-};
-
+/**
+ * The access token lives in memory only. The long-lived credential is an
+ * httpOnly refresh cookie that scripts cannot read; `restoreSession` and the
+ * API client use it to get a new access token.
+ */
 const sessionSlice = createSlice({
     name: "session",
-    initialState: loadSession,
+    initialState: { token: null, user: null } as SessionState,
     reducers: {
         signedIn: (_state, { payload }: PayloadAction<LoginResponse>) => ({
             token: payload.token,

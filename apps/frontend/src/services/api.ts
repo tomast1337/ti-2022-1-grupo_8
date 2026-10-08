@@ -20,7 +20,8 @@ import type {
     User,
 } from "@pizzaria/dtos";
 import { API_URL } from "../lib/config";
-import { signedOut } from "../features/session/sessionSlice";
+import { signedIn, signedOut } from "../features/session/sessionSlice";
+import { refreshSession } from "./refresh";
 
 interface TokenState {
     session: { token: string | null };
@@ -28,6 +29,7 @@ interface TokenState {
 
 const rawBaseQuery = fetchBaseQuery({
     baseUrl: API_URL,
+    credentials: "include",
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as TokenState).session.token;
         if (token) headers.set("authorization", `Bearer ${token}`);
@@ -35,17 +37,26 @@ const rawBaseQuery = fetchBaseQuery({
     },
 });
 
-/** Signs the user out when the API says the token is no longer valid. */
+/**
+ * Access tokens are short-lived: on a 401 it refreshes the session once and
+ * retries the request, and signs the user out only if that fails too.
+ */
 const baseQuery: BaseQueryFn<
     string | FetchArgs,
     unknown,
     FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-    const result = await rawBaseQuery(args, api, extraOptions);
+    let result = await rawBaseQuery(args, api, extraOptions);
     const isAuthEndpoint =
         typeof args === "object" && args.url.startsWith("/auth/");
     if (result.error?.status === 401 && !isAuthEndpoint) {
-        api.dispatch(signedOut());
+        const session = await refreshSession();
+        if (session) {
+            api.dispatch(signedIn(session));
+            result = await rawBaseQuery(args, api, extraOptions);
+        } else {
+            api.dispatch(signedOut());
+        }
     }
     return result;
 };
