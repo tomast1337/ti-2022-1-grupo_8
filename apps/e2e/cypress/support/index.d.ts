@@ -5,7 +5,7 @@ declare global {
         interface Chainable {
             /** Wipes and re-seeds the database. Call in `before`, not `beforeEach`. */
             resetDb(): Chainable<void>;
-            /** API login + visit with the session in localStorage. */
+            /** API login (sets the refresh cookie) + visit. */
             visitAs(role: Role, path: string): Chainable<void>;
             /**
              * Screenshot of the current viewport for the e2e report, taken once

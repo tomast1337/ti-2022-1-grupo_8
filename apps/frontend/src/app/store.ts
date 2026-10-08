@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { saveCart } from "../features/cart/cartSlice";
 import pizzaBuilderReducer from "../features/pizzaBuilder/pizzaBuilderSlice";
-import sessionReducer, { saveSession } from "../features/session/sessionSlice";
+import sessionReducer from "../features/session/sessionSlice";
 import { api } from "../services/api";
 
 export const makeStore = () =>
@@ -17,11 +17,10 @@ export const makeStore = () =>
 
 export const store = makeStore();
 
-// persist session and cart; signing out also drops cached server data
+// persist the cart; signing out also drops cached server data
 let previousToken = store.getState().session.token;
 store.subscribe(() => {
     const { session, cart } = store.getState();
-    saveSession(session);
     saveCart(cart);
 
     const signedOut = previousToken !== null && session.token === null;

@@ -133,8 +133,11 @@ All routes except `/auth/*` and `/health` need `Authorization: Bearer <token>`.
 ### Authentication
 
 - Passwords are hashed with bcrypt (8 to 72 characters on register). Emails are trimmed and lower-cased.
-- Login returns a signed JWT (HS256, `JWT_EXPIRES_IN`, 1h by default) that the frontend keeps in `localStorage` and sends as a Bearer token.
-- The token only identifies the user: the API reloads the user on every request, so a role change or a deleted account takes effect immediately instead of when the token expires.
+- Login returns a short-lived access JWT (HS256, `JWT_EXPIRES_IN`, 15 minutes by default). The frontend keeps it **in memory only** and sends it as a Bearer token.
+- Login also sets an **httpOnly refresh cookie** (`refresh_token`, scoped to `/auth`, `SameSite=Lax`, `Secure` with `COOKIE_SECURE=true`) that page scripts cannot read. On page load and whenever the API answers 401, the frontend trades it at `POST /auth/refresh` for a new access token, so a session lasts `REFRESH_TOKEN_DAYS` (7) without storing anything readable.
+- Refresh tokens are random, stored only as a SHA-256 hash and **rotated** on every use. Replaying an already-used token revokes that whole login (theft detection); two tabs refreshing at the same moment are tolerated for `REFRESH_REUSE_GRACE_SECONDS`. `POST /auth/logout` revokes the login and clears the cookie.
+- `/auth/refresh` and `/auth/logout` require an `X-Requested-By: pizzaria` header, which a cross-site form cannot send, on top of `SameSite` and the CORS origin list.
+- CORS allows credentials only for the origins in `CORS_ORIGIN`. If the API and the site end up on different domains, serve both over HTTPS and set `COOKIE_SECURE=true` and `COOKIE_SAME_SITE=none`.
 - Failed logins and registrations are throttled per IP (`AUTH_RATE_LIMIT_MAX` per `AUTH_RATE_LIMIT_WINDOW_MINUTES`, then `429`). Successful ones don't count.
 - Responses carry the usual security headers (helmet).
 

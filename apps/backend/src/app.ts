@@ -25,7 +25,8 @@ export const createApp = (db: Db) => {
 
     // images are loaded from the frontend origin, so they must stay cross-origin
     app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-    app.use(cors({ origin: config.CORS_ORIGIN.split(",") }));
+    // credentials: the refresh cookie travels with cross-origin requests
+    app.use(cors({ origin: config.CORS_ORIGIN.split(","), credentials: true }));
     app.use(express.json());
 
     // static images: seed images shipped with the repo + admin uploads
@@ -34,14 +35,18 @@ export const createApp = (db: Db) => {
 
     app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
-    app.use(
-        "/auth",
-        authRateLimit(
-            config.AUTH_RATE_LIMIT_MAX,
-            config.AUTH_RATE_LIMIT_WINDOW_MINUTES,
-        ),
-        authRoutes(repos),
+    const failedLogins = authRateLimit(
+        config.AUTH_RATE_LIMIT_MAX,
+        config.AUTH_RATE_LIMIT_WINDOW_MINUTES,
     );
+    // the page asks for a refresh on every load, so that route gets more room
+    const refreshes = authRateLimit(
+        config.AUTH_RATE_LIMIT_MAX * 10,
+        config.AUTH_RATE_LIMIT_WINDOW_MINUTES,
+    );
+    app.use(["/auth/login", "/auth/register"], failedLogins);
+    app.use("/auth/refresh", refreshes);
+    app.use("/auth", authRoutes(repos));
     const authenticate = authenticateWith(repos.users);
     app.use("/catalog", authenticate, catalogRoutes(repos));
     app.use(

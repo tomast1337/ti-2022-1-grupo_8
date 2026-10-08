@@ -26,6 +26,7 @@ try {
             if (force) {
                 // pizza_ingredients and orders go with their parents
                 for (const table of [
+                    "refresh_tokens",
                     "orders",
                     "pizzas",
                     "ingredients",

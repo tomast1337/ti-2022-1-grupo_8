@@ -11,7 +11,10 @@ Cypress.Commands.add("resetDb", () => {
     cy.task("db:reset", null, { timeout: 120_000 });
 });
 
-/** Logs in through the API and opens `path` with the session already stored. */
+/**
+ * Logs in through the API and opens `path`. The login response sets the httpOnly
+ * refresh cookie in the browser, and the app turns it into a session on load.
+ */
 Cypress.Commands.add("visitAs", (role: Role, path: string) => {
     cy.request<LoginResponse>(
         "POST",
@@ -20,16 +23,8 @@ Cypress.Commands.add("visitAs", (role: Role, path: string) => {
             email: accounts[role],
             password: Cypress.expose("seedPassword"),
         },
-    ).then(({ body }) => {
-        cy.visit(path, {
-            onBeforeLoad(win) {
-                win.localStorage.setItem(
-                    "session",
-                    JSON.stringify({ token: body.token, user: body.user }),
-                );
-            },
-        });
-    });
+    );
+    cy.visit(path);
 });
 
 /** Logs in through the login form. */
