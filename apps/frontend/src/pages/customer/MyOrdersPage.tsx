@@ -1,21 +1,21 @@
-import type { Order, OrderStatus } from "@pizzaria/dtos";
+import type { Order } from "@pizzaria/dtos";
+import { Receipt, SmilePlus } from "lucide-react";
 import { Link } from "react-router";
+import { OrderStatusBadge } from "../../components/common/OrderStatusBadge";
 import { CustomerNav } from "../../components/customer/CustomerNav";
+import { CustomerPage } from "../../components/customer/CustomerPage";
+import { Alert } from "../../components/ui/Alert";
+import { buttonClass } from "../../components/ui/Button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../../components/ui/card";
+import { Panel } from "../../components/ui/Panel";
 import { formatDateTime, formatMoney } from "../../lib/format";
 import { errorMessage, useGetMyOrdersQuery } from "../../services/api";
-import styles from "./MyOrdersPage.module.scss";
-
-const STATUS_COLOR: Record<OrderStatus, string> = {
-    placed: "danger",
-    in_progress: "warning",
-    completed: "success",
-};
-
-const STATUS_LABEL: Record<OrderStatus, string> = {
-    placed: "Pendente",
-    in_progress: "Preparando",
-    completed: "Pronto",
-};
 
 const OrderCard = ({ order }: { order: Order }) => {
     const total = order.items.reduce(
@@ -24,57 +24,41 @@ const OrderCard = ({ order }: { order: Order }) => {
     );
 
     return (
-        <div className="card" style={{ width: "18rem" }}>
-            <div className="card-header text-center">
-                <h5 className="card-title" style={{ fontSize: "1.15rem" }}>
-                    Pedido #{order.id.slice(0, 8)}
-                </h5>
-                <p style={{ marginBottom: 0 }}>
+        <Card data-slot="order">
+            <CardHeader>
+                <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="whitespace-nowrap">
+                        Pedido #{order.id.slice(0, 8)}
+                    </CardTitle>
+                    <OrderStatusBadge status={order.status} />
+                </div>
+                <p className="m-0 text-sm font-semibold text-ink/60">
                     {formatDateTime(order.createdAt)}
                 </p>
-            </div>
-            <div
-                className="card-body"
-                style={{
-                    fontFamily: "BenchNine",
-                    fontSize: "1.25rem",
-                    lineHeight: "1.1",
-                    padding: "0.75rem 0.5rem",
-                }}
-            >
-                <ul className="list-group list-group-flush">
+            </CardHeader>
+            <CardContent>
+                <ul className="m-0 list-none divide-y divide-ink/10 p-0">
                     {order.items.map((item) => (
-                        <li key={item.id} className="list-group-item">
-                            <div style={{ float: "left" }}>
-                                <strong>{item.quantity}x </strong>
-                                {item.name}
-                            </div>
-                            <div style={{ float: "right" }}>
-                                <strong>
-                                    {formatMoney(item.price * item.quantity)}
-                                </strong>
-                            </div>
+                        <li
+                            key={item.id}
+                            className="flex justify-between gap-3 py-2 text-base text-ink"
+                        >
+                            <span>
+                                <strong>{item.quantity}x</strong> {item.name}
+                            </span>
+                            <strong className="shrink-0">
+                                {formatMoney(item.price * item.quantity)}
+                            </strong>
                         </li>
                     ))}
                 </ul>
-            </div>
-            <div className="card-footer">
-                <p
-                    style={{
-                        display: "inline-block",
-                        float: "right",
-                        marginBottom: 5,
-                    }}
-                >
+            </CardContent>
+            <CardFooter className="justify-end border-t border-ink/10 pt-4">
+                <span className="text-lg text-ink">
                     Total: <strong>{formatMoney(total)}</strong>
-                </p>
-                <div
-                    className={`badge rounded-pill bg-${STATUS_COLOR[order.status]}`}
-                >
-                    {STATUS_LABEL[order.status]}
-                </div>
-            </div>
-        </div>
+                </span>
+            </CardFooter>
+        </Card>
     );
 };
 
@@ -82,42 +66,46 @@ export const MyOrdersPage = () => {
     const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
     return (
-        <div className={styles.body}>
+        <CustomerPage>
             <CustomerNav current="orders" />
-            <div className="container mt-2 mb-2 p-0">
-                <div className="row">
-                    <h1 className="text-center">Meus Pedidos</h1>
-                </div>
+            <main className="mx-auto w-full max-w-7xl px-4 pt-6 pb-16">
+                <h1 className="mb-8 flex items-center justify-center gap-3 text-center text-4xl font-extrabold tracking-wide text-white uppercase [text-shadow:1px_2px_6px_rgb(0_0_0/0.55)] sm:text-5xl">
+                    <Receipt className="size-9" aria-hidden />
+                    Meus Pedidos
+                </h1>
                 {isLoading ? (
-                    <p className="text-center">Carregando...</p>
-                ) : null}
-                {error ? (
-                    <p className="text-center text-danger">
-                        {errorMessage(error)}
+                    <p className="text-center text-lg font-semibold">
+                        Carregando...
                     </p>
                 ) : null}
-                <div className="row">
-                    {orders && orders.length > 0 ? (
-                        orders.map((order) => (
-                            <div
-                                key={order.id}
-                                className="col-sm-12 col-md-6 col-lg-4 col-xl-3"
-                            >
-                                <OrderCard order={order} />
-                            </div>
-                        ))
-                    ) : orders ? (
-                        <div className="text-center text-white">
-                            <h2>Poxa, nenhum pedido! 😱</h2>
-                            <h5>
-                                Por que não{" "}
-                                <Link to="/customer/menu">fazer um agora</Link>?
-                                😋
-                            </h5>
-                        </div>
-                    ) : null}
-                </div>
-            </div>
-        </div>
+                {error ? <Alert>{errorMessage(error)}</Alert> : null}
+                {orders && orders.length > 0 ? (
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {orders.map((order) => (
+                            <OrderCard key={order.id} order={order} />
+                        ))}
+                    </div>
+                ) : orders ? (
+                    <Panel className="mx-auto max-w-xl py-10 text-center">
+                        <SmilePlus
+                            className="mx-auto size-14 text-ink/30"
+                            aria-hidden
+                        />
+                        <h2 className="mt-4 mb-2 text-3xl font-extrabold text-ink [text-shadow:none]">
+                            Poxa, nenhum pedido!
+                        </h2>
+                        <p className="mb-6 text-lg text-ink/70">
+                            Por que não fazer um agora?
+                        </p>
+                        <Link
+                            to="/customer/menu"
+                            className={buttonClass({ variant: "primary" })}
+                        >
+                            Ver o menu
+                        </Link>
+                    </Panel>
+                ) : null}
+            </main>
+        </CustomerPage>
     );
 };

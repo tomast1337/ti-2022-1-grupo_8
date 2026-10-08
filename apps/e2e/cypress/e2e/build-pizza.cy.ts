@@ -181,7 +181,7 @@ describe("build your own pizza", () => {
 
         // cart
         cy.location("pathname").should("eq", "/customer/cart");
-        cy.contains("td", /Pizza Grande/);
+        cy.contains("[data-slot=cart-item]", /Pizza Grande/);
         cy.contains(brl(total));
 
         // checkout
